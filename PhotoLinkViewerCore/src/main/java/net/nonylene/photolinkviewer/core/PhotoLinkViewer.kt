@@ -7,8 +7,8 @@ object PhotoLinkViewer {
     private var flickrKey: String? = null
     private var tumblrKey: String? = null
     val twitterTokenMap = LinkedHashMap<String, TwitterToken>()
-    private var instagramToken: String? = null
-    set(value) { field = value }
+    // to use instagram video preview, set token.
+    var instagramToken: String? = null
 
     // call this function when application start
     fun with(twitterKeys: TwitterKeys, flickrKey: String, tumblrKey: String) {
@@ -17,6 +17,7 @@ object PhotoLinkViewer {
         this.tumblrKey = tumblrKey
     }
 
+    // cause exception if required keys not exists
     fun getTwitterKeys(): TwitterKeys {
         if (twitterKeys != null) return twitterKeys!!
         else throw IllegalStateException("You must set twitter keys (call PhotoLinkViewer.with()?).")
@@ -30,11 +31,6 @@ object PhotoLinkViewer {
     fun getTumblrKey(): String {
         if (tumblrKey != null) return tumblrKey!!
         else throw IllegalStateException("You must set tumblr key (call PhotoLinkViewer.with()?).")
-    }
-
-    fun getInstagramToken(): String {
-        if (instagramToken != null) return instagramToken!!
-        else throw IllegalStateException("You must set instagram token (set PhotoLinkViewer.instagramKey?).")
     }
 
     class TwitterKeys(val consumerKey: String, val consumerSecret: String)
