@@ -447,7 +447,6 @@ class OptionFragment : Fragment() {
     }
 }
 
-// TODO: inner?
 private val TWITTER_ENABLED_KEY = "is_twitter_enabled"
 private val TWITTER_ID_KEY = "twitter_id_long"
 private val TWITTER_DEFAULT_SCREEN_KEY = "twitter_default_screen"

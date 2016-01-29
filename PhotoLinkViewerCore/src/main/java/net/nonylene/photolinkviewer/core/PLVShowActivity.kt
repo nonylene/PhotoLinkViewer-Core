@@ -21,9 +21,9 @@ import net.nonylene.photolinkviewer.core.view.TilePhotoView
  */
 class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
 
-    private var isSingle : Boolean = true
-    private var scrollView : ScrollView? = null
-    private var tileView : TilePhotoView? = null
+    private var isSingle: Boolean = true
+    private var scrollView: ScrollView? = null
+    private var tileView: TilePhotoView? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +52,6 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
     }
 
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
-        val bundle = Bundle()
-        bundle.putBoolean("single_frag", true)
-        bundle.putParcelable("plvurl", plvUrls[0])
-
         if (plvUrls.size == 1) {
             if (plvUrls[0].isVideo) onVideoShowFragmentRequired(plvUrls[0])
             else onShowFragmentRequired(plvUrls[0])
@@ -82,21 +78,20 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(ShowFragment(), plvUrl)
+        onFragmentRequired(ShowFragment().apply {
+            arguments = ShowFragment.createArguments(plvUrl, isSingle)
+        })
     }
 
     override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(VideoShowFragment(), plvUrl)
+        onFragmentRequired(VideoShowFragment().apply {
+            arguments = VideoShowFragment.createArguments(plvUrl, isSingle)
+        })
     }
 
-    private fun onFragmentRequired(fragment: Fragment, plvUrl: PLVUrl) {
+    private fun onFragmentRequired(fragment: Fragment) {
         try {
             // go to show fragment
-            val bundle = Bundle()
-            bundle.putParcelable("plvurl", plvUrl)
-            bundle.putBoolean("single_frag", isSingle)
-            fragment.arguments = bundle
-
             val fragmentTransaction = fragmentManager.beginTransaction()
             // back to this screen when back pressed
             if (!isSingle) fragmentTransaction.addToBackStack(null)

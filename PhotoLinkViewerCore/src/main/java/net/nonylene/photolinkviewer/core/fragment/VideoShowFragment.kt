@@ -18,21 +18,35 @@ import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 
+/**
+ * @see createArguments
+ */
 class VideoShowFragment : Fragment() {
     private var baseView: View? = null
     private var videoShowFrameLayout: FrameLayout? = null
     private var progressBar: ProgressBar? = null
 
+    companion object {
+        /**
+         * @param isSingleFragment if true, background color become transparent in this fragment.
+         */
+        public fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
+            return Bundle().apply {
+                setPLVUrl(plvUrl)
+                setIsSingleFragment(isSingleFragment)
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         baseView = inflater.inflate(R.layout.videoshow_fragment, container, false)
         videoShowFrameLayout = baseView!!.findViewById(R.id.videoshowframe) as FrameLayout
         progressBar = baseView!!.findViewById(R.id.show_progress) as ProgressBar
-        if (arguments.getBoolean("single_frag", false)) {
+        if (arguments.isSingleFragment()) {
             videoShowFrameLayout!!.setBackgroundResource(R.color.transparent)
             // do not hide progressbar! progressbar of activity will be displayed under videoView.
         }
-        val plvUrl = arguments.getParcelable<PLVUrl>("plvurl")
-        playVideo(plvUrl)
+        playVideo(arguments.getPLVUrl())
         return baseView
     }
 

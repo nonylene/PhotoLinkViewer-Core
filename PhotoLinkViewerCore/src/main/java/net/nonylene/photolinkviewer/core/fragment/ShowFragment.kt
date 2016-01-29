@@ -56,6 +56,18 @@ class ShowFragment : Fragment() {
     private var quickScale: MyQuickScale? = null
     private var applicationContext : Context? = null
 
+    companion object {
+        /**
+         * @param isSingleFragment if true, background color and progressbar become transparent in this fragment.
+         */
+        public fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
+            return Bundle().apply {
+                setPLVUrl(plvUrl)
+                setIsSingleFragment(isSingleFragment)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
@@ -94,12 +106,12 @@ class ShowFragment : Fragment() {
             Initialize.initialize39(activity)
         }
 
-        if (arguments.getBoolean("single_frag", false)) {
+        if (arguments.isSingleFragment()) {
             showFrameLayout.setBackgroundResource(R.color.transparent)
             progressBar.visibility = View.GONE
         }
 
-        AsyncExecute(arguments.getParcelable<PLVUrl>("plvurl")).Start()
+        AsyncExecute(arguments.getPLVUrl()).Start()
     }
 
     internal inner class simpleOnGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -454,4 +466,23 @@ class ShowFragment : Fragment() {
             }
         }
     }
+}
+
+private val IS_SINGLE_FRAGMENT_KEY = "is_single"
+private val PLV_URL_KEY = "plvurl"
+
+fun Bundle.setIsSingleFragment(isSingleFragment: Boolean) {
+    putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
+}
+
+fun Bundle.isSingleFragment() : Boolean {
+    return getBoolean(IS_SINGLE_FRAGMENT_KEY, false)
+}
+
+fun Bundle.setPLVUrl(plvUrl: PLVUrl) {
+    putParcelable(PLV_URL_KEY, plvUrl)
+}
+
+fun Bundle.getPLVUrl() : PLVUrl {
+    return getParcelable(PLV_URL_KEY)
 }
