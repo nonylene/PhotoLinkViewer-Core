@@ -21,7 +21,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayou
     private val frameLayoutListList = ArrayList<ArrayList<PLVUrl?>?>()
     private val inflater : LayoutInflater
 
-    public var twitterViewListener: TwitterViewListener? = null
+    public var tilePhotoViewListener: TilePhotoViewListener? = null
     private val picasso : Picasso
 
     init {
@@ -81,11 +81,11 @@ public class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayou
                 if (plv.isVideo) {
                     frameLayout.getChildAt(1).visibility = View.VISIBLE
                     imageView.setOnClickListener {
-                        twitterViewListener?.onVideoShowFragmentRequired(plv)
+                        tilePhotoViewListener?.onVideoShowFragmentRequired(plv)
                     }
                 } else {
                     imageView.setOnClickListener {
-                        twitterViewListener?.onShowFragmentRequired(plv)
+                        tilePhotoViewListener?.onShowFragmentRequired(plv)
                     }
                 }
                 picasso.load(plv.thumbUrl).into(imageView)
@@ -101,7 +101,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayou
         frameLayoutListList.clear()
     }
 
-    public interface TwitterViewListener {
+    public interface TilePhotoViewListener {
         fun onShowFragmentRequired(plvUrl: PLVUrl)
         fun onVideoShowFragmentRequired(plvUrl: PLVUrl)
     }

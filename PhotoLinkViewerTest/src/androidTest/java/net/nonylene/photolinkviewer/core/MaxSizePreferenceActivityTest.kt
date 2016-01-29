@@ -8,7 +8,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MaxSizePreferenceActivityTest : ActivityInstrumentationTestCase2<MaxSizePreferenceActivity>(MaxSizePreferenceActivity::class.java) {
+class MaxSizePreferenceActivityTest : ActivityInstrumentationTestCase2<PLVMaxSizePreferenceActivity>(PLVMaxSizePreferenceActivity::class.java) {
 
     init {
         injectInstrumentation(InstrumentationRegistry.getInstrumentation())

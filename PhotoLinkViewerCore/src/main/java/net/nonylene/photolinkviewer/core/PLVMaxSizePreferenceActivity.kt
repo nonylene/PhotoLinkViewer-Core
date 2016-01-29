@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.*
 import butterknife.bindView
 
-class MaxSizePreferenceActivity : AppCompatActivity() {
+class PLVMaxSizePreferenceActivity : AppCompatActivity() {
 
     private val imageView: ImageView by bindView(R.id.imageView)
     private val textView: TextView by bindView(R.id.textView)

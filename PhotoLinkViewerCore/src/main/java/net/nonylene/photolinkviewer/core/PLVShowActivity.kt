@@ -15,7 +15,7 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 
-class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TwitterViewListener {
+class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
 
     private var isSingle : Boolean = true
     private var scrollView : ScrollView? = null
@@ -31,6 +31,7 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, Tile
         //receive intent
         if (Intent.ACTION_VIEW != intent.action) {
             Toast.makeText(this, "Intent Error!", Toast.LENGTH_LONG).show()
+            finish()
             return
         }
 
@@ -58,14 +59,14 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, Tile
             isSingle = false
             hideProgressBar()
             scrollView!!.visibility = View.VISIBLE
-            tileView!!.twitterViewListener = this
+            tileView!!.tilePhotoViewListener = this
             tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
             tileView!!.notifyChanged()
         }
     }
 
     override fun onGetPLVUrlFailed(text: String) {
-        Toast.makeText(this@Show, text, Toast.LENGTH_LONG).show()
+        Toast.makeText(this@PLVShowActivity, text, Toast.LENGTH_LONG).show()
     }
 
     override fun onURLAccepted() {

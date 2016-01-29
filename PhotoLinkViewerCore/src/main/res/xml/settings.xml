@@ -3,29 +3,6 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:title="Account">
-
-        <Preference
-            android:key="twitter_preference"
-            android:summary="@string/pref_twitter_summary"
-            android:title="@string/pref_twitter_title"
-            />
-
-
-        <Preference
-            android:key="instagram_preference"
-            android:summary="@string/instagram_preference_summary"
-            android:title="@string/instagram_pregerence_title"/>
-
-        <SwitchPreference
-            android:key="instagram_api"
-            android:summary="@string/instagram_api_summary"
-            android:title="@string/instagram_api_title"/>
-
-    </PreferenceCategory>
-
-
-    <PreferenceCategory
         android:title="@string/display_title">
 
         <Preference

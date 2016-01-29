@@ -22,7 +22,7 @@ import android.widget.Toast;
 import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment;
 import net.nonylene.photolinkviewer.core.tool.Initialize;
 
-public class Settings extends AppCompatActivity {
+public class PLVSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class Settings extends AppCompatActivity {
             maxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivity(new Intent(getActivity(), MaxSizePreferenceActivity.class));
+                    startActivity(new Intent(getActivity(), PLVMaxSizePreferenceActivity.class));
                     return false;
                 }
             });
@@ -69,7 +69,7 @@ public class Settings extends AppCompatActivity {
             qualityPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivity(new Intent(getActivity(), ChangeQualityActivity.class));
+                    startActivity(new Intent(getActivity(), PLVQualityPreferenceActivity.class));
                     return false;
                 }
             });

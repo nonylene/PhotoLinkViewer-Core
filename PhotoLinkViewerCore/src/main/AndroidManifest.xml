@@ -12,7 +12,7 @@
         android:fullBackupContent="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Show"
+            android:name=".PLVShowActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Transparent">
             <intent-filter
@@ -265,7 +265,7 @@
         </activity>
 
         <activity
-            android:name=".Settings">
+            android:name=".PLVSettingsActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -296,19 +296,19 @@
         </activity>
 
         <activity
-            android:name=".ChangeQualityActivity"
-            android:parentActivityName=".Settings">
+            android:name=".PLVQualityPreferenceActivity"
+            android:parentActivityName=".PLVSettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings"/>
+                android:value=".PLVSettingsActivity"/>
         </activity>
 
         <activity
-            android:name=".MaxSizePreferenceActivity"
-            android:parentActivityName=".Settings">
+            android:name=".PLVMaxSizePreferenceActivity"
+            android:parentActivityName=".PLVSettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Settings"/>
+                android:value=".PLVSettingsActivity"/>
         </activity>
     </application>
 

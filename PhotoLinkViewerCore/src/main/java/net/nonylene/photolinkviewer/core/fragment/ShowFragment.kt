@@ -32,7 +32,7 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import butterknife.bindView
 import de.greenrobot.event.EventBus
-import net.nonylene.photolinkviewer.core.MaxSizePreferenceActivity
+import net.nonylene.photolinkviewer.core.PLVMaxSizePreferenceActivity
 import net.nonylene.photolinkviewer.core.R
 
 
@@ -428,7 +428,7 @@ class ShowFragment : Fragment() {
                     .setMessage(getString(R.string.image_resized_dialog_text))
                     .setPositiveButton(getString(android.R.string.ok), null)
                     .setNeutralButton(getString(R.string.image_resized_dialog_neutral), { dialogInterface, i ->
-                        startActivity(Intent(activity, MaxSizePreferenceActivity::class.java))
+                        startActivity(Intent(activity, PLVMaxSizePreferenceActivity::class.java))
                     })
                     .create()
         }

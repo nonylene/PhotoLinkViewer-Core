@@ -13,7 +13,7 @@ import android.support.v7.app.AppCompatActivity
 import net.nonylene.photolinkviewer.core.fragment.LTEFragment
 import net.nonylene.photolinkviewer.core.fragment.WifiFragment
 
-class ChangeQualityActivity : AppCompatActivity(), LTEFragment.OnWifiSwitchListener {
+class PLVQualityPreferenceActivity : AppCompatActivity(), LTEFragment.OnWifiSwitchListener {
     private val adapter: QualityFragmentStateAdapter = QualityFragmentStateAdapter(fragmentManager)
 
     override fun onCreate(savedInstanceState: Bundle?) {
