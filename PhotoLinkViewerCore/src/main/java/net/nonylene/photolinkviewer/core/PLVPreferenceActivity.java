@@ -22,7 +22,7 @@ import android.widget.Toast;
 import net.nonylene.photolinkviewer.core.fragment.PreferenceSummaryFragment;
 import net.nonylene.photolinkviewer.core.tool.Initialize;
 
-public class PLVSettingsActivity extends AppCompatActivity {
+public class PLVPreferenceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -265,7 +265,7 @@
         </activity>
 
         <activity
-            android:name=".PLVSettingsActivity">
+            android:name=".PLVPreferenceActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -274,41 +274,19 @@
         </activity>
 
         <activity
-            android:name=".TwitterDisplay"
-            android:configChanges="orientation|screenSize"
-            android:theme="@style/Theme.Transparent">
-            <intent-filter
-                android:label="PhotoLinkViewer - twitter">
-                <action android:name="android.intent.action.VIEW"/>
-
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-
-                <data
-                    android:host="twitter.com"
-                    android:pathPattern="/.*/status.*/..*"
-                    android:scheme="http"/>
-                <data
-                    android:host="twitter.com"
-                    android:pathPattern="/.*/status.*/..*"
-                    android:scheme="https"/>
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".PLVQualityPreferenceActivity"
-            android:parentActivityName=".PLVSettingsActivity">
+            android:parentActivityName=".PLVPreferenceActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".PLVSettingsActivity"/>
+                android:value=".PLVPreferenceActivity"/>
         </activity>
 
         <activity
             android:name=".PLVMaxSizePreferenceActivity"
-            android:parentActivityName=".PLVSettingsActivity">
+            android:parentActivityName=".PLVPreferenceActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".PLVSettingsActivity"/>
+                android:value=".PLVPreferenceActivity"/>
         </activity>
     </application>
 

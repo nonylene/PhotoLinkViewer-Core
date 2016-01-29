@@ -31,7 +31,7 @@ import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 
-import net.nonylene.photolinkviewer.core.PLVSettingsActivity
+import net.nonylene.photolinkviewer.core.PLVPreferenceActivity
 import net.nonylene.photolinkviewer.core.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
@@ -148,7 +148,7 @@ class OptionFragment : Fragment() {
         }
 
         settingButton.setOnClickListener{
-            startActivity(Intent(activity, PLVSettingsActivity::class.java))
+            startActivity(Intent(activity, PLVPreferenceActivity::class.java))
         }
 
         webButton.setOnClickListener{
