@@ -167,7 +167,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.siteName = "instagram"
                 plvUrl.fileName = id
 
-                if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("instagram_api", false)) {
+                if (PhotoLinkViewer.instagramToken != null) {
 
                     val preferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE)
 
@@ -176,8 +176,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                         return
                     }
 
-                    val token = PhotoLinkViewer.getInstagramToken()
-                    val apiUrl = "https://api.instagram.com/v1/media/shortcode/${id}?access_token=${token}"
+                    val apiUrl = "https://api.instagram.com/v1/media/shortcode/${id}?access_token=${PhotoLinkViewer.instagramToken}"
 
                     VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, apiUrl,
                             Response.Listener { response ->
