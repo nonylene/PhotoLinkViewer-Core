@@ -2,6 +2,10 @@ package net.nonylene.photolinkviewer.core
 
 import java.util.*
 
+/**
+ * This is object (singleton in java) used in PhotoLinkViewer-Core.
+ * Before app uses this module, PhotoLinkViewer#with() must be called.
+ */
 object PhotoLinkViewer {
     private var twitterKeys: TwitterKeys? = null
     private var flickrKey: String? = null

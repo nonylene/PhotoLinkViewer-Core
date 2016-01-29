@@ -42,6 +42,9 @@ import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
 
+/**
+ * @see OptionFragment.createArguments
+ */
 class OptionFragment : Fragment() {
 
     private val baseView: CoordinatorLayout by bindView(R.id.option_base_view)
@@ -86,17 +89,26 @@ class OptionFragment : Fragment() {
         private val STORAGE_PERMISSION_REQUEST = 3
         private val SAVE_DIALOG_CODE = 4
 
+        /**
+         * arguments for normal sites
+         */
         public fun createArguments(url: String): Bundle {
             return Bundle().apply {
                 setUrl(url)
             }
         }
 
-        public fun createArguments(url: String, twitterId: Long, twitterDefaultScreenName: String): Bundle {
+        /**
+         * arguments for twitter sites. Twitter options will be available by using this.
+         * @param tweetId Tweet id used in retweet and favorite feature.
+         * @param twitterDefaultScreenName Twitter screen name used as default account.
+         * @see OptionFragment.TwitterDialogFragment
+         */
+        public fun createArguments(url: String, tweetId: Long, twitterDefaultScreenName: String): Bundle {
             return Bundle().apply {
                 setUrl(url)
                 setTwitterEnabled(true)
-                setTweetId(twitterId)
+                setTweetId(tweetId)
                 setTwitterDefaultScreenName(twitterDefaultScreenName)
             }
         }

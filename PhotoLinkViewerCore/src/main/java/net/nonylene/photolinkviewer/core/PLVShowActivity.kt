@@ -15,6 +15,10 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 
+/**
+ * show photo Activity.
+ * This Activity requires uri to preview, in data of intent.
+ */
 class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
 
     private var isSingle : Boolean = true
