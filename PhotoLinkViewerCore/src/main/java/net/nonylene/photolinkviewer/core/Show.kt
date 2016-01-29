@@ -36,12 +36,10 @@ class Show : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, Tile
 
         val url = intent.data.toString()
 
-        val bundle = Bundle()
-        bundle.putString("url", url)
-
         val fragmentTransaction = fragmentManager.beginTransaction()
-        val optionFragment = OptionFragment()
-        optionFragment.arguments = bundle
+        val optionFragment = OptionFragment().apply {
+            arguments = OptionFragment.createArguments(url)
+        }
         fragmentTransaction.add(R.id.root_layout, optionFragment)
         fragmentTransaction.commit()
 
