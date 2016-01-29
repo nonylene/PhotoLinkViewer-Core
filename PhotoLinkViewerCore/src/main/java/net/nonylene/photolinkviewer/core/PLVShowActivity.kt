@@ -103,4 +103,6 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
         }
 
     }
+
+    //todo: onPause -> onResume, no fragment shown (#1)
 }
