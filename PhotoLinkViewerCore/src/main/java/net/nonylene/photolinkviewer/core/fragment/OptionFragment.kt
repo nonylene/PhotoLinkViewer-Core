@@ -5,8 +5,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.*
 import android.content.Intent
-import android.graphics.Matrix
-import android.graphics.Point
 import android.net.Uri
 import android.os.Bundle
 import android.content.Context
@@ -87,6 +85,21 @@ class OptionFragment : Fragment() {
         private val RETWEET_CODE = 2
         private val STORAGE_PERMISSION_REQUEST = 3
         private val SAVE_DIALOG_CODE = 4
+
+        public fun createArguments(url: String): Bundle {
+            return Bundle().apply {
+                setUrl(url)
+            }
+        }
+
+        public fun createArguments(url: String, twitterId: Long, twitterDefaultScreenName: String): Bundle {
+            return Bundle().apply {
+                setUrl(url)
+                setTwitterEnabled(true)
+                setTweetId(twitterId)
+                setTwitterDefaultScreenName(twitterDefaultScreenName)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,8 +153,7 @@ class OptionFragment : Fragment() {
 
         webButton.setOnClickListener{
             // get uri from bundle
-            val uri = Uri.parse(arguments.getString("url"))
-            val intent = Intent(Intent.ACTION_VIEW, uri)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getUrl()))
             // open intent chooser
             startActivity(Intent.createChooser(intent, getString(R.string.intent_title)))
         }
@@ -180,7 +192,6 @@ class OptionFragment : Fragment() {
 
         companion object {
             val SCREEN_NAME_KEY = "screen_name"
-            val ID_LONG_KEY = "screen_name"
         }
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -188,11 +199,7 @@ class OptionFragment : Fragment() {
             requestCode = targetRequestCode
             // get twitter id
             val id_long = arguments.getTweetId()
-
-            // get screen_name
-            // todo: getintent
-            val screenName = activity.getSharedPreferences("preference", Context.MODE_PRIVATE)
-                    .getString("screen_name", null)
+            val screenName = arguments.getTwitterDefaultScreenName()
 
             // get account_list
             val screen_list = PhotoLinkViewer.twitterTokenMap.keys.toArrayList()
@@ -227,7 +234,7 @@ class OptionFragment : Fragment() {
                     .setPositiveButton(getString(android.R.string.ok), { dialog, which ->
                         val screen_name = screen_list[spinner.selectedItemPosition]
                         targetFragment.onActivityResult(requestCode, Activity.RESULT_OK,
-                                Intent().putExtra(SCREEN_NAME_KEY, screen_name).putExtra(ID_LONG_KEY, id_long))
+                                Intent().putExtra(SCREEN_NAME_KEY, screen_name).putExtra(TWITTER_ID_KEY, id_long))
                     })
                     .setNegativeButton(getString(android.R.string.cancel), null)
                     .create()
@@ -385,7 +392,7 @@ class OptionFragment : Fragment() {
             // request code > like or retweet
             // result code > row_id
             // intent > id_long
-            val id_long = data!!.getLongExtra(TwitterDialogFragment.ID_LONG_KEY, -1)
+            val id_long = data!!.getLongExtra(TWITTER_ID_KEY, -1)
             val screenName = data.getStringExtra(TwitterDialogFragment.SCREEN_NAME_KEY)
             val twitter = AsyncTwitterFactory().instance
             with(PhotoLinkViewer.getTwitterKeys()) {
@@ -428,8 +435,11 @@ class OptionFragment : Fragment() {
     }
 }
 
+// TODO: inner?
 private val TWITTER_ENABLED_KEY = "is_twitter_enabled"
 private val TWITTER_ID_KEY = "twitter_id_long"
+private val TWITTER_DEFAULT_SCREEN_KEY = "twitter_default_screen"
+private val URL_KEY = "url"
 
 fun Bundle.setTwitterEnabled(isTwitterEnabled: Boolean) {
     putBoolean(TWITTER_ENABLED_KEY, isTwitterEnabled)
@@ -445,4 +455,20 @@ fun Bundle.setTweetId(tweetId: Long) {
 
 fun Bundle.getTweetId() : Long {
     return getLong(TWITTER_ID_KEY)
+}
+
+fun Bundle.setUrl(url: String) {
+    putString(URL_KEY, url)
+}
+
+fun Bundle.getUrl() : String {
+    return getString(URL_KEY)
+}
+
+fun Bundle.setTwitterDefaultScreenName(screenName: String) {
+    putString(TWITTER_DEFAULT_SCREEN_KEY, screenName)
+}
+
+fun Bundle.getTwitterDefaultScreenName() : String {
+    return getString(TWITTER_DEFAULT_SCREEN_KEY)
 }
