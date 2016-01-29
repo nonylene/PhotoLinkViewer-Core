@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -37,10 +36,6 @@ public class PLVPreferenceActivity extends AppCompatActivity {
     public static class SettingsFragment extends PreferenceSummaryFragment {
 
         private static final int ABOUT_FRAGMENT = 100;
-        private static final int TWITTER_FRAGMENT = 200;
-        private static final int TWEET_CODE = 10;
-
-        private SwitchPreference instagramSwitch;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,36 +69,11 @@ public class PLVPreferenceActivity extends AppCompatActivity {
                 }
             });
 
-            Preference instagramPreference = findPreference("instagram_preference");
-            instagramPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                //todo
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-//                    Intent intent = new Intent(getActivity(), IOAuthActivity.class);
-                    // get oauth result
-//                    startActivityForResult(intent, 1);
-                    return false;
-                }
-            });
-
-            instagramSwitch = (SwitchPreference) findPreference("instagram_api");
-
             return super.onCreateView(inflater, container, savedInstanceState);
-        }
-
-        @Override
-        public void onResume() {
-            super.onResume();
-            // IOAuthActivity
-            instagramSwitch.setEnabled(getActivity().getSharedPreferences("preference", MODE_PRIVATE)
-                    .getBoolean("instagram_authorized", false));
-            instagramSwitch.setChecked(PreferenceManager.getDefaultSharedPreferences(getActivity())
-                    .getBoolean("instagram_api", false));
         }
 
         // license etc
         public static class AboutDialogFragment extends DialogFragment {
-            private int count = 0;
 
             @Override
             public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -124,11 +94,6 @@ public class PLVPreferenceActivity extends AppCompatActivity {
                 }
                 return builder.create();
             }
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 }
