@@ -32,13 +32,13 @@ class WifiFragment : PreferenceSummaryFragment() {
 
     private fun batchSelected(resultCode: Int) {
         // change preferences in a lump
-        val flickrPreference = findPreference("flickr_quality_wifi") as ListPreference
-        val twitterPreference = findPreference("twitter_quality_wifi") as ListPreference
-        val twipplePreference = findPreference("twipple_quality_wifi") as ListPreference
-        val imglyPreference = findPreference("imgly_quality_wifi") as ListPreference
-        val instagramPreference = findPreference("instagram_quality_wifi") as ListPreference
-        val nicoPreference = findPreference("nicoseiga_quality_wifi") as ListPreference
-        val tumblrPreference = findPreference("tumblr_quality_wifi") as ListPreference
+        val flickrPreference = findPreference("plv_core_flickr_quality_wifi") as ListPreference
+        val twitterPreference = findPreference("plv_core_twitter_quality_wifi") as ListPreference
+        val twipplePreference = findPreference("plv_core_twipple_quality_wifi") as ListPreference
+        val imglyPreference = findPreference("plv_core_imgly_quality_wifi") as ListPreference
+        val instagramPreference = findPreference("plv_core_instagram_quality_wifi") as ListPreference
+        val nicoPreference = findPreference("plv_core_nicoseiga_quality_wifi") as ListPreference
+        val tumblrPreference = findPreference("plv_core_tumblr_quality_wifi") as ListPreference
 
         when (resultCode) {
             0 -> {

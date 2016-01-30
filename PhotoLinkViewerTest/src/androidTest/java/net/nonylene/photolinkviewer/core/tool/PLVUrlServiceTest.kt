@@ -50,8 +50,6 @@ class PLVUrlServiceTest {
         fun start() {
             val preferences = PreferenceManager.getDefaultSharedPreferences(
                     InstrumentationRegistry.getInstrumentation().targetContext)
-            defaultPrefBooleanMap.put("instagram_api", preferences.getInstagramEnabled())
-            preferences.edit().putIsInstagramEnabled(false).apply()
             initPreference("flickr", preferences)
             initPreference("nicoseiga", preferences)
             initPreference("tumblr", preferences)
@@ -66,7 +64,6 @@ class PLVUrlServiceTest {
         fun finalize() {
             val preferences = PreferenceManager.getDefaultSharedPreferences(
                     InstrumentationRegistry.getInstrumentation().targetContext)
-            preferences.edit().putIsInstagramEnabled(defaultPrefBooleanMap["instagram_api"]!!).apply()
             restorePreference("flickr", preferences)
             restorePreference("nicoseiga", preferences)
             restorePreference("tumblr", preferences)

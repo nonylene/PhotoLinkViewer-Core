@@ -44,6 +44,7 @@ import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.Initialize
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
+import net.nonylene.photolinkviewer.core.tool.isInitialized47
 
 class ShowFragment : Fragment() {
 
@@ -104,6 +105,10 @@ class ShowFragment : Fragment() {
 
         if (!preferences.getBoolean("initialized39", false)) {
             Initialize.initialize39(activity)
+        }
+
+        if (!preferences.isInitialized47()) {
+            Initialize.initialize47(activity)
         }
 
         if (arguments.isSingleFragment()) {

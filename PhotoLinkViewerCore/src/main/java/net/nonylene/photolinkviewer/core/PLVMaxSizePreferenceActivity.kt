@@ -6,6 +6,8 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.widget.*
 import butterknife.bindView
+import net.nonylene.photolinkviewer.core.tool.getImageViewMaxSize
+import net.nonylene.photolinkviewer.core.tool.putImageViewMaxSize
 
 class PLVMaxSizePreferenceActivity : AppCompatActivity() {
 
@@ -56,11 +58,11 @@ class PLVMaxSizePreferenceActivity : AppCompatActivity() {
 
         setButton.setOnClickListener {
             val size = seekBar.progress + 1
-            sharedPref.edit().putInt("imageview_max_size", size).apply()
+            sharedPref.edit().putImageViewMaxSize(size).apply()
             Toast.makeText(this.applicationContext, getString(R.string.max_preference_toast, size * 1024), Toast.LENGTH_LONG).show()
         }
 
-        val index = sharedPref.getInt("imageview_max_size", 2) - 1;
+        val index = sharedPref.getImageViewMaxSize() - 1;
         updateImageView(index)
         seekBar.progress = index
     }
