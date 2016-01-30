@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:background="@drawable/twitter_image_design"
+        android:background="@drawable/frame_background_design"
         android:padding="2dp"
         android:scaleType="fitCenter"/>
 
