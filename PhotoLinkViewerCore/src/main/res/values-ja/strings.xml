@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <string name="pref_twitter_title">twitterアカウント設定</string>
-    <string name="pref_twitter_summary">タップして開く</string>
-    <string name="toauth_failed_encode">エンコードエラー</string>
-    <string name="toauth_succeeded_token">tokenの取得に成功しました</string>
     <string name="settings_zoom_summary">タップして調整</string>
     <string name="settings_zoom_dtitle">デフォルト: 1.4</string>
     <string name="settings_zoom_title">指の距離に対する拡大率</string>
@@ -25,29 +21,18 @@
         <item>大</item>
         <item>中</item>
     </string-array>
-    <string name="twitter_display_oauth">twitter認証してください</string>
     <string name="show_bitamap_error">読み込みできませんでした</string>
     <string name="url_purse_toast">URL解析エラー</string>
     <string name="show_flickrjson_toast">flickr解析エラー</string>
     <string name="twitter_error_toast">twitter認証エラー</string>
-    <string name="toauth_failed_token">tokenの取得に失敗しました</string>
     <string name="retweet_dialog_message">このツイートをRTしますか？</string>
     <string name="retweet_dialog_title">リツイート</string>
-    <string name="toauth_failed_twitter4j">twitterエラー</string>
-    <string name="toauth_button">アカウント追加</string>
-    <string name="toauth_update_button">アカウント情報更新</string>
     <string name="twitter_like_toast">いいねしました</string>
     <string name="twitter_retweet_toast">リツイートしました</string>
     <string name="setting_quality_dialogtitle">一部のサイトでは適応されません</string>
     <string name="setting_quality_summary">タップして開く</string>
     <string name="setting_quality_title">画質設定</string>
-    <string name="delete_dialog_message_account">アカウント: \@</string>
-    <string name="delete_dialog_message">このアカウントを削除しますか？</string>
-    <string name="delete_dialog_title">アカウント削除</string>
-    <string name="delete_account_toast">アカウントの削除に成功しました</string>
-    <string name="delete_failed_toast">アカウント削除に失敗しました</string>
-    <string name="twitter_async_select">アカウントを正しく設定してください</string>
-    <string name="vine_json_toast">解析エラー</string>
+    <string name="vine_json_toast">JSONエラー</string>
     <string name="vine_url_toast">エラー</string>
     <string name="quality_setting_dialogtitle">画質を選んでください</string>
     <string name="batch_dialog_title">選んでください</string>
@@ -63,8 +48,6 @@
     <string name="about_app_pretitle">このアプリについて</string>
     <string name="nicoseiga_quality_title">ニコニコ静画</string>
     <string name="nico_original_toast">この画像はオリジナルサイズが見れません。オリジナルを選択しても、大サイズの画像になります。</string>
-    <string name="account_dialog_title">アカウントを変更しますか？</string>
-    <string name="twitter_error_authorize">このツイートの閲覧は許可されていません</string>
     <string name="volley_error">エラー</string>
     <string name="notes_about_quality">instagram, 一部のニコニコ静画は原サイズで取得できません。</string>
     <string name="notes_dialog_title">取得画質について</string>
@@ -87,15 +70,6 @@
     <string name="leave_notify_title">通知を残す</string>
     <string name="skip_summary">ダイアログを出さずに保存します</string>
     <string name="skip_title">ダイアログをスキップ</string>
-    <string name="instagram_api_summary">Instagramの動画と写真をAPI経由で取得します。oAuth認証が必要です。</string>
-    <string name="instagram_api_title">Instagram APIを使用</string>
-    <string name="instagram_not_authorized">認証されていません</string>
-    <string name="instagram_oauth_text">認証</string>
-    <string name="instagram_preference_summary">タップして開く</string>
-    <string name="instagram_pregerence_title">Instagramアカウント設定</string>
-    <string name="instagram_unoauth_text">認証解除</string>
-    <string name="twitter_tweet_toast">ツイートしました</string>
-    <string name="tweet">ツイート</string>
     <string name="resize_message">"元サイズ: "</string>
     <string name="resize_action_message">詳細</string>
     <string name="like_dialog_message">このツイートをいいねしますか？</string>
@@ -109,6 +83,5 @@
     <string name="image_resized_dialog_text">デバイスによって固有の表示可能な最大サイズ(大抵 2048 or 4096px です)があり、それ以上になると縮小されます。ダウンロード時には縮小されません。\n\n最大値は設定で調整できます。</string>
     <string name="max_preference_toast">最大サイズを %1$d px に設定しました</string>
     <string name="permission_denied">権限が拒否されました</string>
-    <string name="use_old_oauth">コールバック認証を使用</string>
 
 </resources>

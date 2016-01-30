@@ -65,7 +65,7 @@ public class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayou
                 // new generation
                 if (iv.index % 2 == 0) {
                     // make new linear_layout and put below prev
-                    val new_layout = inflater.inflate(R.layout.twitter_photos, this , false) as LinearLayout
+                    val new_layout = inflater.inflate(R.layout.tile_photos, this , false) as LinearLayout
                     addView(new_layout)
                     frameLayout = new_layout.getChildAt(0) as FrameLayout
                 } else {

@@ -1,16 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
     <string name="app_name" translatable="false">PhotoLinkViewer</string>
-    <string name="pref_twitter_title">twitter account settings</string>
-    <string name="toauth_failed_encode">Encode error</string>
-    <string name="toauth_failed_token">failed to get token!</string>
-    <string name="toauth_succeeded_token">Get token successfully!</string>
-    <string name="option_fragment_open" translatable="false">Open with new Browser</string>
+    <string name="option_fragment_open" translatable="false">Open with new browser</string>
     <string name="option_fragment_settings" translatable="false">Settings</string>
     <string name="option_fragment_download" translatable="false">Download</string>
     <string name="option_fragment_openclose" translatable="false">Open/Close</string>
-    <string name="pref_twitter_summary">Tap to open</string>
     <string name="settings_zoom_summary">Tap to set</string>
     <string name="settings_zoom_dtitle">Default value is 1.4</string>
     <string name="settings_zoom_title">Zoom scale for distance of fingers</string>
@@ -24,7 +19,6 @@
     <string name="setting_dir_title">Change download directory</string>
     <string name="setting_mkdir_dialogtitle">Select filename</string>
     <string name="setting_mkdir_title">Change filename</string>
-    <string name="twitter_display_oauth">please oAuth!</string>
     <string name="url_purse_toast">URL purse error</string>
     <string name="show_bitamap_error">error!</string>
     <string name="show_flickrjson_toast">flickr JSON Parse Error!</string>
@@ -35,20 +29,11 @@
     <string name="like_dialog_message">Like this tweet?</string>
     <string name="retweet_dialog_title">Retweet</string>
     <string name="retweet_dialog_message">Retweet this tweet?</string>
-    <string name="toauth_failed_twitter4j">twitter error!</string>
-    <string name="toauth_button">Add account</string>
-    <string name="toauth_update_button">Update account database</string>
     <string name="twitter_like_toast">liked!</string>
     <string name="twitter_retweet_toast">retweeted!</string>
     <string name="setting_quality_summary">Tap to open</string>
     <string name="setting_quality_title">Quality settings</string>
     <string name="setting_quality_dialogtitle">Not applied on some sites</string>
-    <string name="delete_dialog_title">Delete account</string>
-    <string name="delete_dialog_message_account">account: \@</string>
-    <string name="delete_dialog_message">Delete this account?</string>
-    <string name="delete_account_toast">Deleted successfully</string>
-    <string name="delete_failed_toast">Delete failed!</string>
-    <string name="twitter_async_select">Please set account correctly!</string>
     <string name="vine_url_toast">Error!</string>
     <string name="vine_json_toast">JSON error!</string>
     <string name="quality_setting_dialogtitle">Please choose quality</string>
@@ -75,10 +60,8 @@
     <string name="about_app_pretitle">About this app</string>
     <string name="about_app_dialogtitle">About this app</string>
     <string name="nico_original_toast">Cannot view original photo for this id. Even if you choose original, this is compressed photo</string>
-    <string name="account_dialog_title">Change account ?</string>
-    <string name="twitter_error_authorize">Not authorized</string>
     <string name="volley_error">Error!</string>
-    <string name="notes_about_quality">cannot open full-size these sites:\n\ninstagram, some nicoseiga.</string>
+    <string name="notes_about_quality">Full-size photos are unavailable in these sites:\n\ninstagram, some nicoseiga.</string>
     <string name="notes_dialog_title">notes about quality</string>
     <string name="notes_pref_summary">About quality</string>
     <string name="notes_pref_title">notes</string>
@@ -99,15 +82,6 @@
     <string name="leave_notify_title">Leave notification</string>
     <string name="skip_summary">Download without dialog.</string>
     <string name="skip_title">Skip dialog</string>
-    <string name="instagram_not_authorized">Not authorized</string>
-    <string name="instagram_oauth_text">Auth</string>
-    <string name="instagram_unoauth_text">UnAuth</string>
-    <string name="instagram_preference_summary">Tap to open</string>
-    <string name="instagram_pregerence_title">Instagram account settings</string>
-    <string name="instagram_api_title">Use instagram API</string>
-    <string name="instagram_api_summary">get Instagram video and photos via API.\nYou need to authorize your instagram account.</string>
-    <string name="twitter_tweet_toast">tweeted!</string>
-    <string name="tweet">tweet!</string>
     <string name="resize_message">"Original size : "</string>
     <string name="resize_action_message">Detail</string>
     <string name="about_app_okhttp" translatable="false">* OkHttp - http://square.github.io/okhttp/</string>
@@ -127,6 +101,5 @@
     <string name="image_resized_dialog_text">Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.</string>
     <string name="image_resized_dialog_neutral">Go setting</string>
     <string name="permission_denied">Permission request denied.</string>
-    <string name="use_old_oauth">Use callback OAuth method</string>
 
 </resources>
