@@ -8,8 +8,6 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 46
-        versionName "2.3.1"
     }
 
     packagingOptions {
@@ -21,9 +19,6 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-    }
-    lintOptions {
-        abortOnError false
     }
     dexOptions {
         incremental true
