@@ -37,7 +37,7 @@ import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
 import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
-import net.nonylene.photolinkviewer.core.tool.PLVUrl
+import net.nonylene.photolinkviewer.core.tool.*
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
@@ -287,7 +287,7 @@ class OptionFragment : Fragment() {
         // dl button visibility and click
         downLoadButton.setOnClickListener{
             // download direct
-            if (preferences.getBoolean("skip_dialog", false)) {
+            if (preferences.isSkipDialog()) {
                 saveOrRequestPermission(getFileNames(plvUrl))
             } else {
                 // open dialog
@@ -344,7 +344,7 @@ class OptionFragment : Fragment() {
                 .setDescription(filename)
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
         // notify
-        if (preferences.getBoolean("leave_notify", true)) {
+        if (preferences.isLeaveNotify()) {
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         }
         (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
@@ -354,12 +354,12 @@ class OptionFragment : Fragment() {
 
     private fun getFileNames(plvUrl: PLVUrl): Bundle {
         // set download directory
-        val directory = preferences.getString("download_dir", "PLViewer")
+        val directory = preferences.getDownloadDir()
         val root = Environment.getExternalStorageDirectory()
 
         val dir: File
         var filename: String
-        if (preferences.getString("download_file", "mkdir") == "mkdir") {
+        if (preferences.getDownloadDirType() == "mkdir") {
             // make directory
             dir = File(root, directory + "/" + plvUrl.siteName)
             filename = plvUrl.fileName
@@ -377,18 +377,14 @@ class OptionFragment : Fragment() {
         }
 
         //check wifi connecting and setting or not
-        var wifi = false
-        if (preferences.getBoolean("wifi_switch", false)) {
+        var isWifi = false
+        if (preferences.isWifiEnabled()) {
             // get wifi status
             val manager = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            wifi = manager.activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI
+            isWifi = manager.activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI
         }
 
-        val original = if (wifi) {
-            preferences.getBoolean("original_switch_wifi", false)
-        } else {
-            preferences.getBoolean("original_switch_3g", false)
-        }
+        val original = preferences.isOriginalEnabled(isWifi)
 
         bundle.putString("original_url", if (original) plvUrl.biggestUrl else plvUrl.displayUrl)
 

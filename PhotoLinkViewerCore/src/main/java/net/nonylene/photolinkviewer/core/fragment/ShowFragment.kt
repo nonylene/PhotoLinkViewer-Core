@@ -41,10 +41,7 @@ import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
 import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
-import net.nonylene.photolinkviewer.core.tool.Initialize
-import net.nonylene.photolinkviewer.core.tool.PLVUrl
-import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
-import net.nonylene.photolinkviewer.core.tool.isInitialized47
+import net.nonylene.photolinkviewer.core.tool.*
 
 class ShowFragment : Fragment() {
 
@@ -120,7 +117,7 @@ class ShowFragment : Fragment() {
     }
 
     internal inner class simpleOnGestureListener : GestureDetector.SimpleOnGestureListener() {
-        var double_zoom: Boolean = false
+        var isDoubleZoomDisabled: Boolean = false
 
         override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
             // drag photo
@@ -137,16 +134,16 @@ class ShowFragment : Fragment() {
         }
 
         override fun onDoubleTap(e: MotionEvent): Boolean {
-            double_zoom = preferences.getBoolean("double_zoom", false)
-            quickScale = MyQuickScale(e, !double_zoom)
-            if (!double_zoom) doubleZoom(e)
+            isDoubleZoomDisabled = preferences.isDoubleZoomDisabled()
+            quickScale = MyQuickScale(e, !isDoubleZoomDisabled)
+            if (!isDoubleZoomDisabled) doubleZoom(e)
             return super.onDoubleTap(e)
         }
 
         override fun onDoubleTapEvent(e: MotionEvent): Boolean {
             if (e.action == MotionEvent.ACTION_UP) {
                 quickScale?.let {
-                    if (double_zoom && !it.moved) doubleZoom(e)
+                    if (isDoubleZoomDisabled && !it.moved) doubleZoom(e)
                     quickScale = null
                 }
             }
@@ -208,7 +205,7 @@ class ShowFragment : Fragment() {
             matrix.set(imageView.imageMatrix)
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
-            val zoomSpeed = (preferences.getString("zoom_speed", "1.4")).toFloat()
+            val zoomSpeed = preferences.getZoomSpeed()
             val new_zoom = Math.pow((touchY / initialY).toDouble(), (zoomSpeed * 2).toDouble()).toFloat()
             // photo's zoom scale (is relative to old zoom value.)
             val scale = new_zoom / old_zoom
@@ -247,7 +244,7 @@ class ShowFragment : Fragment() {
             matrix.set(imageView.imageMatrix)
             // adjust zoom speed
             // If using preference_fragment, value is saved to DefaultSharedPref.
-            val zoomSpeed = (preferences.getString("zoom_speed", "1.4")).toFloat()
+            val zoomSpeed = preferences.getZoomSpeed()
             val new_zoom = Math.pow(detector.scaleFactor.toDouble(), zoomSpeed.toDouble()).toFloat()
             // photo's zoom scale (is relative to old zoom value.)
             val scale = new_zoom / old_zoom
@@ -271,7 +268,7 @@ class ShowFragment : Fragment() {
         }
 
         override fun onCreateLoader(id: Int, bundle: Bundle): Loader<AsyncHttpBitmap.Result> {
-            val max_size = preferences.getInt("imageview_max_size", 2) * 1024
+            val max_size = preferences.getImageViewMaxSize() * 1024
             return AsyncHttpBitmap(activity.applicationContext, bundle.getParcelable<PLVUrl>("plvurl"), max_size)
         }
 
@@ -317,7 +314,7 @@ class ShowFragment : Fragment() {
             val zoom = Math.min(wid, hei)
             val initX: Float
             val initY: Float
-            if (preferences.getBoolean("adjust_zoom", false) || zoom < 1) {
+            if (preferences.isAdjustZoom() || zoom < 1) {
                 //zoom
                 matrix.setScale(zoom, zoom)
                 if (wid < hei) {

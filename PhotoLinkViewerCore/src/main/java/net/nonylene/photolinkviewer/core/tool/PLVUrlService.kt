@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
-import android.util.Base64
 import android.widget.Toast
 
 import com.android.volley.Response
@@ -23,8 +22,6 @@ import org.json.JSONObject
 import java.io.IOException
 
 import java.util.regex.Pattern
-
-import javax.crypto.spec.SecretKeySpec
 
 class PLVUrlService(private val context: Context, private val plvUrlListener: PLVUrlService.PLVUrlListener) {
 
@@ -61,15 +58,14 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         protected fun wifiChecker(sharedPreferences: SharedPreferences): Boolean {
             //check wifi connecting and wifi setting enabled or not
             // note: if no default network is available, activeNetWorInfo returns null
-            return sharedPreferences.getBoolean("wifi_switch", false) &&
+            return sharedPreferences.isWifiEnabled() &&
                     (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo?.type ==
                             ConnectivityManager.TYPE_WIFI
         }
 
         protected fun getQuality(siteName: String): String {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            return sharedPreferences.getString("${siteName}_quality_" +
-                    if (wifiChecker(sharedPreferences)) "wifi" else "3g", "large")
+            return sharedPreferences.getQuality(siteName, wifiChecker(sharedPreferences))
         }
 
         protected fun getId(url: String, regex: String): String? {
@@ -168,14 +164,6 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.fileName = id
 
                 if (PhotoLinkViewer.instagramToken != null) {
-
-                    val preferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE)
-
-                    if (!preferences.getBoolean("instagram_authorized", false)) {
-                        listener.onGetPLVUrlFailed("You have to authorize instagram account or change instagram api preference.")
-                        return
-                    }
-
                     val apiUrl = "https://api.instagram.com/v1/media/shortcode/${id}?access_token=${PhotoLinkViewer.instagramToken}"
 
                     VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, apiUrl,
@@ -369,12 +357,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-            val original: Boolean
-            if (wifiChecker(sharedPreferences)) {
-                original = sharedPreferences.getBoolean("original_switch_wifi", false)
-            } else {
-                original = sharedPreferences.getBoolean("original_switch_3g", false)
-            }
+            val original = sharedPreferences.isOriginalEnabled(wifiChecker(sharedPreferences))
 
             val quality = super.getQuality("nicoseiga")
 

@@ -17,6 +17,7 @@ import android.widget.VideoView
 import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
+import net.nonylene.photolinkviewer.core.tool.isVideoAutoPlay
 
 /**
  * @see createArguments
@@ -63,7 +64,7 @@ class VideoShowFragment : Fragment() {
             videoShowFrameLayout!!.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
             videoView.setBackgroundColor(Color.TRANSPARENT)
-            if (preferences.getBoolean("video_play", true)) {
+            if (preferences.isVideoAutoPlay()) {
                 mp.start()
             } else {
                 mediaController.show()

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 
 import net.nonylene.photolinkviewer.core.fragment.LTEFragment
 import net.nonylene.photolinkviewer.core.fragment.WifiFragment
+import net.nonylene.photolinkviewer.core.tool.isWifiEnabled
 
 class PLVQualityPreferenceActivity : AppCompatActivity(), LTEFragment.OnWifiSwitchListener {
     private val adapter: QualityFragmentStateAdapter = QualityFragmentStateAdapter(fragmentManager)
@@ -22,8 +23,7 @@ class PLVQualityPreferenceActivity : AppCompatActivity(), LTEFragment.OnWifiSwit
 
         (findViewById(R.id.quality_tab_strip) as PagerTabStrip).setTabIndicatorColorResource(R.color.primary_color)
 
-        adapter.setWifiEnabled(
-                PreferenceManager.getDefaultSharedPreferences(this).getBoolean("wifi_switch", false))
+        adapter.setWifiEnabled(PreferenceManager.getDefaultSharedPreferences(this).isWifiEnabled())
         (findViewById(R.id.quality_pager) as ViewPager).adapter = adapter
     }
 

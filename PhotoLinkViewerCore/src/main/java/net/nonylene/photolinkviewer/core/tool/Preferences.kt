@@ -22,7 +22,7 @@ fun SharedPreferences.Editor.putQuality(value: String, siteName: String, isWifi:
     return putString("plv_core_${siteName}_quality_" + if (isWifi) "wifi" else "3g", value)
 }
 
-fun SharedPreferences.isOriginalEnabled(siteName: String, isWifi: Boolean, defaultValue: Boolean = false): Boolean{
+fun SharedPreferences.isOriginalEnabled(isWifi: Boolean, defaultValue: Boolean = false): Boolean{
     return getBoolean("plv_core_is_original_" + if (isWifi) "wifi" else "3g", defaultValue)
 }
 
