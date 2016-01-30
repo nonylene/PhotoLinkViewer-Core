@@ -1,1 +1,1 @@
-include ':PhotoLinkViewerTest', ':photolinkviewer-core'
+include ':photolinkviewer-test', ':photolinkviewer-core'
