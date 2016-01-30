@@ -10,7 +10,6 @@ private val DOWNLOAD_DIR_KEY = "plv_core_download_dir"
 private val DOWNLOAD_DIR_TYPE_KEY = "plv_core_download_dir_type"
 private val IS_SKIP_DIALOG_KEY = "plv_core_is_skip_dialog"
 private val IS_LEAVE_NOTIFY_KEY = "plv_core_is_leave_notify"
-private val IS_DISPLAY_TWEET_KEY = "plv_core_is_display_tweet"
 private val IS_DOUBLE_ZOOM_KEY = "plv_core_is_double_zoom_disabled"
 private val IMAGE_VIEW_MAX_KEY = "plv_core_imageview_max_size"
 private val IS_INITIALIZE_47_KEY = "plv_core_is_initialize_47"
@@ -93,14 +92,6 @@ fun SharedPreferences.isLeaveNotify(defaultValue: Boolean = true): Boolean{
 
 fun SharedPreferences.Editor.putIsLeaveNotify(value: Boolean): SharedPreferences.Editor {
     return putBoolean(IS_LEAVE_NOTIFY_KEY, value)
-}
-
-fun SharedPreferences.isDisplayTweet(defaultValue: Boolean = false): Boolean{
-    return getBoolean(IS_DISPLAY_TWEET_KEY, defaultValue)
-}
-
-fun SharedPreferences.Editor.putIsDisplayTweet(value: Boolean): SharedPreferences.Editor {
-    return putBoolean(IS_DISPLAY_TWEET_KEY, value)
 }
 
 fun SharedPreferences.isDoubleZoomDisabled(defaultValue: Boolean = false): Boolean{

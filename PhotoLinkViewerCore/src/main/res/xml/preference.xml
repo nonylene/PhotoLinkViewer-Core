@@ -75,12 +75,6 @@
             android:summary="@string/apref_summary"
             android:title="@string/apref_title">
 
-            <CheckBoxPreference
-                android:defaultValue="false"
-                android:key="plv_core_is_display_tweet"
-                android:summary="@string/disp_tweet_summary"
-                android:title="@string/disp_tweet_title"/>
-
             <SwitchPreference
                 android:defaultValue="false"
                 android:key="plv_core_is_double_zoom_disabled"
