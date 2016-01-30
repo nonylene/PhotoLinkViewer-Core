@@ -10,16 +10,6 @@ android {
         targetSdkVersion 23
         versionCode 46
         versionName "2.3.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            buildConfigField "boolean", "IS_CRASHLYTICS_ENABLED", "true"
-        }
-        debug {
-            buildConfigField "boolean", "IS_CRASHLYTICS_ENABLED", "false"
-        }
     }
 
     packagingOptions {
