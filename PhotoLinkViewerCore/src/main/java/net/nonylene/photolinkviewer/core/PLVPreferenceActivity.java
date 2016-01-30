@@ -39,7 +39,7 @@ public class PLVPreferenceActivity extends AppCompatActivity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            addPreferencesFromResource(R.xml.settings);
+            addPreferencesFromResource(R.xml.preference);
             Preference preference = findPreference("about_app_preference");
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

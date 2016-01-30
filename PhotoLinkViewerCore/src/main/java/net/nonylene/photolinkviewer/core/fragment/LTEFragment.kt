@@ -21,7 +21,7 @@ class LTEFragment : PreferenceSummaryFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.quality_setting_3g)
+        addPreferencesFromResource(R.xml.quality_preference_3g)
         // on click batch
         findPreference("quality_3g_batch").setOnPreferenceClickListener {
             // batch dialog

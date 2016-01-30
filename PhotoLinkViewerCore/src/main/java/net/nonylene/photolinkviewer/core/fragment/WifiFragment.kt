@@ -10,7 +10,7 @@ class WifiFragment : PreferenceSummaryFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.quality_setting_wifi)
+        addPreferencesFromResource(R.xml.quality_preference_wifi)
         // on click batch
         findPreference("quality_wifi_batch").setOnPreferenceClickListener {
             // batch dialog
