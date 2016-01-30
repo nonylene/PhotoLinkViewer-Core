@@ -10,3 +10,27 @@ This is core module of PhotoLinkViewer. Twitter, Instagram OAuth, etc are not ma
 See also: [nonylene/PhotoLinkViewer](https://github.com/nonylene/PhotoLinkViewer)
 
 This software is under GPL v2 licence, see LICENCE.md.
+
+## install
+
+### add repository
+
+example:
+```gradle
+repositories {
+    jcenter()
+    maven {
+        url "http://dl.bintray.com/nonylene/maven"
+    }
+}
+```
+
+### add dependencies
+
+```gradle
+    compile "net.nonylene:photolinkviewer-core:0.0.0a"
+```
+
+## notes
+
+- If you want to launch this Activity from intent from other App, add this module's activity information in `AndroidManifest.xml`.
