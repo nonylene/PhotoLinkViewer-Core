@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-./gradlew --quiet --stacktrace clean :photolinkviewer-core:uploadArchives
+./gradlew --stacktrace clean :photolinkviewer-core:uploadArchives
 
 git config --global user.email "nonylene.app@gmail.com"
 git config --global user.name "nonybot"
