@@ -12,7 +12,7 @@ import net.nonylene.photolinkviewer.core.R;
 
 import org.json.JSONObject;
 
-public class MyJsonObjectRequest extends JsonObjectRequest {
+class MyJsonObjectRequest extends JsonObjectRequest {
 
     public MyJsonObjectRequest(int method, String url, JSONObject jsonRequest,
                                Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {

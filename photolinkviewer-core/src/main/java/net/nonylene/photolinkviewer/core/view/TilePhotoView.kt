@@ -14,7 +14,7 @@ import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import java.util.*
 
-public class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
+class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
     // null -> canceled
     // arrayListOf(null) -> empty view

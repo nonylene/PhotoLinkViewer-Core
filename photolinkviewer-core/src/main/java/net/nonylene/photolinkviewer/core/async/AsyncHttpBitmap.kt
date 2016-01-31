@@ -25,7 +25,7 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
         val httpResult = Result()
 
         try {
-            val client = OkHttpManager.getOkHttpClient(context)
+            val client = OkHttpManager.okHttpClient
 
             val request = Request.Builder()
                     .url(plvUrl.displayUrl)

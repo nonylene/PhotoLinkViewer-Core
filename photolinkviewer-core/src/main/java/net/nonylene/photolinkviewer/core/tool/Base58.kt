@@ -2,7 +2,7 @@ package net.nonylene.photolinkviewer.core.tool
 
 import java.math.BigInteger
 
-object Base58 {
+internal object Base58 {
     private val CHARACTERS = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
     private val CHARACTERS_LENGTH = BigInteger.valueOf(58)
 

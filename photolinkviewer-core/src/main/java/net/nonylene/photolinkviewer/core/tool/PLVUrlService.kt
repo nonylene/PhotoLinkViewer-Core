@@ -348,7 +348,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                             listener.onGetPLVUrlFailed("connection error!")
                         }
                     }
-                }, context).getRedirect("http://seiga.nicovideo.jp/image/source/" + id)
+                }).getRedirect("http://seiga.nicovideo.jp/image/source/" + id)
             }
         }
 
@@ -435,7 +435,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                             listener.onGetPLVUrlFailed("connection error!")
                         }
                     }
-                }, context).getRedirect(url)
+                }).getRedirect(url)
             }
 
             listener.onURLAccepted()

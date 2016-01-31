@@ -4,7 +4,7 @@ import android.content.Context
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 
-public object VolleyManager {
+internal object VolleyManager {
     private var requestQueue: RequestQueue? = null
 
     public fun getRequestQueue(context: Context) : RequestQueue {

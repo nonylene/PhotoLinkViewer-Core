@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 
 // coordinator behavior for snackbar.
-public class ForSnackbarBehavior(context: Context, attrs: AttributeSet) : CoordinatorLayout.Behavior<View>(context, attrs) {
+class ForSnackbarBehavior(context: Context, attrs: AttributeSet) : CoordinatorLayout.Behavior<View>(context, attrs) {
 
     override fun layoutDependsOn(parent: CoordinatorLayout?, child: View?, dependency: View?): Boolean {
         return dependency is Snackbar.SnackbarLayout

@@ -1,10 +1,11 @@
 package net.nonylene.photolinkviewer.core
 
+import com.squareup.okhttp.Cache
 import java.util.*
 
 /**
  * This is object (singleton in java) used in PhotoLinkViewer-Core.
- * Before app uses this module, PhotoLinkViewer#with() must be called.
+ * Before app uses this module, [PhotoLinkViewer.with] must be called.
  */
 object PhotoLinkViewer {
     private var twitterKeys: TwitterKeys? = null
@@ -13,6 +14,8 @@ object PhotoLinkViewer {
     val twitterTokenMap = LinkedHashMap<String, TwitterToken>()
     // to use instagram video preview, set token.
     var instagramToken: String? = null
+    // to use cache in okhttp, set cache.
+    var cache : Cache? = null
 
     // call this function when application start
     fun with(twitterKeys: TwitterKeys, flickrKey: String, tumblrKey: String) {
