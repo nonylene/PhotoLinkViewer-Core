@@ -20,7 +20,7 @@ example:
 repositories {
     jcenter()
     maven {
-        url "http://dl.bintray.com/nonylene/maven"
+        url "http://nonylene.github.io/PhotoLinkViewer-Core/repository"
     }
 }
 ```
@@ -28,7 +28,7 @@ repositories {
 ### add dependencies
 
 ```gradle
-    compile "net.nonylene:photolinkviewer-core:0.0.0a"
+    compile "net.nonylene:photolinkviewer-core:0.0.1-SNAPSHOT"
 ```
 
 ## notes
