@@ -1,0 +1,44 @@
+general:
+  branches:
+    ignore:
+      - gh-pages
+
+machine:
+  java:
+    version: openjdk7
+  environment:
+    ANDROID_HOME: /usr/local/android-sdk-linux
+    ADB_INSTALL_TIMEOUT: 12
+    GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx512m -Xms512m -XX:+HeapDumpOnOutOfMemoryError"'
+
+dependencies:
+  pre:
+    - echo y | android update sdk --no-ui --all --filter "tools,platform-tools,android-23,android-22,sys-img-armeabi-v7a-android-22,android-19,sys-img-armeabi-v7a-android-19,android-17,sys-img-armeabi-v7a-android-17,android-15,sys-img-armeabi-v7a-android-15,extra-android-support,extra-google-m2repository,extra-android-m2repository"
+    - echo y | android update sdk --no-ui --all --filter "build-tools-23.0.2"
+  cache_directories:
+    - ~/.android
+    - ~/.gradle
+  post:
+    - echo n | android create avd -n test22 -f -t android-22
+    - echo n | android create avd -n test19 -f -t android-19
+    - echo n | android create avd -n test17 -f -t android-17
+    - echo n | android create avd -n test15 -f -t android-15
+
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init
+
+test:
+  override:
+    - ./test.sh:
+        parallel: true
+  post:
+    - cp -r photolinkviewer-test/build/outputs/androidTest-results $CIRCLE_TEST_REPORTS:
+        parallel: true
+
+deployment:
+  publish:
+    branch: master
+    commands:
+      - ./gh-push.sh
