@@ -29,13 +29,13 @@ checkout:
     - git submodule sync
     - git submodule update --init
 
-#test:
-#  override:
-#    - ./test.sh:
-#        parallel: true
-#  post:
-#    - cp -r photolinkviewer-test/build/outputs/androidTest-results $CIRCLE_TEST_REPORTS:
-#        parallel: true
+test:
+  override:
+    - ./test.sh:
+        parallel: true
+  post:
+    - cp -r photolinkviewer-test/build/outputs/androidTest-results $CIRCLE_TEST_REPORTS:
+        parallel: true
 
 deployment:
   publish:
