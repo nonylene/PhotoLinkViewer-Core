@@ -80,10 +80,6 @@ artifacts {
     archives sourcesJar
 }
 
-group = 'net.nonylene'
-version = '0.0.0a'
-
-
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
@@ -99,6 +95,43 @@ if (file.exists()) {
 
 def siteUrl = 'https://github.com/nonylene/PhotoLinkViewer-Core'
 def gitUrl = 'https://github.com/nonylene/PhotoLinkViewer-Core.git'
+
+def repo = new File(rootDir, "repository")
+
+group = 'net.nonylene'
+version = '0.0.0a'
+
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories.mavenDeployer {
+        repository url: "file://${repo.absolutePath}"
+
+        pom.artifactId = 'photolinkviewer-core'
+        pom.project {
+            packaging 'aar'
+            name 'PhotoLinkViewer-Core'
+            url siteUrl
+            licenses {
+                license {
+                    name 'GNU GENERAL PUBLIC LICENSE Version 2'
+                    url 'https://www.gnu.org/licenses/gpl-2.0.txt'
+                }
+            }
+            developers {
+                developer {
+                    id 'nonylene'
+                    email 'cookie.speaker@gmail.com'
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+    }
+}
 
 bintray {
     user = 'nonylene'
