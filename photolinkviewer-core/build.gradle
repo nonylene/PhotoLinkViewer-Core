@@ -80,15 +80,17 @@ def siteUrl = 'https://github.com/nonylene/PhotoLinkViewer-Core'
 def gitUrl = 'https://github.com/nonylene/PhotoLinkViewer-Core.git'
 
 def repo = new File(rootDir, "repository")
+def snapshotRepo = new File(rootDir, "repository/snapshots")
 
 group = 'net.nonylene'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.1'
 
 apply plugin: 'maven'
 
 uploadArchives {
     repositories.mavenDeployer {
         repository url: "file://${repo.absolutePath}"
+        snapshotRepository url: "file://${snapshotRepo.absolutePath}"
 
         pom.artifactId = 'photolinkviewer-core'
         pom.project {
