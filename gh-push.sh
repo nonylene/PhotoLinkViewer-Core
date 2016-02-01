@@ -11,7 +11,7 @@ git checkout gh-pages -- repository/
 git symbolic-ref HEAD refs/heads/gh-pages
 git reset
 
-git add repository/
+git add -f repository/
 if [ -n "$(git diff --cached --exit-code)" ]; then
     CI_RELEASE_DATE=`date +"%Y%m%d%H%M%S"`
     CI_REMOTE_REPOSITORY="git@github.com:${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}.git"
