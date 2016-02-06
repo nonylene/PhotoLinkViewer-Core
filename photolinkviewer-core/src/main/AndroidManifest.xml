@@ -9,8 +9,7 @@
 
     <application
         android:allowBackup="true"
-        android:fullBackupContent="true"
-        android:theme="@style/AppTheme">
+        android:fullBackupContent="true">
         <activity
             android:name=".PLVShowActivity"
             android:configChanges="orientation|screenSize"
