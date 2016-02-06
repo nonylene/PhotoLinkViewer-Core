@@ -58,7 +58,7 @@ class ShowFragment : Fragment() {
         /**
          * @param isSingleFragment if true, background color and progressbar become transparent in this fragment.
          */
-        public fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
+        fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
             return Bundle().apply {
                 setPLVUrl(plvUrl)
                 setIsSingleFragment(isSingleFragment)
@@ -359,7 +359,7 @@ class ShowFragment : Fragment() {
 
 
     @SuppressWarnings("unused")
-    public fun onEvent(rotateEvent: RotateEvent) {
+    fun onEvent(rotateEvent: RotateEvent) {
         rotateImg(rotateEvent.isRightRotate)
     }
 

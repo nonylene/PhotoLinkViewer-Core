@@ -9,7 +9,7 @@ object Initialize {
 
     private val sites = arrayOf("flickr", "twitter", "twipple", "imgly", "instagram", "nicoseiga", "tumblr")
 
-    public fun initialize39(context: Context) {
+    fun initialize39(context: Context) {
         // ver 39 (clear old cache)
         HttpResponseCache.getInstalled()?.delete()
         PreferenceManager.getDefaultSharedPreferences(context).edit()
@@ -17,7 +17,7 @@ object Initialize {
             .apply()
     }
 
-    public fun initialize47(context: Context) {
+    fun initialize47(context: Context) {
         // ver 47 (move preference keys)
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
         val zoomSpeed = pref.getString("zoom_speed", "1.4")
@@ -32,8 +32,8 @@ object Initialize {
         val isOriginalEnabledWifi = pref.getBoolean("original_switch_wifi", false)
         val isOriginalEnabled3g = pref.getBoolean("original_switch_3g", false)
         val isWifiEnabled = pref.getBoolean("wifi_switch", false)
-        val sitesWifi = sites.toMapBy ({it}, { pref.getQualityOld(it, true) })
-        val sites3g = sites.toMapBy ({it}, { pref.getQualityOld(it, false) })
+        val sitesWifi = sites.associateBy({it}, { pref.getQualityOld(it, true) })
+        val sites3g = sites.associateBy({it}, { pref.getQualityOld(it, false) })
 
         pref.edit().putZoomSpeed(zoomSpeed.toFloat())
                 .putIsVideoAutoPlay(isVideoPlay)

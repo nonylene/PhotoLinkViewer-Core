@@ -21,7 +21,7 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private val frameLayoutListList = ArrayList<ArrayList<PLVUrl?>?>()
     private val inflater : LayoutInflater
 
-    public var tilePhotoViewListener: TilePhotoViewListener? = null
+    var tilePhotoViewListener: TilePhotoViewListener? = null
     private val picasso : Picasso
 
     init {
@@ -31,26 +31,26 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     }
 
     // add empty view
-    public fun addImageView(): Int {
+    fun addImageView(): Int {
         // prev is last linear_layout
         frameLayoutListList.add(arrayListOf(null))
         return frameLayoutListList.size - 1
     }
 
     // remove canceled view
-    public fun removeImageView(position: Int) {
+    fun removeImageView(position: Int) {
         frameLayoutListList[position] = null
     }
 
-    public fun setPLVUrl(position: Int, plvUrl: PLVUrl) {
+    fun setPLVUrl(position: Int, plvUrl: PLVUrl) {
         if (frameLayoutListList.size > position) frameLayoutListList.set(position, arrayListOf(plvUrl))
     }
 
-    public fun setPLVUrls(position: Int, plvUrls: Array<PLVUrl>) {
-        if (frameLayoutListList.size > position) frameLayoutListList.set(position, plvUrls.toArrayList())
+    fun setPLVUrls(position: Int, plvUrls: Array<PLVUrl>) {
+        if (frameLayoutListList.size > position) frameLayoutListList.set(position, plvUrls.toCollection(ArrayList()))
     }
 
-    public fun notifyChanged() {
+    fun notifyChanged() {
         val frameLayoutCombinedList = frameLayoutListList.fold(ArrayList<PLVUrl?>()) { combined, list ->
             list?.let { combined.addAll(it) }
             combined
@@ -96,12 +96,12 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         ((frameLayoutCombinedList.size + 1) / 2..childCount - 1).forEach { removeViewAt(it) }
     }
 
-    public fun initialize() {
+    fun initialize() {
         removeAllViews()
         frameLayoutListList.clear()
     }
 
-    public interface TilePhotoViewListener {
+    interface TilePhotoViewListener {
         fun onShowFragmentRequired(plvUrl: PLVUrl)
         fun onVideoShowFragmentRequired(plvUrl: PLVUrl)
     }

@@ -92,7 +92,7 @@ class OptionFragment : Fragment() {
         /**
          * arguments for normal sites
          */
-        public fun createArguments(url: String): Bundle {
+        fun createArguments(url: String): Bundle {
             return Bundle().apply {
                 setUrl(url)
             }
@@ -104,7 +104,7 @@ class OptionFragment : Fragment() {
          * @param twitterDefaultScreenName Twitter screen name used as default account.
          * @see OptionFragment.TwitterDialogFragment
          */
-        public fun createArguments(url: String, tweetId: Long, twitterDefaultScreenName: String): Bundle {
+        fun createArguments(url: String, tweetId: Long, twitterDefaultScreenName: String): Bundle {
             return Bundle().apply {
                 setUrl(url)
                 setTwitterEnabled(true)
@@ -214,7 +214,7 @@ class OptionFragment : Fragment() {
             val screenName = arguments.getTwitterDefaultScreenName()
 
             // get account_list
-            val screen_list = PhotoLinkViewer.twitterTokenMap.keys.toArrayList()
+            val screen_list = PhotoLinkViewer.twitterTokenMap.keys.toList()
             // array_list to adapter
             val adapter = ArrayAdapter(activity, android.R.layout.simple_spinner_item, screen_list).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -254,13 +254,13 @@ class OptionFragment : Fragment() {
     }
 
     // eventBus catch event
-    public fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
+    fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
         isDownloadEnabled = true
         addDLButton(downloadButtonEvent.plvUrl)
     }
 
     // eventBus catch event
-    public fun onEvent(showFragmentEvent: ShowFragmentEvent) {
+    fun onEvent(showFragmentEvent: ShowFragmentEvent) {
         rotateLeftButton.animate().cancel()
         rotateRightButton.animate().cancel()
         if (showFragmentEvent.isToBeShown) {
@@ -275,7 +275,7 @@ class OptionFragment : Fragment() {
     }
 
     // eventBus catch event
-    public fun onEvent(snackbarEvent: SnackbarEvent) {
+    fun onEvent(snackbarEvent: SnackbarEvent) {
         Snackbar.make(baseView, snackbarEvent.message, Snackbar.LENGTH_LONG).apply {
             snackbarEvent.actionMessage?.let {
                 setAction(it, snackbarEvent.actionListener)

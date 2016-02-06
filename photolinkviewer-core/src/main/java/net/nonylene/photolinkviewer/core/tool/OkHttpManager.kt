@@ -24,7 +24,7 @@ internal object OkHttpManager {
     }
     private var picasso : Picasso? = null
 
-    public fun getPicasso(context: Context) : Picasso {
+    fun getPicasso(context: Context) : Picasso {
         if (picasso == null) {
             picasso = Picasso.Builder(context)
                 .downloader(OkHttpDownloader(okHttpClient))

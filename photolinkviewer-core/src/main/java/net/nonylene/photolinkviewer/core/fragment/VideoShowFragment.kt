@@ -31,7 +31,7 @@ class VideoShowFragment : Fragment() {
         /**
          * @param isSingleFragment if true, background color become transparent in this fragment.
          */
-        public fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
+        fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
             return Bundle().apply {
                 setPLVUrl(plvUrl)
                 setIsSingleFragment(isSingleFragment)
