@@ -43,9 +43,6 @@
     <string name="quality_switch_title">Wifi設定の有効化</string>
     <string name="original_switch_summary">保存時は常に最大画質になります</string>
     <string name="original_switch_title">最大画質でDL</string>
-    <string name="about_app_software">使用ライブラリ</string>
-    <string name="about_app_dialogtitle">このアプリについて</string>
-    <string name="about_app_pretitle">このアプリについて</string>
     <string name="nicoseiga_quality_title">ニコニコ静画</string>
     <string name="nico_original_toast">この画像はオリジナルサイズが見れません。オリジナルを選択しても、大サイズの画像になります。</string>
     <string name="volley_error">エラー</string>

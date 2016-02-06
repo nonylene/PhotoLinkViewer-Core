@@ -83,11 +83,6 @@
 
         </PreferenceScreen>
 
-        <Preference
-            android:key="about_app_preference"
-            android:title="@string/about_app_pretitle">
-        </Preference>
-
     </PreferenceCategory>
 
 </PreferenceScreen>
