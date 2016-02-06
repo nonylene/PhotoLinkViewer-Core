@@ -1,21 +1,20 @@
 package net.nonylene.photolinkviewer.core
 
-import android.support.test.InstrumentationRegistry
+import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import android.test.ActivityInstrumentationTestCase2
+import org.junit.Rule
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class MaxSizePreferenceActivityTest : ActivityInstrumentationTestCase2<PLVMaxSizePreferenceActivity>(PLVMaxSizePreferenceActivity::class.java) {
+class MaxSizePreferenceActivityTest {
 
-    init {
-        injectInstrumentation(InstrumentationRegistry.getInstrumentation())
-    }
+    @Rule @JvmField
+    var activityTestRule = ActivityTestRule(PLVMaxSizePreferenceActivity::class.java);
 
     @Test
     fun finishTest() {
-        activity.finish()
+        activityTestRule.activity.finish()
     }
 }

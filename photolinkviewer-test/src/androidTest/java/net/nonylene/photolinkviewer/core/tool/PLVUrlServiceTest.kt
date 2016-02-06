@@ -24,15 +24,15 @@ class PLVUrlServiceTest {
     private fun getServiceWithSuccessListener(operation: (Array<PLVUrl>) -> Unit): PLVUrlService {
         return PLVUrlService(mContext, object : PLVUrlService.PLVUrlListener {
 
-            override public fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
+            override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
                 operation(plvUrls)
             }
 
-            override public fun onGetPLVUrlFailed(text: String) {
+            override fun onGetPLVUrlFailed(text: String) {
                 throw IllegalStateException("plv url failed!: $text")
             }
 
-            override public fun onURLAccepted() {
+            override fun onURLAccepted() {
             }
         })
     }
