@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
+import net.nonylene.photolinkviewer.core.PLVPreferenceActivity
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.test.BuildConfig
 import org.junit.*
@@ -38,7 +39,7 @@ class PLVUrlServiceTest {
     }
 
     init {
-        PhotoLinkViewer.with(PhotoLinkViewer.TwitterKeys("", ""), BuildConfig.FLICKR_KEY, BuildConfig.TUMBLR_KEY)
+        PhotoLinkViewer.with(PhotoLinkViewer.TwitterKeys("", ""), BuildConfig.FLICKR_KEY, BuildConfig.TUMBLR_KEY, PLVPreferenceActivity::class.java)
     }
 
     companion object {

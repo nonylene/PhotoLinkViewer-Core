@@ -160,7 +160,7 @@ class OptionFragment : Fragment() {
         }
 
         settingButton.setOnClickListener{
-            startActivity(Intent(activity, PLVPreferenceActivity::class.java))
+            startActivity(Intent(activity, PhotoLinkViewer.getPreferenceActivityClass()))
         }
 
         webButton.setOnClickListener{
