@@ -37,7 +37,7 @@ class PLVMaxSizePreferenceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_max_preference)
+        setContentView(R.layout.plv_core_activity_max_preference)
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -59,7 +59,7 @@ class PLVMaxSizePreferenceActivity : AppCompatActivity() {
         setButton.setOnClickListener {
             val size = seekBar.progress + 1
             sharedPref.edit().putImageViewMaxSize(size).apply()
-            Toast.makeText(this.applicationContext, getString(R.string.max_preference_toast, size * 1024), Toast.LENGTH_LONG).show()
+            Toast.makeText(this.applicationContext, getString(R.string.plv_core_max_preference_toast, size * 1024), Toast.LENGTH_LONG).show()
         }
 
         val index = sharedPref.getImageViewMaxSize() - 1;

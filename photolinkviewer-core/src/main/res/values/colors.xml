@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#45000000</color>
-    <color name="transparent">#00000000</color>
-    <color name="ripple">#64000000</color>
-    <color name="twitter_back">#F5F5F5</color>
+    <color name="plv_core_background">#45000000</color>
+    <color name="plv_core_transparent">#00000000</color>
+    <color name="plv_core_ripple">#64000000</color>
+    <color name="plv_core_frame_back">#F5F5F5</color>
+    <!-- overwrite -->
     <color name="primary_color">#0096F5</color>
 </resources>

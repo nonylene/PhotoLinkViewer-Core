@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:key="plv_core_is_wifi_enabled"
+        android:summary="@string/plv_core_quality_switch_summary"
+        android:title="@string/plv_core_quality_switch_title"/>
+
+    <Preference
+        android:key="quality_note"
+        android:summary="@string/plv_core_notes_pref_summary"
+        android:title="@string/plv_core_notes_pref_title"/>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="plv_core_is_original_3g"
+        android:summary="@string/plv_core_original_switch_summary"
+        android:title="@string/plv_core_original_switch_title"/>
+
+    <Preference
+        android:key="quality_3g_batch"
+        android:summary="@string/plv_core_quality_batch_summary"
+        android:title="@string/plv_core_quality_batch_title"/>
+
+    <PreferenceCategory
+        android:title="@string/plv_core_quality_sites_categoryname">
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_flickr_quality"
+            android:entryValues="@array/plv_core_flickr_quality_value"
+            android:key="plv_core_flickr_quality_3g"
+            android:title="@string/plv_core_flickr_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_twitter_quality"
+            android:entryValues="@array/plv_core_twitter_quality_value"
+            android:key="plv_core_twitter_quality_3g"
+            android:title="@string/plv_core_twitter_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_twipple_quality"
+            android:entryValues="@array/plv_core_twipple_quality_value"
+            android:key="plv_core_twipple_quality_3g"
+            android:title="@string/plv_core_twipple_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_imgly_quality"
+            android:entryValues="@array/plv_core_imgly_quality_value"
+            android:key="plv_core_imgly_quality_3g"
+            android:title="@string/plv_core_imgly_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_instagram_quality"
+            android:entryValues="@array/plv_core_instagram_quality_value"
+            android:key="plv_core_instagram_quality_3g"
+            android:title="@string/plv_core_instagram_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_nicoseiga_quality"
+            android:entryValues="@array/plv_core_nicoseiga_quality_value"
+            android:key="plv_core_nicoseiga_quality_3g"
+            android:title="@string/plv_core_nicoseiga_quality_title"/>
+
+        <ListPreference
+            android:dialogTitle="@string/plv_core_quality_setting_dialogtitle"
+            android:entries="@array/plv_core_tumblr_quality"
+            android:entryValues="@array/plv_core_tumblr_quality_value"
+            android:key="plv_core_tumblr_quality_3g"
+            android:title="@string/plv_core_tumblr_quality_title"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

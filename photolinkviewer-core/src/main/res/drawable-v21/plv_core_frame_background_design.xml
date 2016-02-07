@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="@color/ripple">
+    android:color="@color/plv_core_ripple">
     <item>
-        <color android:color="@color/twitter_back"/>
+        <color android:color="@color/plv_core_frame_back"/>
     </item>
 </ripple>

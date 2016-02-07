@@ -74,7 +74,7 @@ class ShowFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         applicationContext = activity.applicationContext
-        return inflater.inflate(R.layout.show_fragment, container, false)
+        return inflater.inflate(R.layout.plv_core_show_fragment, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -109,7 +109,7 @@ class ShowFragment : Fragment() {
         }
 
         if (arguments.isSingleFragment()) {
-            showFrameLayout.setBackgroundResource(R.color.transparent)
+            showFrameLayout.setBackgroundResource(R.color.plv_core_transparent)
             progressBar.visibility = View.GONE
         }
 
@@ -280,7 +280,7 @@ class ShowFragment : Fragment() {
             val bitmap = result.bitmap
 
             if (bitmap == null) {
-                Toast.makeText(applicationContext, getString(R.string.show_bitamap_error) +
+                Toast.makeText(applicationContext, getString(R.string.plv_core_show_bitamap_error) +
                         result.errorMessage?.let { "\n" + it }, Toast.LENGTH_LONG).show()
                 return
             }
@@ -344,8 +344,8 @@ class ShowFragment : Fragment() {
             if (result.isResized) {
                 activity.let { activity ->
                     EventBus.getDefault().post(
-                            SnackbarEvent(getString(R.string.resize_message) + result.originalWidth + "x" + result.originalHeight,
-                                    getString(R.string.resize_action_message), {
+                            SnackbarEvent(getString(R.string.plv_core_resize_message) + result.originalWidth + "x" + result.originalHeight,
+                                    getString(R.string.plv_core_resize_action_message), {
                                 MaxSizeDialogFragment().show(activity.fragmentManager, "about")
                             }))
                 }
@@ -438,10 +438,10 @@ class ShowFragment : Fragment() {
 
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog? {
             return AlertDialog.Builder(activity)
-                    .setTitle(getString(R.string.image_resized_dialog_title))
-                    .setMessage(getString(R.string.image_resized_dialog_text))
+                    .setTitle(getString(R.string.plv_core_image_resized_dialog_title))
+                    .setMessage(getString(R.string.plv_core_image_resized_dialog_text))
                     .setPositiveButton(getString(android.R.string.ok), null)
-                    .setNeutralButton(getString(R.string.image_resized_dialog_neutral), { dialogInterface, i ->
+                    .setNeutralButton(getString(R.string.plv_core_image_resized_dialog_neutral), { dialogInterface, i ->
                         startActivity(Intent(activity, PLVMaxSizePreferenceActivity::class.java))
                     })
                     .create()

@@ -79,7 +79,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         }
 
         protected fun onParseFailed() {
-            listener.onGetPLVUrlFailed(context.getString(R.string.url_purse_toast))
+            listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_url_purse_toast))
         }
 
         abstract fun getPLVUrl()
@@ -290,7 +290,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                             try {
                                 listener.onGetPLVUrlFinished(arrayOf(parseFlickr(response, plvUrl)))
                             } catch (e: JSONException) {
-                                listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast))
+                                listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
                                 e.printStackTrace()
                             }
                         })
@@ -365,7 +365,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 // cannot preview original photo
                 biggest_url = "http://lohas.nicoseiga.jp/img/" + id + "l"
                 if (original || quality == "original") {
-                    Toast.makeText(context, context.getString(R.string.nico_original_toast), Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, context.getString(R.string.plv_core_nico_original_toast), Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -399,7 +399,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                             try {
                                 listener.onGetPLVUrlFinished(arrayOf(parseVine(response, plvUrl)))
                             } catch (e: JSONException) {
-                                listener.onGetPLVUrlFailed(context.getString(R.string.show_flickrjson_toast))
+                                listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
                                 e.printStackTrace()
                             }
                         })

@@ -10,7 +10,7 @@
         <item name="colorPrimary">@color/primary_color</item>
         <item name="colorPrimaryDark">@color/primary_color</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowBackground">@color/plv_core_transparent</item>
         <item name="android:windowAnimationStyle">@style/noActivityAnimation</item>
     </style>
 
@@ -29,7 +29,7 @@
     <style name="FloatingActionButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/button_frame_margin</item>
+        <item name="android:layout_margin">@dimen/plv_core_button_frame_margin</item>
         <item name="pressedTranslationZ">0dp</item>
     </style>
 </resources>

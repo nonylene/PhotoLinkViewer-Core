@@ -4,6 +4,6 @@
         <color android:color="#00000000"/>
     </item>
     <item android:state_pressed="true">
-        <color android:color="@color/background"/>
+        <color android:color="@color/plv_core_background"/>
     </item>
 </selector>

@@ -1,87 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <array name="filename">
+    <array name="plv_core_filename">
         <item>\'sitename\'/\'id\'.png (make directory)</item>
         <item>\'sitename\'-\'id\'.png (not make directory)</item>
     </array>
-    <string-array name="quality">
+    <string-array name="plv_core_quality">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
     </string-array>
-    <array name="filename_value">
+    <array name="plv_core_filename_value">
         <item>mkdir</item>
         <item>nodir</item>
     </array>
-    <array name="flickr_quality">
+    <array name="plv_core_flickr_quality">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="twitter_quality">
+    <array name="plv_core_twitter_quality">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
         <item>small</item>
     </array>
-    <array name="twipple_quality">
+    <array name="plv_core_twipple_quality">
         <item>original</item>
         <item>large</item>
         <item>thumb</item>
     </array>
-    <array name="imgly_quality">
+    <array name="plv_core_imgly_quality">
         <item>full</item>
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="instagram_quality">
+    <array name="plv_core_instagram_quality">
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="nicoseiga_quality">
+    <array name="plv_core_nicoseiga_quality">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="tumblr_quality">
+    <array name="plv_core_tumblr_quality">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
         <item>small</item>
     </array>
 
-    <array name="flickr_quality_value">
+    <array name="plv_core_flickr_quality_value">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="twitter_quality_value">
+    <array name="plv_core_twitter_quality_value">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
         <item>small</item>
     </array>
-    <array name="twipple_quality_value">
+    <array name="plv_core_twipple_quality_value">
         <item>original</item>
         <item>large</item>
         <item>thumb</item>
     </array>
-    <array name="imgly_quality_value">
+    <array name="plv_core_imgly_quality_value">
         <item>full</item>
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="instagram_quality_value">
+    <array name="plv_core_instagram_quality_value">
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="nicoseiga_quality_value">
+    <array name="plv_core_nicoseiga_quality_value">
         <item>original</item>
         <item>large</item>
         <item>medium</item>
     </array>
-    <array name="tumblr_quality_value">
+    <array name="plv_core_tumblr_quality_value">
         <item>original</item>
         <item>large</item>
         <item>medium</item>

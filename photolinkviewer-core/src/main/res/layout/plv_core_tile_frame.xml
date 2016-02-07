@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="1dp"
-        android:background="@drawable/frame_background_design"
+        android:background="@drawable/plv_core_frame_background_design"
         android:padding="2dp"
         android:scaleType="fitCenter"/>
 
@@ -16,5 +16,5 @@
         android:layout_height="20dp"
         android:layout_gravity="bottom|end"
         android:visibility="gone"
-        android:src="@drawable/video_icon"/>
+        android:src="@drawable/plv_core_video_icon"/>
 </FrameLayout>

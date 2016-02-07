@@ -121,7 +121,7 @@ class OptionFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.option_fragment, container, false)
+        return inflater.inflate(R.layout.plv_core_option_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -167,7 +167,7 @@ class OptionFragment : Fragment() {
             // get uri from bundle
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getUrl()))
             // open intent chooser
-            startActivity(Intent.createChooser(intent, getString(R.string.intent_title)))
+            startActivity(Intent.createChooser(intent, getString(R.string.plv_core_intent_title)))
         }
 
         rotateRightButton.setOnClickListener {
@@ -221,7 +221,7 @@ class OptionFragment : Fragment() {
             }
 
             // get view
-            val view = View.inflate(activity, R.layout.spinner_dialog, null)
+            val view = View.inflate(activity, R.layout.plv_core_spinner_dialog, null)
             val textView = view.findViewById(R.id.spinner_text) as TextView
             val spinner = (view.findViewById(R.id.accounts_spinner) as Spinner).apply {
                 setAdapter(adapter)
@@ -232,12 +232,12 @@ class OptionFragment : Fragment() {
             // change behave for request code
             when (requestCode) {
                 LIKE_CODE -> {
-                    textView.text = getString(R.string.like_dialog_message)
-                    builder.setTitle(getString(R.string.like_dialog_title))
+                    textView.text = getString(R.string.plv_core_like_dialog_message)
+                    builder.setTitle(getString(R.string.plv_core_like_dialog_title))
                 }
                 RETWEET_CODE  -> {
-                    textView.text = getString(R.string.retweet_dialog_message)
-                    builder.setTitle(getString(R.string.retweet_dialog_title))
+                    textView.text = getString(R.string.plv_core_retweet_dialog_message)
+                    builder.setTitle(getString(R.string.plv_core_retweet_dialog_title))
                 }
             }
 
@@ -316,7 +316,7 @@ class OptionFragment : Fragment() {
                 if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
                     save(saveBundle!!)
                 } else {
-                    Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.permission_denied), Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_permission_denied), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -348,7 +348,7 @@ class OptionFragment : Fragment() {
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
         }
         (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-        Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.download_photo_title) + path.toString(),
+        Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_download_photo_title) + path.toString(),
                 Toast.LENGTH_LONG).show()
     }
 
@@ -411,7 +411,7 @@ class OptionFragment : Fragment() {
             }
             twitter.addListener(object : TwitterAdapter() {
                 override fun onException(e: TwitterException?, twitterMethod: TwitterMethod?) {
-                    val message = "${getString(R.string.twitter_error_toast)}: ${e!!.statusCode}\n(${e.errorMessage})"
+                    val message = "${getString(R.string.plv_core_twitter_error_toast)}: ${e!!.statusCode}\n(${e.errorMessage})"
 
                     Handler(Looper.getMainLooper()).post{
                         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
@@ -420,13 +420,13 @@ class OptionFragment : Fragment() {
 
                 override fun createdFavorite(status: Status?) {
                     Handler(Looper.getMainLooper()).post{
-                        Toast.makeText(applicationContext, applicationContext.getString(R.string.twitter_like_toast), Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, applicationContext.getString(R.string.plv_core_twitter_like_toast), Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun retweetedStatus(status: Status?) {
                     Handler(Looper.getMainLooper()).post{
-                        Toast.makeText(applicationContext, applicationContext.getString(R.string.twitter_retweet_toast), Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, applicationContext.getString(R.string.plv_core_twitter_retweet_toast), Toast.LENGTH_LONG).show()
                     }
                 }
             })

@@ -25,7 +25,7 @@ class MyJsonObjectRequest extends JsonObjectRequest {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("error", error.toString());
-                        Toast.makeText(context, context.getString(R.string.volley_error), Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, context.getString(R.string.plv_core_volley_error), Toast.LENGTH_LONG).show();
                     }
                 }
         );

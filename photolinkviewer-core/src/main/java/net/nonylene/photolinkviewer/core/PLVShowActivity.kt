@@ -28,7 +28,7 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_show)
+        setContentView(R.layout.plv_core_activity_show)
 
         scrollView = findViewById(R.id.show_activity_scroll) as ScrollView
         tileView = findViewById(R.id.show_activity_tile) as TilePhotoView

@@ -22,7 +22,7 @@ class PLVPreferenceFragment: PreferenceSummaryFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        addPreferencesFromResource(R.xml.preference)
+        addPreferencesFromResource(R.xml.plv_core_preference)
 
         val maxPreference = findPreference("max_quality_preference")
         maxPreference.setOnPreferenceClickListener {

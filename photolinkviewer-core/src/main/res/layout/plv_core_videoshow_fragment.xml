@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingEnd="@dimen/activity_horizontal_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingStart="@dimen/activity_horizontal_margin"
+    android:paddingEnd="@dimen/plv_core_activity_horizontal_margin"
+    android:paddingLeft="@dimen/plv_core_activity_horizontal_margin"
+    android:paddingRight="@dimen/plv_core_activity_horizontal_margin"
+    android:paddingStart="@dimen/plv_core_activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".PLVShowActivity">
 
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:background="@color/background"/>
+        android:background="@color/plv_core_background"/>
 
     <ProgressBar
         android:id="@+id/show_progress"

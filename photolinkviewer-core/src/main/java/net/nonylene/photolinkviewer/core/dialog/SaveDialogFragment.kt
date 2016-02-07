@@ -14,12 +14,12 @@ class SaveDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val arguments = arguments
         // set custom view
-        val view = View.inflate(activity, R.layout.save_path, null)
+        val view = View.inflate(activity, R.layout.plv_core_save_path, null)
         (view.findViewById(R.id.path_TextView) as TextView).setText(arguments.getString("dir"))
         (view.findViewById(R.id.path_EditText) as EditText).setText(arguments.getString("filename"))
         return AlertDialog.Builder(activity).setView(view)
-                .setTitle(getString(R.string.save_dialog_title))
-                .setPositiveButton(getString(R.string.save_dialog_positive), { dialogInterface, i ->
+                .setTitle(getString(R.string.plv_core_save_dialog_title))
+                .setPositiveButton(getString(R.string.plv_core_save_dialog_positive), { dialogInterface, i ->
                         // get filename
                         arguments.putString("filename",
                                 (dialog.findViewById(R.id.path_EditText) as EditText).text.toString())

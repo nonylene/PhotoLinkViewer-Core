@@ -19,7 +19,7 @@ class PLVQualityPreferenceActivity : AppCompatActivity(), LTEFragment.OnWifiSwit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_change_quality)
+        setContentView(R.layout.plv_core_activity_change_quality)
 
         (findViewById(R.id.quality_tab_strip) as PagerTabStrip).setTabIndicatorColorResource(R.color.primary_color)
 

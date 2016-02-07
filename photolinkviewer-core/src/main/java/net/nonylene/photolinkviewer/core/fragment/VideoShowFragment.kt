@@ -40,11 +40,11 @@ class VideoShowFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        baseView = inflater.inflate(R.layout.videoshow_fragment, container, false)
+        baseView = inflater.inflate(R.layout.plv_core_videoshow_fragment, container, false)
         videoShowFrameLayout = baseView!!.findViewById(R.id.videoshowframe) as FrameLayout
         progressBar = baseView!!.findViewById(R.id.show_progress) as ProgressBar
         if (arguments.isSingleFragment()) {
-            videoShowFrameLayout!!.setBackgroundResource(R.color.transparent)
+            videoShowFrameLayout!!.setBackgroundResource(R.color.plv_core_transparent)
             // do not hide progressbar! progressbar of activity will be displayed under videoView.
         }
         playVideo(arguments.getPLVUrl())
@@ -61,7 +61,7 @@ class VideoShowFragment : Fragment() {
         videoView.setOnPreparedListener { mp ->
             //remove progressbar
             removeProgressBar()
-            videoShowFrameLayout!!.setBackgroundColor(ContextCompat.getColor(activity, R.color.background))
+            videoShowFrameLayout!!.setBackgroundColor(ContextCompat.getColor(activity, R.color.plv_core_background))
             val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
             videoView.setBackgroundColor(Color.TRANSPARENT)
             if (preferences.isVideoAutoPlay()) {

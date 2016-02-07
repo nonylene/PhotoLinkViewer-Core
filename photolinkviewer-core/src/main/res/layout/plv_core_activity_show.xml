@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/plv_core_background"
     android:gravity="center_vertical"
     tools:context=".PLVShowActivity">
 
@@ -24,7 +24,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="50dp"
-        android:background="@color/twitter_back"
+        android:background="@color/plv_core_frame_back"
         android:visibility="gone">
 
         <net.nonylene.photolinkviewer.core.view.TilePhotoView

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/plv_core_display_title">
+
+        <Preference
+            android:key="quality_preference"
+            android:summary="@string/plv_core_setting_quality_summary"
+            android:title="@string/plv_core_setting_quality_title"
+            />
+
+        <EditTextPreference
+            android:defaultValue="1.4"
+            android:dialogTitle="@string/plv_core_settings_zoom_dtitle"
+            android:inputType="numberDecimal"
+            android:key="zoom_speed"
+            android:title="@string/plv_core_settings_zoom_title"/>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="plv_core_is_video_play"
+            android:summary="@string/plv_core_setting_video_summary"
+            android:title="@string/plv_core_setting_video_title"/>
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="plv_core_is_adjust_zoom"
+            android:summary="@string/plv_core_adjust_summary"
+            android:title="@string/plv_core_adjust_title"/>
+
+        <Preference
+            android:key="max_quality_preference"
+            android:summary="@string/plv_core_setting_size_summary"
+            android:title="@string/plv_core_setting_size_title"
+        />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/plv_core_save_title">
+
+        <EditTextPreference
+            android:defaultValue="PLViewer/"
+            android:dialogTitle="@string/plv_core_setting_dir_dialogtitle"
+            android:key='plv_core_download_dir'
+            android:title="@string/plv_core_setting_dir_title"/>
+
+        <ListPreference
+            android:defaultValue="mkdir"
+            android:dialogTitle="@string/plv_core_setting_mkdir_dialogtitle"
+            android:entries="@array/plv_core_filename"
+            android:entryValues="@array/plv_core_filename_value"
+            android:key="plv_core_download_dir_type"
+            android:title="@string/plv_core_setting_mkdir_title"/>
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key='plv_core_is_skip_dialog'
+            android:summary="@string/plv_core_skip_summary"
+            android:title="@string/plv_core_skip_title"/>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key='plv_core_is_leave_notify'
+            android:summary="@string/plv_core_leave_notify_summary"
+            android:title="@string/plv_core_leave_notify_title"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/plv_core_others_title">
+
+        <PreferenceScreen
+            android:summary="@string/plv_core_apref_summary"
+            android:title="@string/plv_core_apref_title">
+
+            <SwitchPreference
+                android:defaultValue="false"
+                android:key="plv_core_is_double_zoom_disabled"
+                android:summary="@string/plv_core_double_zoom_summary"
+                android:title="@string/plv_core_double_zoom_title"/>
+
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

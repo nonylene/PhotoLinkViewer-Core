@@ -21,7 +21,7 @@ class LTEFragment : PreferenceSummaryFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.quality_preference_3g)
+        addPreferencesFromResource(R.xml.plv_core_quality_preference_3g)
         // on click batch
         findPreference("quality_3g_batch").setOnPreferenceClickListener {
             // batch dialog
@@ -101,8 +101,8 @@ class LTEFragment : PreferenceSummaryFragment() {
 
     class NoteDialogFragment : DialogFragment() {
         override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(activity)
-                    .setTitle(getString(R.string.notes_dialog_title))
-                    .setMessage(getString(R.string.notes_about_quality))
+                    .setTitle(getString(R.string.plv_core_notes_dialog_title))
+                    .setMessage(getString(R.string.plv_core_notes_about_quality))
                     .setPositiveButton(getString(android.R.string.ok), null)
                     .create()
     }
