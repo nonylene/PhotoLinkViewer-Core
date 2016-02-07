@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import net.nonylene.photolinkviewer.core.fragment.PLVPreferenceFragment
 
 import net.nonylene.photolinkviewer.core.tool.Initialize
-import net.nonylene.photolinkviewer.core.tool.isInitialized47
 
 class PLVPreferenceActivity : AppCompatActivity() {
 
@@ -15,9 +14,6 @@ class PLVPreferenceActivity : AppCompatActivity() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         if (!preferences.getBoolean("initialized39", false)) {
             Initialize.initialize39(this)
-        }
-        if (!preferences.isInitialized47()) {
-            Initialize.initialize47(this)
         }
         fragmentManager.beginTransaction().replace(android.R.id.content, PLVPreferenceFragment()).commit()
     }
