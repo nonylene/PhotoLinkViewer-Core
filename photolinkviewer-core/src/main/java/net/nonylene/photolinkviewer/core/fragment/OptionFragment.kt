@@ -40,6 +40,7 @@ import net.nonylene.photolinkviewer.core.tool.*
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
+import java.util.*
 
 /**
  * @see OptionFragment.createArguments
@@ -56,7 +57,7 @@ class OptionFragment : Fragment() {
     private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
     private val likeButton: FloatingActionButton by bindView(R.id.like_button)
 
-    private var saveInfo: SaveDialogFragment.Info? = null
+    private var saveInfos: List<SaveDialogFragment.Info>? = null
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var applicationContext : Context? = null
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
@@ -289,12 +290,12 @@ class OptionFragment : Fragment() {
         downLoadButton.setOnClickListener{
             // download direct
             if (preferences.isSkipDialog()) {
-                saveOrRequestPermission(listOf(getSaveFragmentInfo(plvUrls[0])))
+                saveOrRequestPermission(plvUrls.map { getSaveFragmentInfo(it) })
             } else {
                 // open dialog
                 SaveDialogFragment().apply {
                     arguments = SaveDialogFragment.createArguments(
-                            arrayListOf(getSaveFragmentInfo(plvUrls[0]))
+                            plvUrls.map { getSaveFragmentInfo(it) }.toCollection(ArrayList())
                     )
                     setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
                     show(this@OptionFragment.fragmentManager, "Save")
@@ -318,7 +319,7 @@ class OptionFragment : Fragment() {
         when (requestCode) {
             STORAGE_PERMISSION_REQUEST -> {
                 if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
-                    save(saveInfo!!)
+                    save(saveInfos!!)
                 } else {
                     Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_permission_denied), Toast.LENGTH_LONG).show()
                 }
@@ -327,34 +328,36 @@ class OptionFragment : Fragment() {
     }
 
     private fun saveOrRequestPermission(infoList: List<SaveDialogFragment.Info>) {
-        val info = infoList[0]
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            saveInfo = info
+            saveInfos = infoList
             FragmentCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
         } else {
-            save(info)
+            save(infoList)
         }
     }
 
-    private fun save(info: SaveDialogFragment.Info) {
-        val uri = Uri.parse(info.downloadUrl)
-        val filename = info.fileName
-        val path = File(info.dirName, filename)
-        // save file
-        val request = DownloadManager.Request(uri)
-                .setDestinationUri(Uri.fromFile(path))
-                .setTitle("PhotoLinkViewer")
-                .setDescription(filename)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-        // notify
-        if (preferences.isLeaveNotify()) {
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    private fun save(infoList: List<SaveDialogFragment.Info>) {
+        infoList.forEach { info ->
+            val uri = Uri.parse(info.downloadUrl)
+            val filename = info.fileName
+            val path = File(info.dirName, filename)
+            // save file
+            val request = DownloadManager.Request(uri)
+                    .setDestinationUri(Uri.fromFile(path))
+                    .setTitle("PhotoLinkViewer")
+                    .setDescription(filename)
+                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+            // notify
+            if (preferences.isLeaveNotify()) {
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            }
+            (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
+            //todo: bulk toast
+            Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_download_photo_title) + path.toString(),
+                    Toast.LENGTH_LONG).show()
         }
-        (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-        Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_download_photo_title) + path.toString(),
-                Toast.LENGTH_LONG).show()
     }
 
     private fun getSaveFragmentInfo(plvUrl: PLVUrl): SaveDialogFragment.Info {
