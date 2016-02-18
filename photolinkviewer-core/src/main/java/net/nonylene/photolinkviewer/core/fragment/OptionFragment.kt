@@ -255,8 +255,7 @@ class OptionFragment : Fragment() {
     // eventBus catch event
     @Suppress("unused")
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
-        isDownloadEnabled = true
-        addDLButton(downloadButtonEvent.plvUrls[0])
+        setDlButton(downloadButtonEvent.plvUrls)
     }
 
     // eventBus catch event
@@ -285,17 +284,17 @@ class OptionFragment : Fragment() {
         }.show()
     }
 
-    private fun addDLButton(plvUrl: PLVUrl) {
+    private fun setDlButton(plvUrls: List<PLVUrl>) {
         // dl button visibility and click
         downLoadButton.setOnClickListener{
             // download direct
             if (preferences.isSkipDialog()) {
-                saveOrRequestPermission(listOf(getSaveFragmentInfo(plvUrl)))
+                saveOrRequestPermission(listOf(getSaveFragmentInfo(plvUrls[0])))
             } else {
                 // open dialog
                 SaveDialogFragment().apply {
                     arguments = SaveDialogFragment.createArguments(
-                            arrayListOf(getSaveFragmentInfo(plvUrl))
+                            arrayListOf(getSaveFragmentInfo(plvUrls[0]))
                     )
                     setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
                     show(this@OptionFragment.fragmentManager, "Save")
@@ -303,7 +302,8 @@ class OptionFragment : Fragment() {
             }
         }
         downLoadButton.animate().cancel()
-        if (isOpen) downLoadButton.showWithAnimation()
+        if (isOpen && !isDownloadEnabled) downLoadButton.showWithAnimation()
+        isDownloadEnabled = true
     }
 
     private fun removeDLButton() {
