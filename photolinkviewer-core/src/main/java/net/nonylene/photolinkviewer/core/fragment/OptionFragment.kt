@@ -31,7 +31,6 @@ import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 
-import net.nonylene.photolinkviewer.core.PLVPreferenceActivity
 import net.nonylene.photolinkviewer.core.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
@@ -137,7 +136,7 @@ class OptionFragment : Fragment() {
 
             if (isOpen) {
                 ViewCompat.setRotation(baseButton, 180f)
-                ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
+                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
                 settingButton.hide()
                 webButton.hide()
                 if (arguments.isTwitterEnabled()) {
@@ -147,7 +146,7 @@ class OptionFragment : Fragment() {
                 if (isDownloadEnabled) downLoadButton.hide()
             } else {
                 ViewCompat.setRotation(baseButton, 0f)
-                ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
+                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
                 settingButton.showWithAnimation()
                 webButton.showWithAnimation()
                 if (arguments.isTwitterEnabled()) {
@@ -254,12 +253,14 @@ class OptionFragment : Fragment() {
     }
 
     // eventBus catch event
+    @Suppress("unused")
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
         isDownloadEnabled = true
         addDLButton(downloadButtonEvent.plvUrl)
     }
 
     // eventBus catch event
+    @Suppress("unused")
     fun onEvent(showFragmentEvent: ShowFragmentEvent) {
         rotateLeftButton.animate().cancel()
         rotateRightButton.animate().cancel()
@@ -275,6 +276,7 @@ class OptionFragment : Fragment() {
     }
 
     // eventBus catch event
+    @Suppress("unused")
     fun onEvent(snackbarEvent: SnackbarEvent) {
         Snackbar.make(baseView, snackbarEvent.message, Snackbar.LENGTH_LONG).apply {
             snackbarEvent.actionMessage?.let {

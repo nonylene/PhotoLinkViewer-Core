@@ -358,7 +358,7 @@ class ShowFragment : Fragment() {
     }
 
 
-    @SuppressWarnings("unused")
+    @Suppress("unused")
     fun onEvent(rotateEvent: RotateEvent) {
         rotateImg(rotateEvent.isRightRotate)
     }
