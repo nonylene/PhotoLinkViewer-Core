@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4
 import net.nonylene.photolinkviewer.core.PLVPreferenceActivity
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.test.BuildConfig
+import net.nonylene.photolinkviewer.core.test.TestUrls
 import org.junit.*
 
 import org.junit.runner.RunWith
@@ -104,7 +105,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "flickr")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://flic.kr/p/zTU2b6")
+        }).requestGetPLVUrl(TestUrls.FLICKR_SHORTEN_URL)
 
         getServiceWithSuccessListener({
             it[0].apply {
@@ -114,7 +115,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "flickr")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://www.flickr.com/photos/128639926@N05/22247064413/")
+        }).requestGetPLVUrl(TestUrls.FLICKR_NORMAL_URL)
 
         getServiceWithSuccessListener({
             it[0].apply {
@@ -124,7 +125,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "flickr")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://m.flickr.com/#/photos/128639926@N05/22247064413/")
+        }).requestGetPLVUrl(TestUrls.FLICKR_MOBILE_URL)
 
         countDownLatch.await(10, TimeUnit.SECONDS)
     }
@@ -141,7 +142,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "nico")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://seiga.nicovideo.jp/seiga/im5323294")
+        }).requestGetPLVUrl(TestUrls.NICO_NORMAL_URL)
 
         getServiceWithSuccessListener({
             it[0].apply {
@@ -151,7 +152,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "nico")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://nico.ms/im5323294")
+        }).requestGetPLVUrl(TestUrls.NICO_SHORTEN_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -168,7 +169,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "twitter")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://pbs.twimg.com/media/CTSJJGvVEAAjr7J.jpg")
+        }).requestGetPLVUrl(TestUrls.PBS_TWITTER_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -185,7 +186,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "twipple")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://p.twipple.jp/XLyY4")
+        }).requestGetPLVUrl(TestUrls.TWIPPLE_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -202,7 +203,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "imgly")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://img.ly/CSbm")
+        }).requestGetPLVUrl(TestUrls.IMGLY_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -219,7 +220,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "instagram")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://www.instagram.com/p/90kD_WzfqP/")
+        }).requestGetPLVUrl(TestUrls.INSTAGRAM_NORMAL_URL)
 
         getServiceWithSuccessListener({
             it[0].apply {
@@ -229,7 +230,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "instagram")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://instagr.am/p/90kD_WzfqP/")
+        }).requestGetPLVUrl(TestUrls.INSTAGRAM_SHORTEN_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -246,7 +247,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "gyazo")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://gyazo.com/953acc58e3a4fbac2723c190f83c1a90")
+        }).requestGetPLVUrl(TestUrls.GYAZO_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -263,7 +264,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "imgur")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://imgur.com/rfuJf9e")
+        }).requestGetPLVUrl(TestUrls.IMGUR_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -281,7 +282,7 @@ class PLVUrlServiceTest {
                 assertTrue(isVideo)
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://vine.co/v/elzuDTFiYDT")
+        }).requestGetPLVUrl(TestUrls.VINE_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -305,7 +306,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "tumblr")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://nonylene.tumblr.com/post/132793441942/kyoto-botanical-garden")
+        }).requestGetPLVUrl(TestUrls.TUMBLR_NORMAL_URL)
 
         getServiceWithSuccessListener({
             assertEquals(it.size, 5)
@@ -322,7 +323,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "tumblr")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("http://tmblr.co/ZZ5RFn1xh6nwM")
+        }).requestGetPLVUrl(TestUrls.TUMBLR_SHORTEN_URL)
 
         countDownLatch.await(8, TimeUnit.SECONDS)
     }
@@ -339,7 +340,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "other")
             }
             countDownLatch.countDown()
-        }).requestGetPLVUrl("https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
+        }).requestGetPLVUrl(TestUrls.OTHER_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }

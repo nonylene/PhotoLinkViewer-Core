@@ -5,6 +5,12 @@
         <activity
             android:name="net.nonylene.photolinkviewer.core.PLVPreferenceActivity">
             <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".TestIntentActivity">
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>

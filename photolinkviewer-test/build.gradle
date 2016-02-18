@@ -55,6 +55,7 @@ dependencies {
     androidTestCompile('com.android.support.test:rules:0.4.1'){
         exclude module: 'support-annotations'
     }
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 }
 
 buildscript {
