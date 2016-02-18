@@ -2,11 +2,12 @@
 <metadata>
   <groupId>net.nonylene</groupId>
   <artifactId>photolinkviewer-core</artifactId>
+  <version>0.0.3-SNAPSHOT</version>
   <versioning>
-    <versions>
-      <version>0.0.2-SNAPSHOT</version>
-      <version>0.0.3-SNAPSHOT</version>
-    </versions>
+    <snapshot>
+      <timestamp>20160218.101429</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
     <lastUpdated>20160218101429</lastUpdated>
   </versioning>
 </metadata>
