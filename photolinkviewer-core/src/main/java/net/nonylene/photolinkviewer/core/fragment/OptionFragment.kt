@@ -56,7 +56,7 @@ class OptionFragment : Fragment() {
     private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
     private val likeButton: FloatingActionButton by bindView(R.id.like_button)
 
-    private var saveBundle: Bundle? = null
+    private var saveInfo: SaveDialogFragment.Info? = null
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var applicationContext : Context? = null
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
@@ -256,7 +256,7 @@ class OptionFragment : Fragment() {
     @Suppress("unused")
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
         isDownloadEnabled = true
-        addDLButton(downloadButtonEvent.plvUrl)
+        addDLButton(downloadButtonEvent.plvUrls[0])
     }
 
     // eventBus catch event
@@ -290,11 +290,13 @@ class OptionFragment : Fragment() {
         downLoadButton.setOnClickListener{
             // download direct
             if (preferences.isSkipDialog()) {
-                saveOrRequestPermission(getFileNames(plvUrl))
+                saveOrRequestPermission(listOf(getSaveFragmentInfo(plvUrl)))
             } else {
                 // open dialog
                 SaveDialogFragment().apply {
-                    arguments = getFileNames(plvUrl)
+                    arguments = SaveDialogFragment.createArguments(
+                            arrayListOf(getSaveFragmentInfo(plvUrl))
+                    )
                     setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
                     show(this@OptionFragment.fragmentManager, "Save")
                 }
@@ -316,7 +318,7 @@ class OptionFragment : Fragment() {
         when (requestCode) {
             STORAGE_PERMISSION_REQUEST -> {
                 if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
-                    save(saveBundle!!)
+                    save(saveInfo!!)
                 } else {
                     Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_permission_denied), Toast.LENGTH_LONG).show()
                 }
@@ -324,21 +326,22 @@ class OptionFragment : Fragment() {
         }
     }
 
-    private fun saveOrRequestPermission(bundle: Bundle) {
+    private fun saveOrRequestPermission(infoList: List<SaveDialogFragment.Info>) {
+        val info = infoList[0]
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            saveBundle = bundle
+            saveInfo = info
             FragmentCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
         } else {
-            save(bundle)
+            save(info)
         }
     }
 
-    private fun save(bundle: Bundle) {
-        val uri = Uri.parse(bundle.getString("original_url"))
-        val filename = bundle.getString("filename")
-        val path = File(bundle.getString("dir"), filename)
+    private fun save(info: SaveDialogFragment.Info) {
+        val uri = Uri.parse(info.downloadUrl)
+        val filename = info.fileName
+        val path = File(info.dirName, filename)
         // save file
         val request = DownloadManager.Request(uri)
                 .setDestinationUri(Uri.fromFile(path))
@@ -354,7 +357,7 @@ class OptionFragment : Fragment() {
                 Toast.LENGTH_LONG).show()
     }
 
-    private fun getFileNames(plvUrl: PLVUrl): Bundle {
+    private fun getSaveFragmentInfo(plvUrl: PLVUrl): SaveDialogFragment.Info {
         // set download directory
         val directory = preferences.getDownloadDir()
         val root = Environment.getExternalStorageDirectory()
@@ -370,13 +373,8 @@ class OptionFragment : Fragment() {
             dir = File(root, directory)
             filename = plvUrl.siteName + "-" + plvUrl.fileName
         }
-        filename += "." + plvUrl.type
+        plvUrl.type?.let { filename += "." + it }
         dir.mkdirs()
-
-        val bundle = Bundle().apply {
-            putString("filename", filename)
-            putString("dir", dir.toString())
-        }
 
         //check wifi connecting and setting or not
         var isWifi = false
@@ -388,15 +386,14 @@ class OptionFragment : Fragment() {
 
         val original = preferences.isOriginalEnabled(isWifi)
 
-        bundle.putString("original_url", if (original) plvUrl.biggestUrl else plvUrl.displayUrl)
-
-        return bundle
+        return SaveDialogFragment.Info(filename, dir.toString(),
+                if (original) plvUrl.biggestUrl!! else plvUrl.displayUrl!!, plvUrl.thumbUrl!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SAVE_DIALOG_CODE) {
-            saveOrRequestPermission(data!!.getBundleExtra("bundle"))
+            saveOrRequestPermission(data!!.getParcelableArrayListExtra(SaveDialogFragment.INFO_KEY))
         } else {
             val applicationContext = activity.applicationContext
             // request code > like or retweet
