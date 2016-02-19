@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
+              android:paddingRight="10dp"
+              android:paddingLeft="10dp"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
     <TextView
-        android:layout_marginTop="3dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:textSize="13sp"
-        android:id="@+id/path_TextView"
+        android:id="@+id/path_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <EditText
-        android:id="@+id/path_EditText"
+    <ListView
+        android:id="@+id/path_list_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        />
 
 </LinearLayout>
