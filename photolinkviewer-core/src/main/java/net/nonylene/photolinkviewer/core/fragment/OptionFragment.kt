@@ -57,7 +57,9 @@ class OptionFragment : Fragment() {
     private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
     private val likeButton: FloatingActionButton by bindView(R.id.like_button)
 
-    private var saveInfos: List<SaveDialogFragment.Info>? = null
+    private var lastSaveInfos: List<SaveDialogFragment.Info>? = null
+    private var lastSaveDir: String? = null
+
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var applicationContext : Context? = null
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
@@ -287,16 +289,15 @@ class OptionFragment : Fragment() {
 
     private fun setDlButton(plvUrls: List<PLVUrl>) {
         // dl button visibility and click
-        downLoadButton.setOnClickListener{
+        downLoadButton.setOnClickListener {
             // download direct
+            val infoPair = getSaveFragmentInfos(plvUrls)
             if (preferences.isSkipDialog()) {
-                saveOrRequestPermission(plvUrls.map { getSaveFragmentInfo(it) })
+                saveOrRequestPermission(infoPair.first, infoPair.second)
             } else {
                 // open dialog
                 SaveDialogFragment().apply {
-                    arguments = SaveDialogFragment.createArguments(
-                            plvUrls.map { getSaveFragmentInfo(it) }.toCollection(ArrayList())
-                    )
+                    arguments = SaveDialogFragment.createArguments(infoPair.first, infoPair.second.toCollection(ArrayList()))
                     setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
                     show(this@OptionFragment.fragmentManager, "Save")
                 }
@@ -319,7 +320,7 @@ class OptionFragment : Fragment() {
         when (requestCode) {
             STORAGE_PERMISSION_REQUEST -> {
                 if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
-                    save(saveInfos!!)
+                    save(lastSaveDir!!, lastSaveInfos!!)
                 } else {
                     Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_permission_denied), Toast.LENGTH_LONG).show()
                 }
@@ -327,22 +328,23 @@ class OptionFragment : Fragment() {
         }
     }
 
-    private fun saveOrRequestPermission(infoList: List<SaveDialogFragment.Info>) {
+    private fun saveOrRequestPermission(dirName: String, infoList: List<SaveDialogFragment.Info>) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            saveInfos = infoList
+            lastSaveInfos = infoList
+            lastSaveDir = dirName
             FragmentCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
         } else {
-            save(infoList)
+            save(dirName, infoList)
         }
     }
 
-    private fun save(infoList: List<SaveDialogFragment.Info>) {
+    private fun save(dirName: String, infoList: List<SaveDialogFragment.Info>) {
         infoList.forEach { info ->
             val uri = Uri.parse(info.downloadUrl)
             val filename = info.fileName
-            val path = File(info.dirName, filename)
+            val path = File(dirName, filename)
             // save file
             val request = DownloadManager.Request(uri)
                     .setDestinationUri(Uri.fromFile(path))
@@ -360,7 +362,11 @@ class OptionFragment : Fragment() {
         }
     }
 
-    private fun getSaveFragmentInfo(plvUrl: PLVUrl): SaveDialogFragment.Info {
+    /**
+     * @param plvUrls same sites
+     */
+    private fun getSaveFragmentInfos(plvUrls: List<PLVUrl>): Pair<String, List<SaveDialogFragment.Info>> {
+        val plvUrl = plvUrls[0]
         // set download directory
         val directory = preferences.getDownloadDir()
         val root = Environment.getExternalStorageDirectory()
@@ -389,14 +395,15 @@ class OptionFragment : Fragment() {
 
         val original = preferences.isOriginalEnabled(isWifi)
 
-        return SaveDialogFragment.Info(filename, dir.toString(),
-                if (original) plvUrl.biggestUrl!! else plvUrl.displayUrl!!, plvUrl.thumbUrl!!)
+        return Pair(dir.toString(), plvUrls.map {
+            SaveDialogFragment.Info(filename, if (original) plvUrl.biggestUrl!! else plvUrl.displayUrl!!, plvUrl.thumbUrl!!)
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SAVE_DIALOG_CODE) {
-            saveOrRequestPermission(data!!.getParcelableArrayListExtra(SaveDialogFragment.INFO_KEY))
+            saveOrRequestPermission(data!!.getStringExtra(SaveDialogFragment.DIR_KEY), data.getParcelableArrayListExtra(SaveDialogFragment.INFO_KEY))
         } else {
             val applicationContext = activity.applicationContext
             // request code > like or retweet
