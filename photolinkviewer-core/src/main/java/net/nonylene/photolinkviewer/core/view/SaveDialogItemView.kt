@@ -26,7 +26,7 @@ class SaveDialogItemView(context: Context?, attrs: AttributeSet?) : LinearLayout
                     .scaleX(if (value) 0.85f else 1.0f)
                     .scaleY(if (value) 0.85f else 1.0f)
                     .setInterpolator(FastOutSlowInInterpolator())
-                    .setDuration(200)
+                    .setDuration(250)
                     .start()
             thumbCheckImageView.visibility = if (value) VISIBLE else GONE
         }
