@@ -64,7 +64,7 @@ class OptionFragment : Fragment() {
     private var lastSaveDir: String? = null
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
-    private var applicationContext : Context? = null
+    private var applicationContext: Context? = null
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
 
     private var isDownloadEnabled = false
@@ -94,12 +94,17 @@ class OptionFragment : Fragment() {
         private val STORAGE_PERMISSION_REQUEST = 3
         private val SAVE_DIALOG_CODE = 4
 
+        private val TWITTER_ENABLED_KEY = "is_twitter_enabled"
+        private val TWITTER_ID_KEY = "twitter_id_long"
+        private val TWITTER_DEFAULT_SCREEN_KEY = "twitter_default_screen"
+        private val URL_KEY = "url"
+
         /**
          * arguments for normal sites
          */
         fun createArguments(url: String): Bundle {
             return Bundle().apply {
-                setUrl(url)
+                putString(URL_KEY, url)
             }
         }
 
@@ -111,10 +116,10 @@ class OptionFragment : Fragment() {
          */
         fun createArguments(url: String, tweetId: Long, twitterDefaultScreenName: String): Bundle {
             return Bundle().apply {
-                setUrl(url)
-                setTwitterEnabled(true)
-                setTweetId(tweetId)
-                setTwitterDefaultScreenName(twitterDefaultScreenName)
+                putString(URL_KEY, url)
+                putBoolean(TWITTER_ENABLED_KEY, true)
+                putLong(TWITTER_ID_KEY, tweetId)
+                putString(TWITTER_DEFAULT_SCREEN_KEY, twitterDefaultScreenName)
             }
         }
     }
@@ -132,7 +137,7 @@ class OptionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        baseButton.setOnClickListener{ baseButton ->
+        baseButton.setOnClickListener { baseButton ->
             settingButton.animate().cancel()
             webButton.animate().cancel()
             retweetButton.animate().cancel()
@@ -145,7 +150,7 @@ class OptionFragment : Fragment() {
                 ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
                 settingButton.hide()
                 webButton.hide()
-                if (arguments.isTwitterEnabled()) {
+                if (arguments.getBoolean(TWITTER_ENABLED_KEY)) {
                     retweetButton.hide()
                     likeButton.hide()
                 }
@@ -155,7 +160,7 @@ class OptionFragment : Fragment() {
                 ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
                 settingButton.showWithAnimation()
                 webButton.showWithAnimation()
-                if (arguments.isTwitterEnabled()) {
+                if (arguments.getBoolean(TWITTER_ENABLED_KEY)) {
                     retweetButton.showWithAnimation()
                     likeButton.showWithAnimation()
                 }
@@ -164,13 +169,13 @@ class OptionFragment : Fragment() {
             isOpen = !isOpen
         }
 
-        settingButton.setOnClickListener{
+        settingButton.setOnClickListener {
             startActivity(Intent(activity, PhotoLinkViewer.getPreferenceActivityClass()))
         }
 
-        webButton.setOnClickListener{
+        webButton.setOnClickListener {
             // get uri from bundle
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getUrl()))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getString(URL_KEY)))
             // open intent chooser
             startActivity(Intent.createChooser(intent, getString(R.string.plv_core_intent_title)))
         }
@@ -185,8 +190,8 @@ class OptionFragment : Fragment() {
 
         val bundle = arguments
 
-        if (bundle.isTwitterEnabled()) {
-            retweetButton.setOnClickListener{
+        if (bundle.getBoolean(TWITTER_ENABLED_KEY)) {
+            retweetButton.setOnClickListener {
                 TwitterDialogFragment().apply {
                     arguments = bundle
                     setTargetFragment(this@OptionFragment, RETWEET_CODE)
@@ -194,7 +199,7 @@ class OptionFragment : Fragment() {
                 }
             }
 
-            likeButton.setOnClickListener{
+            likeButton.setOnClickListener {
                 TwitterDialogFragment().apply {
                     arguments = bundle
                     setTargetFragment(this@OptionFragment, LIKE_CODE)
@@ -215,8 +220,8 @@ class OptionFragment : Fragment() {
             // get request code
             requestCode = targetRequestCode
             // get twitter id
-            val id_long = arguments.getTweetId()
-            val screenName = arguments.getTwitterDefaultScreenName()
+            val id_long = arguments.getLong(TWITTER_ID_KEY)
+            val screenName = arguments.getString(SCREEN_NAME_KEY)
 
             // get account_list
             val screen_list = PhotoLinkViewer.twitterTokenMap.keys.toList()
@@ -240,7 +245,7 @@ class OptionFragment : Fragment() {
                     textView.text = getString(R.string.plv_core_like_dialog_message)
                     builder.setTitle(getString(R.string.plv_core_like_dialog_title))
                 }
-                RETWEET_CODE  -> {
+                RETWEET_CODE -> {
                     textView.text = getString(R.string.plv_core_retweet_dialog_message)
                     builder.setTitle(getString(R.string.plv_core_retweet_dialog_title))
                 }
@@ -427,26 +432,26 @@ class OptionFragment : Fragment() {
                 override fun onException(e: TwitterException?, twitterMethod: TwitterMethod?) {
                     val message = "${getString(R.string.plv_core_twitter_error_toast)}: ${e!!.statusCode}\n(${e.errorMessage})"
 
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun createdFavorite(status: Status?) {
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         Toast.makeText(applicationContext, applicationContext.getString(R.string.plv_core_twitter_like_toast), Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun retweetedStatus(status: Status?) {
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         Toast.makeText(applicationContext, applicationContext.getString(R.string.plv_core_twitter_retweet_toast), Toast.LENGTH_LONG).show()
                     }
                 }
             })
             when (requestCode) {
                 LIKE_CODE -> twitter.createFavorite(id_long)
-                RETWEET_CODE  -> twitter.retweetStatus(id_long)
+                RETWEET_CODE -> twitter.retweetStatus(id_long)
             }
         }
     }
@@ -455,41 +460,4 @@ class OptionFragment : Fragment() {
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
-}
-
-private val TWITTER_ENABLED_KEY = "is_twitter_enabled"
-private val TWITTER_ID_KEY = "twitter_id_long"
-private val TWITTER_DEFAULT_SCREEN_KEY = "twitter_default_screen"
-private val URL_KEY = "url"
-
-fun Bundle.setTwitterEnabled(isTwitterEnabled: Boolean) {
-    putBoolean(TWITTER_ENABLED_KEY, isTwitterEnabled)
-}
-
-fun Bundle.isTwitterEnabled() : Boolean {
-    return getBoolean(TWITTER_ENABLED_KEY, false)
-}
-
-fun Bundle.setTweetId(tweetId: Long) {
-    putLong(TWITTER_ID_KEY, tweetId)
-}
-
-fun Bundle.getTweetId() : Long {
-    return getLong(TWITTER_ID_KEY)
-}
-
-fun Bundle.setUrl(url: String) {
-    putString(URL_KEY, url)
-}
-
-fun Bundle.getUrl() : String {
-    return getString(URL_KEY)
-}
-
-fun Bundle.setTwitterDefaultScreenName(screenName: String) {
-    putString(TWITTER_DEFAULT_SCREEN_KEY, screenName)
-}
-
-fun Bundle.getTwitterDefaultScreenName() : String {
-    return getString(TWITTER_DEFAULT_SCREEN_KEY)
 }
