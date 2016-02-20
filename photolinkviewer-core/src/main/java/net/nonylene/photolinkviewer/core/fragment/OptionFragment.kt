@@ -3,7 +3,9 @@ package net.nonylene.photolinkviewer.core.fragment
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.*
+import android.app.Activity
+import android.app.Dialog
+import android.app.DownloadManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +19,8 @@ import android.preference.PreferenceManager
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.v13.app.FragmentCompat
+import android.support.v4.app.DialogFragment
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
@@ -315,11 +318,11 @@ class OptionFragment : Fragment() {
         if (isOpen) downLoadButton.hide()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             STORAGE_PERMISSION_REQUEST -> {
-                if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
                     save(lastSaveDir!!, lastSaveInfos!!)
                 } else {
                     Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_permission_denied), Toast.LENGTH_LONG).show()
@@ -333,14 +336,17 @@ class OptionFragment : Fragment() {
                 != PackageManager.PERMISSION_GRANTED) {
             lastSaveInfos = infoList
             lastSaveDir = dirName
-            FragmentCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
         } else {
             save(dirName, infoList)
         }
     }
 
     private fun save(dirName: String, infoList: List<SaveDialogFragment.Info>) {
+        val downloadManager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val stringBuilder = StringBuilder().apply {
+            append(applicationContext!!.getString(R.string.plv_core_download_photo_title))
+        }
         infoList.forEach { info ->
             val uri = Uri.parse(info.downloadUrl)
             val filename = info.fileName
@@ -355,11 +361,10 @@ class OptionFragment : Fragment() {
             if (preferences.isLeaveNotify()) {
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             }
-            (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-            //todo: bulk toast
-            Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_download_photo_title) + path.toString(),
-                    Toast.LENGTH_LONG).show()
+            downloadManager.enqueue(request)
+            stringBuilder.append(path.toString() + ", ")
         }
+        Toast.makeText(applicationContext!!, stringBuilder.toString(), Toast.LENGTH_LONG).show()
     }
 
     /**

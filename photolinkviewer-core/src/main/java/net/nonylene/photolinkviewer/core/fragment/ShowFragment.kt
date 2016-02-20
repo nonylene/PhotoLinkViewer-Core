@@ -1,19 +1,19 @@
 package net.nonylene.photolinkviewer.core.fragment
 
 import android.app.Dialog
-import android.app.LoaderManager
 import android.content.Context
 import android.content.Intent
-import android.content.Loader
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.app.Fragment
 import android.preference.PreferenceManager
 import android.app.DialogFragment
 import android.content.res.Configuration
+import android.support.v4.app.Fragment
+import android.support.v4.app.LoaderManager
+import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.GestureDetector
@@ -285,7 +285,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl)))
+            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl, plvUrl,plvUrl,plvUrl)))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)

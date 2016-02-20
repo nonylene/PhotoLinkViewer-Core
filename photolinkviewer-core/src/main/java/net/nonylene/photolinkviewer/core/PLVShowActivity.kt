@@ -1,9 +1,9 @@
 package net.nonylene.photolinkviewer.core
 
-import android.app.Activity
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
@@ -19,8 +19,7 @@ import net.nonylene.photolinkviewer.core.view.TilePhotoView
  * show photo Activity.
  * This Activity requires uri to preview, in data of intent.
  */
-// todo: move to appcompat
-class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
+class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
 
     private var isSingle: Boolean = true
     private var scrollView: ScrollView? = null
@@ -42,7 +41,7 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
 
         val url = intent.data.toString()
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         val optionFragment = OptionFragment().apply {
             arguments = OptionFragment.createArguments(url)
         }
@@ -93,7 +92,7 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
     private fun onFragmentRequired(fragment: Fragment) {
         try {
             // go to show fragment
-            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
             // back to this screen when back pressed
             if (!isSingle) fragmentTransaction.addToBackStack(null)
             fragmentTransaction.replace(R.id.show_frag_replace, fragment)

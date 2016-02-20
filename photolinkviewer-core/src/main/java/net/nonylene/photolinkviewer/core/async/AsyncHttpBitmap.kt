@@ -1,9 +1,9 @@
 package net.nonylene.photolinkviewer.core.async
 
-import android.content.AsyncTaskLoader
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.support.v4.content.AsyncTaskLoader
 import com.squareup.okhttp.Request
 import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 
