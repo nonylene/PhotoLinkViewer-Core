@@ -283,7 +283,6 @@ class OptionFragment : Fragment() {
         } else {
             if (downloadPLVUrlStack != null) {
                 setDlButton(downloadPLVUrlStack!!)
-                downloadPLVUrlStack = null
             } else {
                 isDownloadEnabled = false
                 removeDLButton()
@@ -390,17 +389,14 @@ class OptionFragment : Fragment() {
         val root = Environment.getExternalStorageDirectory()
 
         val dir: File
-        var filename: String
-        if (preferences.getDownloadDirType() == "mkdir") {
+        val doMakeDir = preferences.getDownloadDirType() == "mkdir"
+        if (doMakeDir) {
             // make directory
             dir = File(root, directory + "/" + plvUrl.siteName)
-            filename = plvUrl.fileName
         } else {
             // not make directory
             dir = File(root, directory)
-            filename = plvUrl.siteName + "-" + plvUrl.fileName
         }
-        plvUrl.type?.let { filename += "." + it }
         dir.mkdirs()
 
         //check wifi connecting and setting or not
@@ -414,7 +410,9 @@ class OptionFragment : Fragment() {
         val original = preferences.isOriginalEnabled(isWifi)
 
         return Pair(dir.toString(), plvUrls.map {
-            SaveDialogFragment.Info(filename, if (original) plvUrl.biggestUrl!! else plvUrl.displayUrl!!, plvUrl.thumbUrl!!)
+            var fileName = if (doMakeDir) it.fileName else "${it.siteName}-${it.fileName}"
+            it.type?.let { fileName += "." + it }
+            SaveDialogFragment.Info(fileName, if (original) it.biggestUrl!! else it.displayUrl!!, it.thumbUrl!!)
         })
     }
 
