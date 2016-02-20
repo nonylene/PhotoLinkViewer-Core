@@ -8,13 +8,15 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import android.support.v7.app.AlertDialog
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import net.nonylene.photolinkviewer.core.R
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
+import net.nonylene.photolinkviewer.core.view.SaveDialogItemView
 import java.util.*
 
+//todo: move to recyclerview
 class SaveDialogFragment : DialogFragment() {
 
     companion object {
@@ -34,16 +36,30 @@ class SaveDialogFragment : DialogFragment() {
         // set custom view
         val view = View.inflate(activity, R.layout.plv_core_save_path, null)
         (view.findViewById(R.id.path_text_view) as TextView).text = arguments.getString(DIR_KEY)
-        (view.findViewById(R.id.path_list_view) as ListView).adapter = SaveDialogLitAdapter(infoList)
+        val linearLayout = view.findViewById(R.id.path_linear_layout) as LinearLayout
+
+        for (info in infoList) {
+            linearLayout.addView(
+                    (LayoutInflater.from(context).inflate(R.layout.plv_core_save_path_item, linearLayout, false) as SaveDialogItemView).apply {
+                        setThumbnailUrl(info.thumbnailUrl)
+                        setFileName(info.fileName)
+                        checkedChangeListener = {
+                            (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled =
+                                    (0..linearLayout.childCount - 1).fold(false) { result, i ->
+                                        result || (linearLayout.getChildAt(i) as SaveDialogItemView).isChecked
+                                    }
+                        }
+                    }
+            )
+        }
+
         return AlertDialog.Builder(activity).setView(view)
                 .setTitle(getString(R.string.plv_core_save_dialog_title))
                 .setPositiveButton(getString(R.string.plv_core_save_dialog_positive), { dialogInterface, i ->
                     // get filename
-                    val listView = dialog.findViewById(R.id.path_list_view) as ListView
-                    val newInfoList = (0..infoList.size - 1).map {
-                        Info(
-                                (listView.getChildAt(it).findViewById(R.id.path_edit_text) as EditText).text.toString(),
-                                infoList[it].downloadUrl, infoList[it].thumbnailUrl)
+                    val newInfoList = (0..linearLayout.childCount - 1).map {
+                        val itemView = linearLayout.getChildAt(it) as SaveDialogItemView
+                        Info(itemView.getFileName(), infoList[it].downloadUrl, infoList[it].thumbnailUrl)
                     }.toCollection(ArrayList())
 
                     val textView = dialog.findViewById(R.id.path_text_view) as TextView
@@ -60,45 +76,6 @@ class SaveDialogFragment : DialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-    }
-
-    //todo: move to recyclerview
-    class SaveDialogLitAdapter(private val infoList: List<Info>) : BaseAdapter() {
-
-        class ViewHolder(private val itemView: View) {
-            val thumbImageView: ImageView
-            val savePathEditText: EditText
-
-            init {
-                thumbImageView = itemView.findViewById(R.id.path_image_view) as ImageView
-                savePathEditText = itemView.findViewById(R.id.path_edit_text) as EditText
-            }
-
-            fun bindView(info: Info) {
-                OkHttpManager.getPicasso(itemView.context).load(info.thumbnailUrl).into(thumbImageView)
-                savePathEditText.setText(info.fileName)
-            }
-        }
-
-        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup): View? {
-            val view = convertView ?: View.inflate(viewGroup.context, R.layout.plv_core_save_path_item, null).apply {
-                tag = ViewHolder(this)
-            }
-            (view.tag as ViewHolder).bindView(infoList[position])
-            return view
-        }
-
-        override fun getItem(position: Int): Any? {
-            return position
-        }
-
-        override fun getItemId(position: Int): Long {
-            return 0
-        }
-
-        override fun getCount(): Int {
-            return infoList.size
-        }
     }
 
     class Info : Parcelable {
@@ -130,6 +107,7 @@ class SaveDialogFragment : DialogFragment() {
         }
 
         companion object {
+            @JvmStatic
             @Suppress("unused")
             val CREATOR: Parcelable.Creator<Info> = object : Parcelable.Creator<Info> {
                 override fun createFromParcel(source: Parcel): Info {
