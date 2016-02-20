@@ -362,7 +362,7 @@ class OptionFragment : Fragment() {
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             }
             downloadManager.enqueue(request)
-            stringBuilder.append(path.toString() + ", ")
+            stringBuilder.append("\n${path.toString()},")
         }
         Toast.makeText(applicationContext!!, stringBuilder.toString(), Toast.LENGTH_LONG).show()
     }
