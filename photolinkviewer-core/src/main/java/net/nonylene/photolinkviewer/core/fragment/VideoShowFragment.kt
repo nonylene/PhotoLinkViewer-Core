@@ -28,13 +28,16 @@ class VideoShowFragment : Fragment() {
     private var progressBar: ProgressBar? = null
 
     companion object {
+        private val IS_SINGLE_FRAGMENT_KEY = "is_single"
+        private val PLV_URL_KEY = "plvurl"
+
         /**
          * @param isSingleFragment if true, background color become transparent in this fragment.
          */
         fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
             return Bundle().apply {
-                setPLVUrl(plvUrl)
-                setIsSingleFragment(isSingleFragment)
+                putParcelable(PLV_URL_KEY, plvUrl)
+                putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
             }
         }
     }
@@ -43,11 +46,11 @@ class VideoShowFragment : Fragment() {
         baseView = inflater.inflate(R.layout.plv_core_videoshow_fragment, container, false)
         videoShowFrameLayout = baseView!!.findViewById(R.id.videoshowframe) as FrameLayout
         progressBar = baseView!!.findViewById(R.id.show_progress) as ProgressBar
-        if (arguments.isSingleFragment()) {
+        if (arguments.getBoolean(IS_SINGLE_FRAGMENT_KEY)) {
             videoShowFrameLayout!!.setBackgroundResource(R.color.plv_core_transparent)
             // do not hide progressbar! progressbar of activity will be displayed under videoView.
         }
-        playVideo(arguments.getPLVUrl())
+        playVideo(arguments.getParcelable(PLV_URL_KEY))
         return baseView
     }
 

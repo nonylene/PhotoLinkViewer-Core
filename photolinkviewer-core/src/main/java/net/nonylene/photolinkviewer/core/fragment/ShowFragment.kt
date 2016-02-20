@@ -55,13 +55,17 @@ class ShowFragment : Fragment() {
     private var applicationContext : Context? = null
 
     companion object {
+
+        private val IS_SINGLE_FRAGMENT_KEY = "is_single"
+        private val PLV_URL_KEY = "plvurl"
+
         /**
          * @param isSingleFragment if true, background color and progressbar become transparent in this fragment.
          */
         fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
             return Bundle().apply {
-                setPLVUrl(plvUrl)
-                setIsSingleFragment(isSingleFragment)
+                putParcelable(PLV_URL_KEY, plvUrl)
+                putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
             }
         }
     }
@@ -108,12 +112,12 @@ class ShowFragment : Fragment() {
             Initialize.initialize47(activity)
         }
 
-        if (arguments.isSingleFragment()) {
+        if (arguments.getBoolean(IS_SINGLE_FRAGMENT_KEY)) {
             showFrameLayout.setBackgroundResource(R.color.plv_core_transparent)
             progressBar.visibility = View.GONE
         }
 
-        AsyncExecute(arguments.getPLVUrl()).Start()
+        AsyncExecute(arguments.getParcelable(PLV_URL_KEY)).Start()
     }
 
     internal inner class simpleOnGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -285,7 +289,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl, plvUrl,plvUrl,plvUrl)))
+            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl)))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)
@@ -468,23 +472,4 @@ class ShowFragment : Fragment() {
             }
         }
     }
-}
-
-private val IS_SINGLE_FRAGMENT_KEY = "is_single"
-private val PLV_URL_KEY = "plvurl"
-
-fun Bundle.setIsSingleFragment(isSingleFragment: Boolean) {
-    putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
-}
-
-fun Bundle.isSingleFragment() : Boolean {
-    return getBoolean(IS_SINGLE_FRAGMENT_KEY, false)
-}
-
-fun Bundle.setPLVUrl(plvUrl: PLVUrl) {
-    putParcelable(PLV_URL_KEY, plvUrl)
-}
-
-fun Bundle.getPLVUrl() : PLVUrl {
-    return getParcelable(PLV_URL_KEY)
 }
