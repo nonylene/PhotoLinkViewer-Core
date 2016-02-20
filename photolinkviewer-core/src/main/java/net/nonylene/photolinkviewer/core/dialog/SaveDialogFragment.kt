@@ -58,8 +58,11 @@ class SaveDialogFragment : DialogFragment() {
                 .setPositiveButton(getString(R.string.plv_core_save_dialog_positive), { dialogInterface, i ->
                     // get filename
                     val newInfoList = (0..linearLayout.childCount - 1).map {
-                        val itemView = linearLayout.getChildAt(it) as SaveDialogItemView
-                        Info(itemView.getFileName(), infoList[it].downloadUrl, infoList[it].thumbnailUrl)
+                        linearLayout.getChildAt(it) as SaveDialogItemView to infoList[it]
+                    }.filter {
+                        it.first.isChecked
+                    }.map {
+                        Info(it.first.getFileName(), it.second.downloadUrl, it.second.thumbnailUrl)
                     }.toCollection(ArrayList())
 
                     val textView = dialog.findViewById(R.id.path_text_view) as TextView
