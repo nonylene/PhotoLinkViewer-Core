@@ -289,7 +289,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl)))
+            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl), false))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)

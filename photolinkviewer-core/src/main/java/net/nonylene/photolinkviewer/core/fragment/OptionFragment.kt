@@ -67,6 +67,8 @@ class OptionFragment : Fragment() {
     private var applicationContext: Context? = null
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
 
+    private var downloadPLVUrlStack: List<PLVUrl>? = null
+
     private var isDownloadEnabled = false
     private var isOpen = false
 
@@ -266,6 +268,7 @@ class OptionFragment : Fragment() {
     // eventBus catch event
     @Suppress("unused")
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
+        if (downloadButtonEvent.addToStack) downloadPLVUrlStack = downloadButtonEvent.plvUrls
         setDlButton(downloadButtonEvent.plvUrls)
     }
 
@@ -278,8 +281,13 @@ class OptionFragment : Fragment() {
             rotateRightButton.showWithAnimation()
             rotateLeftButton.showWithAnimation()
         } else {
-            isDownloadEnabled = false
-            removeDLButton()
+            if (downloadPLVUrlStack != null) {
+                setDlButton(downloadPLVUrlStack!!)
+                downloadPLVUrlStack = null
+            } else {
+                isDownloadEnabled = false
+                removeDLButton()
+            }
             rotateRightButton.hide()
             rotateLeftButton.hide()
         }
