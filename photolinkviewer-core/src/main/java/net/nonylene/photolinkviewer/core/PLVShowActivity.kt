@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
+import de.greenrobot.event.EventBus
+import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.fragment.OptionFragment
 import net.nonylene.photolinkviewer.core.fragment.ShowFragment
 import net.nonylene.photolinkviewer.core.fragment.VideoShowFragment
@@ -63,6 +65,7 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
             tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
             tileView!!.notifyChanged()
         }
+        EventBus.getDefault().post(DownloadButtonEvent(plvUrls.toList(), plvUrls.size != 1))
     }
 
     override fun onGetPLVUrlFailed(text: String) {
@@ -101,7 +104,6 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
-
     }
 
     //todo: onPause -> onResume, no fragment shown (#1)
