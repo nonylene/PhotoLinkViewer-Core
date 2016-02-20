@@ -55,6 +55,7 @@ class PLVUrl : Parcelable {
 
     companion object {
 
+        @JvmStatic
         @Suppress("unused")
         val CREATOR: Parcelable.Creator<PLVUrl> = object : Parcelable.Creator<PLVUrl> {
             override fun createFromParcel(source: Parcel): PLVUrl {
