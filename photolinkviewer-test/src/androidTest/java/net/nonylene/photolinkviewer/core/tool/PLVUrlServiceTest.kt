@@ -16,6 +16,7 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -330,7 +331,7 @@ class PLVUrlServiceTest {
 
     @Test
     fun requestOtherUrlTest() {
-        val countDownLatch = CountDownLatch(1)
+        val countDownLatch = CountDownLatch(3)
 
         getServiceWithSuccessListener({
             it[0].apply {
@@ -338,9 +339,32 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
                 assertEquals(fileName, "googlelogo_color_272x92dp")
                 assertEquals(siteName, "other")
+                assertEquals(type, "png")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.OTHER_URL)
+
+        getServiceWithSuccessListener({
+            it[0].apply {
+                assertEquals(biggestUrl, "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_.272x92dp.png?jfldasjfkdaslfjasfa...#jfkldajflka/j")
+                assertEquals(thumbUrl, "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_.272x92dp.png?jfldasjfkdaslfjasfa...#jfkldajflka/j")
+                assertEquals(fileName, "googlelogo_color_.272x92dp")
+                assertEquals(siteName, "other")
+                assertEquals(type, "png")
+            }
+            countDownLatch.countDown()
+        }).requestGetPLVUrl(TestUrls.OTHER_WITH_NOISE_URL)
+
+        getServiceWithSuccessListener({
+            it[0].apply {
+                assertEquals(biggestUrl, "https://www.google.co.jp/favicon.ico")
+                assertEquals(thumbUrl, "https://www.google.co.jp/favicon.ico")
+                assertEquals(fileName, "favicon.ico")
+                assertEquals(siteName, "other")
+                assertNull(type)
+            }
+            countDownLatch.countDown()
+        }).requestGetPLVUrl(TestUrls.OTHER_INVALID_TYPE_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
