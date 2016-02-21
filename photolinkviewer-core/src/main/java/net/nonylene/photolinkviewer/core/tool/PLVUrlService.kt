@@ -3,6 +3,7 @@ package net.nonylene.photolinkviewer.core.tool
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
@@ -23,6 +24,8 @@ import java.io.IOException
 
 import java.util.regex.Pattern
 
+// todo: tumblr
+// todo: get file type temp
 class PLVUrlService(private val context: Context, private val plvUrlListener: PLVUrlService.PLVUrlListener) {
 
     interface PLVUrlListener {
@@ -80,6 +83,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
         protected fun onParseFailed() {
             listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_url_purse_toast))
+        }
+
+        protected fun getFileTypeFromUrl(url: String): String? {
+            return Uri.parse(url).lastPathSegment?.let {
+                it.substring(it.lastIndexOf(".") + 1)
+            }
         }
 
         abstract fun getPLVUrl()
@@ -238,12 +247,23 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
     private inner class OtherSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
 
         override fun getPLVUrl() {
-            super.getId(url, "/([^\\./]+)\\.(png|jpg|jpeg|gif)[\\w\\?=]*$")?.let { id ->
-                val plvUrl = PLVUrl(url, "other", id)
+            val lastPath = Uri.parse(url).lastPathSegment
+            if (lastPath != null) {
+                val lastDotPosition = lastPath.lastIndexOf(".")
+                val type = lastPath.substring(lastDotPosition + 1)
+                if (arrayOf("png", "jpg", "jpeg", "gif").contains(type)) {
+                    val id = lastPath.substring(0, lastDotPosition)
+                    val plvUrl = PLVUrl(url, "other", id)
 
-                plvUrl.displayUrl = url
+                    plvUrl.displayUrl = url
+                    plvUrl.type = type
 
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                    listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                } else {
+                    onParseFailed()
+                }
+            } else {
+                onParseFailed()
             }
         }
     }
