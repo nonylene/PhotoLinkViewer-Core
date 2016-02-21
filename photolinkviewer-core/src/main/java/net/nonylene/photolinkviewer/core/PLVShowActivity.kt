@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
-import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.fragment.OptionFragment
 import net.nonylene.photolinkviewer.core.fragment.ShowFragment
@@ -16,6 +15,7 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
+import org.greenrobot.eventbus.EventBus
 
 /**
  * show photo Activity.
@@ -29,6 +29,7 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().removeAllStickyEvents()
         setContentView(R.layout.plv_core_activity_show)
 
         scrollView = findViewById(R.id.show_activity_scroll) as ScrollView
@@ -65,7 +66,7 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
             tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
             tileView!!.notifyChanged()
         }
-        EventBus.getDefault().post(DownloadButtonEvent(plvUrls.toList(), plvUrls.size != 1))
+        EventBus.getDefault().postSticky(DownloadButtonEvent(plvUrls.toList(), plvUrls.size != 1))
     }
 
     override fun onGetPLVUrlFailed(text: String) {

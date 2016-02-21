@@ -31,7 +31,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import butterknife.bindView
-import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.PLVMaxSizePreferenceActivity
 import net.nonylene.photolinkviewer.core.R
 
@@ -42,6 +41,8 @@ import net.nonylene.photolinkviewer.core.event.RotateEvent
 import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class ShowFragment : Fragment() {
 
@@ -363,6 +364,7 @@ class ShowFragment : Fragment() {
 
 
     @Suppress("unused")
+    @Subscribe
     fun onEvent(rotateEvent: RotateEvent) {
         rotateImg(rotateEvent.isRightRotate)
     }

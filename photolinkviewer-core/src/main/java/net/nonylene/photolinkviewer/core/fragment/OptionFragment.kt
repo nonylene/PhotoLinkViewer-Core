@@ -30,7 +30,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import butterknife.bindView
-import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 
@@ -40,6 +39,8 @@ import net.nonylene.photolinkviewer.core.event.RotateEvent
 import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
@@ -129,7 +130,6 @@ class OptionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applicationContext = activity.applicationContext
-        EventBus.getDefault().register(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -138,6 +138,7 @@ class OptionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        EventBus.getDefault().register(this)
 
         baseButton.setOnClickListener { baseButton ->
             if (isOpen) {
@@ -260,6 +261,7 @@ class OptionFragment : Fragment() {
 
     // eventBus catch event
     @Suppress("unused")
+    @Subscribe(sticky = true)
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
         if (downloadButtonEvent.addToStack) downloadPLVUrlStack = downloadButtonEvent.plvUrls
         setDlButton(downloadButtonEvent.plvUrls)
@@ -267,6 +269,7 @@ class OptionFragment : Fragment() {
 
     // eventBus catch event
     @Suppress("unused")
+    @Subscribe
     fun onEvent(showFragmentEvent: ShowFragmentEvent) {
         if (showFragmentEvent.isToBeShown) {
             rotateRightButton.showWithAnimation()
@@ -285,6 +288,7 @@ class OptionFragment : Fragment() {
 
     // eventBus catch event
     @Suppress("unused")
+    @Subscribe
     fun onEvent(snackbarEvent: SnackbarEvent) {
         Snackbar.make(baseView, snackbarEvent.message, Snackbar.LENGTH_LONG).apply {
             snackbarEvent.actionMessage?.let {
