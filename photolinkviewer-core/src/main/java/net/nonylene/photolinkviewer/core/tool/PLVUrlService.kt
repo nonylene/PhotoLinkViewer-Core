@@ -481,7 +481,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             val photos = post.getJSONArray("photos")
 
             return (0..photos.length() - 1).map { i ->
-                val plvUrl = PLVUrl(url, "tumblr", "${id}-${i}")
+                val plvUrl = PLVUrl(url, "tumblr", "${id}_${i}")
 
                 val photo = photos.getJSONObject(i)
                 plvUrl.biggestUrl = photo.getJSONObject("original_size").getString("url")

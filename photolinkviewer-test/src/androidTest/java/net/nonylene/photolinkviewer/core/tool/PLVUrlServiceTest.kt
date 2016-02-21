@@ -310,14 +310,14 @@ class PLVUrlServiceTest {
             it[0].apply {
                 assertEquals(biggestUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250.jpg")
-                assertEquals(fileName, "132793441942-0")
+                assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
             }
             it[4].apply {
                 assertEquals(biggestUrl, "https://41.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250.jpg")
-                assertEquals(fileName, "132793441942-4")
+                assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
             }
@@ -329,14 +329,14 @@ class PLVUrlServiceTest {
             it[0].apply {
                 assertEquals(biggestUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250.jpg")
-                assertEquals(fileName, "132793441942-0")
+                assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
             }
             it[4].apply {
                 assertEquals(biggestUrl, "https://41.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250.jpg")
-                assertEquals(fileName, "132793441942-4")
+                assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
             }
