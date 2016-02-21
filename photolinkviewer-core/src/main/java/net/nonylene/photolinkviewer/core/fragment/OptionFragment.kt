@@ -140,13 +140,6 @@ class OptionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         baseButton.setOnClickListener { baseButton ->
-            settingButton.animate().cancel()
-            webButton.animate().cancel()
-            retweetButton.animate().cancel()
-            likeButton.animate().cancel()
-            downLoadButton.animate().cancel()
-            settingButton.animate().cancel()
-
             if (isOpen) {
                 ViewCompat.setRotation(baseButton, 180f)
                 ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
@@ -275,8 +268,6 @@ class OptionFragment : Fragment() {
     // eventBus catch event
     @Suppress("unused")
     fun onEvent(showFragmentEvent: ShowFragmentEvent) {
-        rotateLeftButton.animate().cancel()
-        rotateRightButton.animate().cancel()
         if (showFragmentEvent.isToBeShown) {
             rotateRightButton.showWithAnimation()
             rotateLeftButton.showWithAnimation()
@@ -318,7 +309,6 @@ class OptionFragment : Fragment() {
                 }
             }
         }
-        downLoadButton.animate().cancel()
         if (isOpen && !isDownloadEnabled) downLoadButton.showWithAnimation()
         isDownloadEnabled = true
     }
@@ -326,7 +316,6 @@ class OptionFragment : Fragment() {
     private fun removeDLButton() {
         // dl button visibility and click
         downLoadButton.setOnClickListener(null)
-        downLoadButton.animate().cancel()
         if (isOpen) downLoadButton.hide()
     }
 
