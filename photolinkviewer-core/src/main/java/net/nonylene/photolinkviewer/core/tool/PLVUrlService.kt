@@ -500,6 +500,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     "small"    -> plvUrl.thumbUrl
                     else       -> null
                 }
+                plvUrl.displayUrl = displayUrl
                 plvUrl.type = displayUrl?.let { getFileTypeFromUrl(it) }
 
                 plvUrl
