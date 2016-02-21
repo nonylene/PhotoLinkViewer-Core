@@ -17,7 +17,6 @@ import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.controller.RedirectUrlController
 
 
-
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
@@ -38,20 +37,20 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
     fun requestGetPLVUrl(url: String) {
         val site = when {
             url.contains("flickr.com") || url.contains("flic.kr")
-                                                -> FlickrSite(url, context, plvUrlListener)
+                                             -> FlickrSite(url, context, plvUrlListener)
             url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")
-                                                -> NicoSite(url, context, plvUrlListener)
-            url.contains("twimg.com/media/")    -> TwitterSite(url, context, plvUrlListener)
-            url.contains("twipple.jp")          -> TwippleSite(url, context, plvUrlListener)
-            url.contains("img.ly")              -> ImglySite(url, context, plvUrlListener)
+                                             -> NicoSite(url, context, plvUrlListener)
+            url.contains("twimg.com/media/") -> TwitterSite(url, context, plvUrlListener)
+            url.contains("twipple.jp")       -> TwippleSite(url, context, plvUrlListener)
+            url.contains("img.ly")           -> ImglySite(url, context, plvUrlListener)
             url.contains("instagram.com") || url.contains("instagr.am")
-                                                -> InstagramSite(url, context, plvUrlListener)
-            url.contains("gyazo.com")           -> GyazoSite(url, context, plvUrlListener)
-            url.contains("imgur.com")           -> ImgurSite(url, context, plvUrlListener)
-            url.contains("vine.co")             -> VineSite(url, context, plvUrlListener)
+                                             -> InstagramSite(url, context, plvUrlListener)
+            url.contains("gyazo.com")        -> GyazoSite(url, context, plvUrlListener)
+            url.contains("imgur.com")        -> ImgurSite(url, context, plvUrlListener)
+            url.contains("vine.co")          -> VineSite(url, context, plvUrlListener)
             url.contains("tmblr.co") || url.contains("tumblr.com")
-                                                -> TumblrSite(url, context, plvUrlListener)
-            else                                -> OtherSite(url, context, plvUrlListener)
+                                             -> TumblrSite(url, context, plvUrlListener)
+            else                             -> OtherSite(url, context, plvUrlListener)
         }
         site.getPLVUrl()
     }
@@ -139,7 +138,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
         override fun getPLVUrl() {
             super.getId(url, "^https?://img\\.ly/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "imgly",  id)
+                val plvUrl = PLVUrl(url, "imgly", id)
 
                 plvUrl.biggestUrl = "http://img.ly/show/full/" + id
                 plvUrl.thumbUrl = "http://img.ly/show/medium/" + id
@@ -251,17 +250,17 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             if (lastPath != null) {
                 val lastDotPosition = lastPath.lastIndexOf(".")
                 val type = lastPath.substring(lastDotPosition + 1)
+
+                val plvUrl: PLVUrl
                 if (arrayOf("png", "jpg", "jpeg", "gif").contains(type)) {
-                    val id = lastPath.substring(0, lastDotPosition)
-                    val plvUrl = PLVUrl(url, "other", id)
-
-                    plvUrl.displayUrl = url
+                    plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition))
                     plvUrl.type = type
-
-                    listener.onGetPLVUrlFinished(arrayOf(plvUrl))
                 } else {
-                    onParseFailed()
+                    plvUrl = PLVUrl(url, "other", lastPath)
                 }
+                plvUrl.displayUrl = url
+
+                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             } else {
                 onParseFailed()
             }
@@ -328,7 +327,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             }?.let { id ->
                 val plvUrl = PLVUrl(url, "nico", id)
 
-                RedirectUrlController(object : Callback{
+                RedirectUrlController(object : Callback {
                     override fun onResponse(response: com.squareup.okhttp.Response) {
                         Handler(Looper.getMainLooper()).post {
                             listener.onGetPLVUrlFinished(arrayOf(parseNico(response.request().urlString(), id, plvUrl)))
@@ -413,7 +412,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             if (!url.contains("tmblr.co")) {
                 requestAPI(url)
             } else {
-                RedirectUrlController(object : Callback{
+                RedirectUrlController(object : Callback {
                     override fun onResponse(response: com.squareup.okhttp.Response) {
                         Handler(Looper.getMainLooper()).post {
                             requestAPI(response.request().urlString())
@@ -433,7 +432,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         }
 
 
-        private fun requestAPI(regularUrl : String){
+        private fun requestAPI(regularUrl: String) {
             val matcher = Pattern.compile("^https?://([^/]+)/post/(\\d+)").matcher(regularUrl)
             if (!matcher.find()) {
                 super.onParseFailed()
@@ -495,7 +494,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             }.toTypedArray()
         }
 
-        private inner class Photo(photo : JSONObject) {
+        private inner class Photo(photo: JSONObject) {
             val url = photo.getString("url")
             val width = photo.getInt("width")
             val height = photo.getInt("height")
