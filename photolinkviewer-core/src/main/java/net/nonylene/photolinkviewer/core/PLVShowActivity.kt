@@ -16,6 +16,7 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * show photo Activity.
@@ -54,6 +55,33 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
         PLVUrlService(this, this).requestGetPLVUrl(url)
     }
 
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
+    }
+
+    // suppress illegal state exception, commit after onResume
+    @Suppress("unused")
+    @Subscribe(sticky = true)
+    fun onEvent(event: FragmentShowingEvent) {
+        EventBus.getDefault().removeStickyEvent(event)
+        val fragment = if (event.isVideo) {
+            VideoShowFragment().apply {
+                arguments = VideoShowFragment.createArguments(event.plvUrl, isSingle)
+            }
+        } else {
+            ShowFragment().apply {
+                arguments = ShowFragment.createArguments(event.plvUrl, isSingle)
+            }
+        }
+        onFragmentRequired(fragment)
+    }
+
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
         if (plvUrls.size == 1) {
             if (plvUrls[0].isVideo) onVideoShowFragmentRequired(plvUrls[0])
@@ -82,15 +110,11 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(ShowFragment().apply {
-            arguments = ShowFragment.createArguments(plvUrl, isSingle)
-        })
+        EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, false))
     }
 
     override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(VideoShowFragment().apply {
-            arguments = VideoShowFragment.createArguments(plvUrl, isSingle)
-        })
+        EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, true))
     }
 
     private fun onFragmentRequired(fragment: Fragment) {
@@ -107,5 +131,5 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
         }
     }
 
-    //todo: onPause -> onResume, no fragment shown (#1)
+    inner class FragmentShowingEvent(val plvUrl: PLVUrl, val isVideo: Boolean)
 }
