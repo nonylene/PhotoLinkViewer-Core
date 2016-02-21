@@ -23,8 +23,6 @@ import java.io.IOException
 
 import java.util.regex.Pattern
 
-// todo: tumblr
-// todo: get file type temp
 class PLVUrlService(private val context: Context, private val plvUrlListener: PLVUrlService.PLVUrlListener) {
 
     interface PLVUrlListener {
@@ -99,6 +97,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             super.getId(url, "^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.")?.let { id ->
                 val plvUrl = PLVUrl(url, "twitter", id)
 
+                plvUrl.type = getFileTypeFromUrl(url)
                 plvUrl.biggestUrl = url + ":orig"
                 plvUrl.thumbUrl = url + ":small"
                 plvUrl.displayUrl = when (super.getQuality("twitter")) {
@@ -201,12 +200,14 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 fileUrls = data.getJSONObject("images")
             }
 
-            plvUrl.displayUrl =
-                    when (super.getQuality("instagram")) {
-                        "large"  -> fileUrls.getJSONObject("standard_resolution")
-                        "medium" -> fileUrls.getJSONObject("low_resolution")
-                        else     -> null
-                    }!!.getString("url")
+            val displayUrl = when (super.getQuality("instagram")) {
+                "large"  -> fileUrls.getJSONObject("standard_resolution")
+                "medium" -> fileUrls.getJSONObject("low_resolution")
+                else     -> null
+            }!!.getString("url")
+
+            plvUrl.type = getFileTypeFromUrl(displayUrl)
+            plvUrl.displayUrl = displayUrl
 
             val imageUrls = data.getJSONObject("images")
             plvUrl.thumbUrl = imageUrls.getJSONObject("low_resolution").getString("url")
@@ -237,6 +238,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
                 val file_url = "http://i.imgur.com/${id}.jpg"
                 plvUrl.displayUrl = file_url
+                plvUrl.type = "jpg"
 
                 listener.onGetPLVUrlFinished(arrayOf(plvUrl))
             }
@@ -307,13 +309,21 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
 
             plvUrl.biggestUrl = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + original_secrets + "_o." + original_formats
             plvUrl.thumbUrl = "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + "_z.jpg"
-            plvUrl.displayUrl = when (super.getQuality("flickr")) {
-                "original" -> plvUrl.biggestUrl
-                "large"    -> "https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg"
-                "medium"   -> plvUrl.thumbUrl
-                else       -> null
+            val quality = super.getQuality("flickr")
+            when (quality) {
+                "original" -> {
+                    plvUrl.displayUrl = plvUrl.biggestUrl
+                    plvUrl.type = original_formats
+                }
+                "large"    -> {
+                    plvUrl.displayUrl = "https://farm${farm}.staticflickr.com/${server}/${id}_${secret}_b.jpg"
+                    plvUrl.type = "jpg"
+                }
+                "medium"   -> {
+                    plvUrl.displayUrl = plvUrl.thumbUrl
+                    plvUrl.type = "jpg"
+                }
             }
-
             return plvUrl
         }
     }
@@ -381,6 +391,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 val plvUrl = PLVUrl(url, "vine", id)
 
                 plvUrl.isVideo = true
+                plvUrl.type = "mp4"
 
                 val request = "https://api.vineapp.com/timelines/posts/s/" + id
 
@@ -470,7 +481,7 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             val photos = post.getJSONArray("photos")
 
             return (0..photos.length() - 1).map { i ->
-                val plvUrl = PLVUrl(url, "tumblr", id)
+                val plvUrl = PLVUrl(url, "tumblr", "${id}-${i}")
 
                 val photo = photos.getJSONObject(i)
                 plvUrl.biggestUrl = photo.getJSONObject("original_size").getString("url")
@@ -482,13 +493,14 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 }.sortedBy { it.width }
 
                 plvUrl.thumbUrl = altPhotos.getOrElse(2) { altPhotos.last() }.url
-                plvUrl.displayUrl = when (quality) {
+                val displayUrl = when (quality) {
                     "original" -> plvUrl.biggestUrl
                     "large"    -> altPhotos.getOrElse(4) { altPhotos.last() }.url
                     "medium"   -> altPhotos.getOrElse(3) { altPhotos.last() }.url
                     "small"    -> plvUrl.thumbUrl
                     else       -> null
                 }
+                plvUrl.type = displayUrl?.let { getFileTypeFromUrl(it) }
 
                 plvUrl
             }.toTypedArray()
