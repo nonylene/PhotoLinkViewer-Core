@@ -15,14 +15,17 @@ import android.widget.MediaController
 import android.widget.ProgressBar
 import android.widget.VideoView
 import net.nonylene.photolinkviewer.core.R
+import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.tool.isVideoAutoPlay
+import org.greenrobot.eventbus.EventBus
 
 /**
  * @see createArguments
  */
-class VideoShowFragment : Fragment() {
+class VideoShowFragment : BaseShowFragment() {
     private var baseView: View? = null
     private var videoShowFrameLayout: FrameLayout? = null
     private var progressBar: ProgressBar? = null
@@ -51,6 +54,7 @@ class VideoShowFragment : Fragment() {
             // do not hide progressbar! progressbar of activity will be displayed under videoView.
         }
         playVideo(arguments.getParcelable(PLV_URL_KEY))
+        EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(arguments.getParcelable(PLV_URL_KEY)), false))
         return baseView
     }
 
@@ -97,6 +101,11 @@ class VideoShowFragment : Fragment() {
             videoView.stopPlayback()
             false
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().post(BaseShowFragmentEvent(this, false))
     }
 
     private fun removeProgressBar() {
