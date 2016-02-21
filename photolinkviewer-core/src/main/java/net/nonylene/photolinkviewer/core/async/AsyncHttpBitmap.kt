@@ -82,6 +82,7 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
 
         } catch (e: IOException) {
             e.printStackTrace()
+            httpResult.errorMessage = e.message
         }
 
         return httpResult
