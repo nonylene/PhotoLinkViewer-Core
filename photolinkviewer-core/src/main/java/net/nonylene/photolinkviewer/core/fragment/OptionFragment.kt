@@ -3,7 +3,9 @@ package net.nonylene.photolinkviewer.core.fragment
 import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.app.*
+import android.app.Activity
+import android.app.Dialog
+import android.app.DownloadManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,7 +19,8 @@ import android.preference.PreferenceManager
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
-import android.support.v13.app.FragmentCompat
+import android.support.v4.app.DialogFragment
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
@@ -27,20 +30,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import butterknife.bindView
-import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 
-import net.nonylene.photolinkviewer.core.PLVPreferenceActivity
 import net.nonylene.photolinkviewer.core.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
-import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
+import java.util.*
 
 /**
  * @see OptionFragment.createArguments
@@ -57,10 +61,14 @@ class OptionFragment : Fragment() {
     private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
     private val likeButton: FloatingActionButton by bindView(R.id.like_button)
 
-    private var saveBundle: Bundle? = null
+    private var lastSaveInfos: List<SaveDialogFragment.Info>? = null
+    private var lastSaveDir: String? = null
+
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
-    private var applicationContext : Context? = null
+    private var applicationContext: Context? = null
     private val fastOutSlowInInterpolator = FastOutSlowInInterpolator()
+
+    private var downloadPLVUrlStack: List<PLVUrl>? = null
 
     private var isDownloadEnabled = false
     private var isOpen = false
@@ -89,12 +97,17 @@ class OptionFragment : Fragment() {
         private val STORAGE_PERMISSION_REQUEST = 3
         private val SAVE_DIALOG_CODE = 4
 
+        private val TWITTER_ENABLED_KEY = "is_twitter_enabled"
+        private val TWITTER_ID_KEY = "twitter_id_long"
+        private val TWITTER_DEFAULT_SCREEN_KEY = "twitter_default_screen"
+        private val URL_KEY = "url"
+
         /**
          * arguments for normal sites
          */
         fun createArguments(url: String): Bundle {
             return Bundle().apply {
-                setUrl(url)
+                putString(URL_KEY, url)
             }
         }
 
@@ -106,10 +119,10 @@ class OptionFragment : Fragment() {
          */
         fun createArguments(url: String, tweetId: Long, twitterDefaultScreenName: String): Bundle {
             return Bundle().apply {
-                setUrl(url)
-                setTwitterEnabled(true)
-                setTweetId(tweetId)
-                setTwitterDefaultScreenName(twitterDefaultScreenName)
+                putString(URL_KEY, url)
+                putBoolean(TWITTER_ENABLED_KEY, true)
+                putLong(TWITTER_ID_KEY, tweetId)
+                putString(TWITTER_DEFAULT_SCREEN_KEY, twitterDefaultScreenName)
             }
         }
     }
@@ -117,7 +130,6 @@ class OptionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applicationContext = activity.applicationContext
-        EventBus.getDefault().register(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -127,30 +139,23 @@ class OptionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        baseButton.setOnClickListener{ baseButton ->
-            settingButton.animate().cancel()
-            webButton.animate().cancel()
-            retweetButton.animate().cancel()
-            likeButton.animate().cancel()
-            downLoadButton.animate().cancel()
-            settingButton.animate().cancel()
-
+        baseButton.setOnClickListener { baseButton ->
             if (isOpen) {
                 ViewCompat.setRotation(baseButton, 180f)
-                ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
+                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
                 settingButton.hide()
                 webButton.hide()
-                if (arguments.isTwitterEnabled()) {
+                if (arguments.getBoolean(TWITTER_ENABLED_KEY)) {
                     retweetButton.hide()
                     likeButton.hide()
                 }
                 if (isDownloadEnabled) downLoadButton.hide()
             } else {
                 ViewCompat.setRotation(baseButton, 0f)
-                ViewCompat.animate(baseButton).rotationBy(180f).setDuration(150)
+                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
                 settingButton.showWithAnimation()
                 webButton.showWithAnimation()
-                if (arguments.isTwitterEnabled()) {
+                if (arguments.getBoolean(TWITTER_ENABLED_KEY)) {
                     retweetButton.showWithAnimation()
                     likeButton.showWithAnimation()
                 }
@@ -159,13 +164,13 @@ class OptionFragment : Fragment() {
             isOpen = !isOpen
         }
 
-        settingButton.setOnClickListener{
+        settingButton.setOnClickListener {
             startActivity(Intent(activity, PhotoLinkViewer.getPreferenceActivityClass()))
         }
 
-        webButton.setOnClickListener{
+        webButton.setOnClickListener {
             // get uri from bundle
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getUrl()))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getString(URL_KEY)))
             // open intent chooser
             startActivity(Intent.createChooser(intent, getString(R.string.plv_core_intent_title)))
         }
@@ -180,8 +185,8 @@ class OptionFragment : Fragment() {
 
         val bundle = arguments
 
-        if (bundle.isTwitterEnabled()) {
-            retweetButton.setOnClickListener{
+        if (bundle.getBoolean(TWITTER_ENABLED_KEY)) {
+            retweetButton.setOnClickListener {
                 TwitterDialogFragment().apply {
                     arguments = bundle
                     setTargetFragment(this@OptionFragment, RETWEET_CODE)
@@ -189,7 +194,7 @@ class OptionFragment : Fragment() {
                 }
             }
 
-            likeButton.setOnClickListener{
+            likeButton.setOnClickListener {
                 TwitterDialogFragment().apply {
                     arguments = bundle
                     setTargetFragment(this@OptionFragment, LIKE_CODE)
@@ -197,6 +202,16 @@ class OptionFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        EventBus.getDefault().register(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
     }
 
     class TwitterDialogFragment : DialogFragment() {
@@ -210,8 +225,8 @@ class OptionFragment : Fragment() {
             // get request code
             requestCode = targetRequestCode
             // get twitter id
-            val id_long = arguments.getTweetId()
-            val screenName = arguments.getTwitterDefaultScreenName()
+            val id_long = arguments.getLong(TWITTER_ID_KEY)
+            val screenName = arguments.getString(SCREEN_NAME_KEY)
 
             // get account_list
             val screen_list = PhotoLinkViewer.twitterTokenMap.keys.toList()
@@ -235,7 +250,7 @@ class OptionFragment : Fragment() {
                     textView.text = getString(R.string.plv_core_like_dialog_message)
                     builder.setTitle(getString(R.string.plv_core_like_dialog_title))
                 }
-                RETWEET_CODE  -> {
+                RETWEET_CODE -> {
                     textView.text = getString(R.string.plv_core_retweet_dialog_message)
                     builder.setTitle(getString(R.string.plv_core_retweet_dialog_title))
                 }
@@ -254,27 +269,38 @@ class OptionFragment : Fragment() {
     }
 
     // eventBus catch event
+    @Suppress("unused")
+    @Subscribe(sticky = true)
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
-        isDownloadEnabled = true
-        addDLButton(downloadButtonEvent.plvUrl)
+        EventBus.getDefault().removeStickyEvent(downloadButtonEvent)
+        if (downloadButtonEvent.addToStack) downloadPLVUrlStack = downloadButtonEvent.plvUrls
+        setDlButton(downloadButtonEvent.plvUrls)
     }
 
     // eventBus catch event
-    fun onEvent(showFragmentEvent: ShowFragmentEvent) {
-        rotateLeftButton.animate().cancel()
-        rotateRightButton.animate().cancel()
-        if (showFragmentEvent.isToBeShown) {
+    @Suppress("unused")
+    @Subscribe
+    fun onEvent(baseShowFragmentEvent: BaseShowFragmentEvent) {
+        if (fragmentManager.findFragmentByTag(BaseShowFragment.SHOW_FRAGMENT_TAG) != baseShowFragmentEvent.fragment) return
+
+        if (baseShowFragmentEvent.isToBeShown) {
             rotateRightButton.showWithAnimation()
             rotateLeftButton.showWithAnimation()
         } else {
-            isDownloadEnabled = false
-            removeDLButton()
+            if (downloadPLVUrlStack != null) {
+                setDlButton(downloadPLVUrlStack!!)
+            } else {
+                isDownloadEnabled = false
+                removeDLButton()
+            }
             rotateRightButton.hide()
             rotateLeftButton.hide()
         }
     }
 
     // eventBus catch event
+    @Suppress("unused")
+    @Subscribe
     fun onEvent(snackbarEvent: SnackbarEvent) {
         Snackbar.make(baseView, snackbarEvent.message, Snackbar.LENGTH_LONG).apply {
             snackbarEvent.actionMessage?.let {
@@ -283,38 +309,38 @@ class OptionFragment : Fragment() {
         }.show()
     }
 
-    private fun addDLButton(plvUrl: PLVUrl) {
+    private fun setDlButton(plvUrls: List<PLVUrl>) {
         // dl button visibility and click
-        downLoadButton.setOnClickListener{
+        downLoadButton.setOnClickListener {
             // download direct
+            val infoPair = getSaveFragmentInfos(plvUrls)
             if (preferences.isSkipDialog()) {
-                saveOrRequestPermission(getFileNames(plvUrl))
+                saveOrRequestPermission(infoPair.first, infoPair.second)
             } else {
                 // open dialog
                 SaveDialogFragment().apply {
-                    arguments = getFileNames(plvUrl)
+                    arguments = SaveDialogFragment.createArguments(infoPair.first, infoPair.second.toCollection(ArrayList()))
                     setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
                     show(this@OptionFragment.fragmentManager, "Save")
                 }
             }
         }
-        downLoadButton.animate().cancel()
-        if (isOpen) downLoadButton.showWithAnimation()
+        if (isOpen && !isDownloadEnabled) downLoadButton.showWithAnimation()
+        isDownloadEnabled = true
     }
 
     private fun removeDLButton() {
         // dl button visibility and click
         downLoadButton.setOnClickListener(null)
-        downLoadButton.animate().cancel()
         if (isOpen) downLoadButton.hide()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>?, grantResults: IntArray?) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             STORAGE_PERMISSION_REQUEST -> {
-                if (grantResults?.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
-                    save(saveBundle!!)
+                if (grantResults.getOrNull(0) == PackageManager.PERMISSION_GRANTED) {
+                    save(lastSaveDir!!, lastSaveInfos!!)
                 } else {
                     Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_permission_denied), Toast.LENGTH_LONG).show()
                 }
@@ -322,59 +348,61 @@ class OptionFragment : Fragment() {
         }
     }
 
-    private fun saveOrRequestPermission(bundle: Bundle) {
+    private fun saveOrRequestPermission(dirName: String, infoList: List<SaveDialogFragment.Info>) {
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            saveBundle = bundle
-            FragmentCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
+            lastSaveInfos = infoList
+            lastSaveDir = dirName
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION_REQUEST)
         } else {
-            save(bundle)
+            save(dirName, infoList)
         }
     }
 
-    private fun save(bundle: Bundle) {
-        val uri = Uri.parse(bundle.getString("original_url"))
-        val filename = bundle.getString("filename")
-        val path = File(bundle.getString("dir"), filename)
-        // save file
-        val request = DownloadManager.Request(uri)
-                .setDestinationUri(Uri.fromFile(path))
-                .setTitle("PhotoLinkViewer")
-                .setDescription(filename)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
-        // notify
-        if (preferences.isLeaveNotify()) {
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    private fun save(dirName: String, infoList: List<SaveDialogFragment.Info>) {
+        val downloadManager = activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val stringBuilder = StringBuilder().apply {
+            append(applicationContext!!.getString(R.string.plv_core_download_photo_title))
         }
-        (activity.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager).enqueue(request)
-        Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_download_photo_title) + path.toString(),
-                Toast.LENGTH_LONG).show()
+        infoList.forEach { info ->
+            val uri = Uri.parse(info.downloadUrl)
+            val filename = info.fileName
+            val path = File(dirName, filename)
+            // save file
+            val request = DownloadManager.Request(uri)
+                    .setDestinationUri(Uri.fromFile(path))
+                    .setTitle("PhotoLinkViewer")
+                    .setDescription(filename)
+                    .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
+            // notify
+            if (preferences.isLeaveNotify()) {
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            }
+            downloadManager.enqueue(request)
+            stringBuilder.append("\n${path.toString()},")
+        }
+        Toast.makeText(applicationContext!!, stringBuilder.toString(), Toast.LENGTH_LONG).show()
     }
 
-    private fun getFileNames(plvUrl: PLVUrl): Bundle {
+    /**
+     * @param plvUrls same sites
+     */
+    private fun getSaveFragmentInfos(plvUrls: List<PLVUrl>): Pair<String, List<SaveDialogFragment.Info>> {
+        val plvUrl = plvUrls[0]
         // set download directory
         val directory = preferences.getDownloadDir()
         val root = Environment.getExternalStorageDirectory()
 
         val dir: File
-        var filename: String
-        if (preferences.getDownloadDirType() == "mkdir") {
+        val doMakeDir = preferences.getDownloadDirType() == "mkdir"
+        if (doMakeDir) {
             // make directory
             dir = File(root, directory + "/" + plvUrl.siteName)
-            filename = plvUrl.fileName
         } else {
             // not make directory
             dir = File(root, directory)
-            filename = plvUrl.siteName + "-" + plvUrl.fileName
         }
-        filename += "." + plvUrl.type
         dir.mkdirs()
-
-        val bundle = Bundle().apply {
-            putString("filename", filename)
-            putString("dir", dir.toString())
-        }
 
         //check wifi connecting and setting or not
         var isWifi = false
@@ -386,15 +414,17 @@ class OptionFragment : Fragment() {
 
         val original = preferences.isOriginalEnabled(isWifi)
 
-        bundle.putString("original_url", if (original) plvUrl.biggestUrl else plvUrl.displayUrl)
-
-        return bundle
+        return Pair(dir.toString(), plvUrls.map {
+            var fileName = if (doMakeDir) it.fileName else "${it.siteName}-${it.fileName}"
+            it.type?.let { fileName += "." + it }
+            SaveDialogFragment.Info(fileName, if (original) it.biggestUrl!! else it.displayUrl!!, it.thumbUrl!!)
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SAVE_DIALOG_CODE) {
-            saveOrRequestPermission(data!!.getBundleExtra("bundle"))
+            saveOrRequestPermission(data!!.getStringExtra(SaveDialogFragment.DIR_KEY), data.getParcelableArrayListExtra(SaveDialogFragment.INFO_KEY))
         } else {
             val applicationContext = activity.applicationContext
             // request code > like or retweet
@@ -413,69 +443,27 @@ class OptionFragment : Fragment() {
                 override fun onException(e: TwitterException?, twitterMethod: TwitterMethod?) {
                     val message = "${getString(R.string.plv_core_twitter_error_toast)}: ${e!!.statusCode}\n(${e.errorMessage})"
 
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun createdFavorite(status: Status?) {
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         Toast.makeText(applicationContext, applicationContext.getString(R.string.plv_core_twitter_like_toast), Toast.LENGTH_LONG).show()
                     }
                 }
 
                 override fun retweetedStatus(status: Status?) {
-                    Handler(Looper.getMainLooper()).post{
+                    Handler(Looper.getMainLooper()).post {
                         Toast.makeText(applicationContext, applicationContext.getString(R.string.plv_core_twitter_retweet_toast), Toast.LENGTH_LONG).show()
                     }
                 }
             })
             when (requestCode) {
                 LIKE_CODE -> twitter.createFavorite(id_long)
-                RETWEET_CODE  -> twitter.retweetStatus(id_long)
+                RETWEET_CODE -> twitter.retweetStatus(id_long)
             }
         }
     }
-
-    override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroy()
-    }
-}
-
-private val TWITTER_ENABLED_KEY = "is_twitter_enabled"
-private val TWITTER_ID_KEY = "twitter_id_long"
-private val TWITTER_DEFAULT_SCREEN_KEY = "twitter_default_screen"
-private val URL_KEY = "url"
-
-fun Bundle.setTwitterEnabled(isTwitterEnabled: Boolean) {
-    putBoolean(TWITTER_ENABLED_KEY, isTwitterEnabled)
-}
-
-fun Bundle.isTwitterEnabled() : Boolean {
-    return getBoolean(TWITTER_ENABLED_KEY, false)
-}
-
-fun Bundle.setTweetId(tweetId: Long) {
-    putLong(TWITTER_ID_KEY, tweetId)
-}
-
-fun Bundle.getTweetId() : Long {
-    return getLong(TWITTER_ID_KEY)
-}
-
-fun Bundle.setUrl(url: String) {
-    putString(URL_KEY, url)
-}
-
-fun Bundle.getUrl() : String {
-    return getString(URL_KEY)
-}
-
-fun Bundle.setTwitterDefaultScreenName(screenName: String) {
-    putString(TWITTER_DEFAULT_SCREEN_KEY, screenName)
-}
-
-fun Bundle.getTwitterDefaultScreenName() : String {
-    return getString(TWITTER_DEFAULT_SCREEN_KEY)
 }

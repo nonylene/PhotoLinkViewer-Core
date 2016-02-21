@@ -16,6 +16,7 @@ import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -103,6 +104,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://farm6.staticflickr.com/5714/22247064413_3740db4e3c_z.jpg")
                 assertEquals(fileName, "22247064413")
                 assertEquals(siteName, "flickr")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_SHORTEN_URL)
@@ -113,6 +115,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://farm6.staticflickr.com/5714/22247064413_3740db4e3c_z.jpg")
                 assertEquals(fileName, "22247064413")
                 assertEquals(siteName, "flickr")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_NORMAL_URL)
@@ -123,6 +126,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://farm6.staticflickr.com/5714/22247064413_3740db4e3c_z.jpg")
                 assertEquals(fileName, "22247064413")
                 assertEquals(siteName, "flickr")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_MOBILE_URL)
@@ -140,6 +144,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "http://lohas.nicoseiga.jp/img/5323294m")
                 assertEquals(fileName, "5323294")
                 assertEquals(siteName, "nico")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.NICO_NORMAL_URL)
@@ -150,6 +155,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "http://lohas.nicoseiga.jp/img/5323294m")
                 assertEquals(fileName, "5323294")
                 assertEquals(siteName, "nico")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.NICO_SHORTEN_URL)
@@ -167,6 +173,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "http://pbs.twimg.com/media/CTSJJGvVEAAjr7J.jpg:small")
                 assertEquals(fileName, "CTSJJGvVEAAjr7J")
                 assertEquals(siteName, "twitter")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.PBS_TWITTER_URL)
@@ -184,6 +191,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "http://p.twipple.jp/show/large/XLyY4")
                 assertEquals(fileName, "XLyY4")
                 assertEquals(siteName, "twipple")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TWIPPLE_URL)
@@ -201,6 +209,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "http://img.ly/show/medium/CSbm")
                 assertEquals(fileName, "CSbm")
                 assertEquals(siteName, "imgly")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.IMGLY_URL)
@@ -218,6 +227,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://instagram.com/p/90kD_WzfqP/media/?size=m")
                 assertEquals(fileName, "90kD_WzfqP")
                 assertEquals(siteName, "instagram")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.INSTAGRAM_NORMAL_URL)
@@ -228,6 +238,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://instagram.com/p/90kD_WzfqP/media/?size=m")
                 assertEquals(fileName, "90kD_WzfqP")
                 assertEquals(siteName, "instagram")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.INSTAGRAM_SHORTEN_URL)
@@ -245,6 +256,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://gyazo.com/953acc58e3a4fbac2723c190f83c1a90/raw")
                 assertEquals(fileName, "953acc58e3a4fbac2723c190f83c1a90")
                 assertEquals(siteName, "gyazo")
+                assertNull(type)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.GYAZO_URL)
@@ -262,6 +274,7 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "http://i.imgur.com/rfuJf9e.jpg")
                 assertEquals(fileName, "rfuJf9e")
                 assertEquals(siteName, "imgur")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.IMGUR_URL)
@@ -280,6 +293,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "elzuDTFiYDT")
                 assertEquals(siteName, "vine")
                 assertTrue(isVideo)
+                assertEquals(type, "mp4")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.VINE_URL)
@@ -296,14 +310,16 @@ class PLVUrlServiceTest {
             it[0].apply {
                 assertEquals(biggestUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250.jpg")
-                assertEquals(fileName, "132793441942")
+                assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
+                assertEquals(type, "jpg")
             }
             it[4].apply {
                 assertEquals(biggestUrl, "https://41.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250.jpg")
-                assertEquals(fileName, "132793441942")
+                assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TUMBLR_NORMAL_URL)
@@ -313,14 +329,16 @@ class PLVUrlServiceTest {
             it[0].apply {
                 assertEquals(biggestUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250.jpg")
-                assertEquals(fileName, "132793441942")
+                assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
+                assertEquals(type, "jpg")
             }
             it[4].apply {
                 assertEquals(biggestUrl, "https://41.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280.jpg")
                 assertEquals(thumbUrl, "https://40.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250.jpg")
-                assertEquals(fileName, "132793441942")
+                assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
+                assertEquals(type, "jpg")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TUMBLR_SHORTEN_URL)
@@ -330,7 +348,7 @@ class PLVUrlServiceTest {
 
     @Test
     fun requestOtherUrlTest() {
-        val countDownLatch = CountDownLatch(1)
+        val countDownLatch = CountDownLatch(3)
 
         getServiceWithSuccessListener({
             it[0].apply {
@@ -338,9 +356,32 @@ class PLVUrlServiceTest {
                 assertEquals(thumbUrl, "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png")
                 assertEquals(fileName, "googlelogo_color_272x92dp")
                 assertEquals(siteName, "other")
+                assertEquals(type, "png")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.OTHER_URL)
+
+        getServiceWithSuccessListener({
+            it[0].apply {
+                assertEquals(biggestUrl, "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_.272x92dp.png?jfldasjfkdaslfjasfa...#jfkldajflka/j")
+                assertEquals(thumbUrl, "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_.272x92dp.png?jfldasjfkdaslfjasfa...#jfkldajflka/j")
+                assertEquals(fileName, "googlelogo_color_.272x92dp")
+                assertEquals(siteName, "other")
+                assertEquals(type, "png")
+            }
+            countDownLatch.countDown()
+        }).requestGetPLVUrl(TestUrls.OTHER_WITH_NOISE_URL)
+
+        getServiceWithSuccessListener({
+            it[0].apply {
+                assertEquals(biggestUrl, "https://www.google.co.jp/favicon.ico")
+                assertEquals(thumbUrl, "https://www.google.co.jp/favicon.ico")
+                assertEquals(fileName, "favicon.ico")
+                assertEquals(siteName, "other")
+                assertNull(type)
+            }
+            countDownLatch.countDown()
+        }).requestGetPLVUrl(TestUrls.OTHER_INVALID_TYPE_URL)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }

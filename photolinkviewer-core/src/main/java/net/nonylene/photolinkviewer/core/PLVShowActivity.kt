@@ -1,12 +1,14 @@
 package net.nonylene.photolinkviewer.core
 
-import android.app.Activity
-import android.app.Fragment
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
+import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.core.fragment.BaseShowFragment
 import net.nonylene.photolinkviewer.core.fragment.OptionFragment
 import net.nonylene.photolinkviewer.core.fragment.ShowFragment
 import net.nonylene.photolinkviewer.core.fragment.VideoShowFragment
@@ -14,13 +16,14 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 /**
  * show photo Activity.
  * This Activity requires uri to preview, in data of intent.
  */
-// todo: move to appcompat
-class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
+class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, ProgressBarListener, TilePhotoView.TilePhotoViewListener {
 
     private var isSingle: Boolean = true
     private var scrollView: ScrollView? = null
@@ -28,6 +31,7 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().removeAllStickyEvents()
         setContentView(R.layout.plv_core_activity_show)
 
         scrollView = findViewById(R.id.show_activity_scroll) as ScrollView
@@ -42,7 +46,7 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
 
         val url = intent.data.toString()
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         val optionFragment = OptionFragment().apply {
             arguments = OptionFragment.createArguments(url)
         }
@@ -50,6 +54,33 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
         fragmentTransaction.commit()
 
         PLVUrlService(this, this).requestGetPLVUrl(url)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
+    }
+
+    // suppress illegal state exception, commit after onResume
+    @Suppress("unused")
+    @Subscribe(sticky = true)
+    fun onEvent(event: FragmentShowingEvent) {
+        EventBus.getDefault().removeStickyEvent(event)
+        val fragment = if (event.isVideo) {
+            VideoShowFragment().apply {
+                arguments = VideoShowFragment.createArguments(event.plvUrl, isSingle)
+            }
+        } else {
+            ShowFragment().apply {
+                arguments = ShowFragment.createArguments(event.plvUrl, isSingle)
+            }
+        }
+        onFragmentRequired(fragment, BaseShowFragment.SHOW_FRAGMENT_TAG)
     }
 
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
@@ -64,6 +95,7 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
             tileView!!.setPLVUrls(tileView!!.addImageView(), plvUrls)
             tileView!!.notifyChanged()
         }
+        EventBus.getDefault().postSticky(DownloadButtonEvent(plvUrls.toList(), plvUrls.size != 1))
     }
 
     override fun onGetPLVUrlFailed(text: String) {
@@ -79,31 +111,26 @@ class PLVShowActivity : Activity(), PLVUrlService.PLVUrlListener, ProgressBarLis
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(ShowFragment().apply {
-            arguments = ShowFragment.createArguments(plvUrl, isSingle)
-        })
+        EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, false))
     }
 
     override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        onFragmentRequired(VideoShowFragment().apply {
-            arguments = VideoShowFragment.createArguments(plvUrl, isSingle)
-        })
+        EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, true))
     }
 
-    private fun onFragmentRequired(fragment: Fragment) {
+    private fun onFragmentRequired(fragment: Fragment, tag: String?) {
         try {
             // go to show fragment
-            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragmentTransaction = supportFragmentManager.beginTransaction()
             // back to this screen when back pressed
             if (!isSingle) fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.replace(R.id.show_frag_replace, fragment)
+            fragmentTransaction.replace(R.id.show_frag_replace, fragment, tag)
             fragmentTransaction.commit()
 
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
-
     }
 
-    //todo: onPause -> onResume, no fragment shown (#1)
+    inner class FragmentShowingEvent(val plvUrl: PLVUrl, val isVideo: Boolean)
 }

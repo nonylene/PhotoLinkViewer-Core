@@ -1,19 +1,19 @@
 package net.nonylene.photolinkviewer.core.fragment
 
 import android.app.Dialog
-import android.app.LoaderManager
 import android.content.Context
 import android.content.Intent
-import android.content.Loader
 import android.content.SharedPreferences
 import android.graphics.Matrix
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.app.Fragment
 import android.preference.PreferenceManager
 import android.app.DialogFragment
 import android.content.res.Configuration
+import android.support.v4.app.Fragment
+import android.support.v4.app.LoaderManager
+import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.GestureDetector
@@ -31,7 +31,6 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import butterknife.bindView
-import de.greenrobot.event.EventBus
 import net.nonylene.photolinkviewer.core.PLVMaxSizePreferenceActivity
 import net.nonylene.photolinkviewer.core.R
 
@@ -39,11 +38,13 @@ import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.async.AsyncHttpBitmap
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
-import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
-class ShowFragment : Fragment() {
+class ShowFragment : BaseShowFragment() {
 
     private val imageView: ImageView by bindView(R.id.imgview)
     private val showFrameLayout: FrameLayout by bindView(R.id.showframe)
@@ -55,20 +56,19 @@ class ShowFragment : Fragment() {
     private var applicationContext : Context? = null
 
     companion object {
+
+        private val IS_SINGLE_FRAGMENT_KEY = "is_single"
+        private val PLV_URL_KEY = "plvurl"
+
         /**
          * @param isSingleFragment if true, background color and progressbar become transparent in this fragment.
          */
         fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
             return Bundle().apply {
-                setPLVUrl(plvUrl)
-                setIsSingleFragment(isSingleFragment)
+                putParcelable(PLV_URL_KEY, plvUrl)
+                putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
             }
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        EventBus.getDefault().register(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,12 +108,23 @@ class ShowFragment : Fragment() {
             Initialize.initialize47(activity)
         }
 
-        if (arguments.isSingleFragment()) {
+        if (arguments.getBoolean(IS_SINGLE_FRAGMENT_KEY)) {
             showFrameLayout.setBackgroundResource(R.color.plv_core_transparent)
             progressBar.visibility = View.GONE
         }
 
-        AsyncExecute(arguments.getPLVUrl()).Start()
+        EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(arguments.getParcelable(PLV_URL_KEY)), false))
+        AsyncExecute(arguments.getParcelable(PLV_URL_KEY)).Start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
     }
 
     internal inner class simpleOnGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -285,7 +296,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(plvUrl))
+            EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(plvUrl), false))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)
@@ -338,7 +349,7 @@ class ShowFragment : Fragment() {
             matrix.postTranslate(initX, initY)
             imageView.imageMatrix = matrix
 
-            EventBus.getDefault().post(ShowFragmentEvent(true))
+            EventBus.getDefault().post(BaseShowFragmentEvent(this@ShowFragment, true))
 
             // avoid crash after fragment closed
             if (result.isResized) {
@@ -358,7 +369,8 @@ class ShowFragment : Fragment() {
     }
 
 
-    @SuppressWarnings("unused")
+    @Suppress("unused")
+    @Subscribe
     fun onEvent(rotateEvent: RotateEvent) {
         rotateImg(rotateEvent.isRightRotate)
     }
@@ -379,9 +391,8 @@ class ShowFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
         super.onDestroy()
-        EventBus.getDefault().post(ShowFragmentEvent(false))
+        EventBus.getDefault().post(BaseShowFragmentEvent(this, false))
     }
 
     private fun addWebView(plvUrl: PLVUrl) {
@@ -468,23 +479,4 @@ class ShowFragment : Fragment() {
             }
         }
     }
-}
-
-private val IS_SINGLE_FRAGMENT_KEY = "is_single"
-private val PLV_URL_KEY = "plvurl"
-
-fun Bundle.setIsSingleFragment(isSingleFragment: Boolean) {
-    putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
-}
-
-fun Bundle.isSingleFragment() : Boolean {
-    return getBoolean(IS_SINGLE_FRAGMENT_KEY, false)
-}
-
-fun Bundle.setPLVUrl(plvUrl: PLVUrl) {
-    putParcelable(PLV_URL_KEY, plvUrl)
-}
-
-fun Bundle.getPLVUrl() : PLVUrl {
-    return getParcelable(PLV_URL_KEY)
 }

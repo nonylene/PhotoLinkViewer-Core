@@ -38,10 +38,12 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     }
 
     // remove canceled view
+    @Suppress("unused")
     fun removeImageView(position: Int) {
         frameLayoutListList[position] = null
     }
 
+    @Suppress("unused")
     fun setPLVUrl(position: Int, plvUrl: PLVUrl) {
         if (frameLayoutListList.size > position) frameLayoutListList.set(position, arrayListOf(plvUrl))
     }
@@ -96,6 +98,7 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         ((frameLayoutCombinedList.size + 1) / 2..childCount - 1).forEach { removeViewAt(it) }
     }
 
+    @Suppress("unused")
     fun initialize() {
         removeAllViews()
         frameLayoutListList.clear()

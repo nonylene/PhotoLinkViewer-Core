@@ -1,10 +1,10 @@
 package net.nonylene.photolinkviewer.core.fragment
 
-import android.app.Fragment
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -15,26 +15,32 @@ import android.widget.MediaController
 import android.widget.ProgressBar
 import android.widget.VideoView
 import net.nonylene.photolinkviewer.core.R
+import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.tool.isVideoAutoPlay
+import org.greenrobot.eventbus.EventBus
 
 /**
  * @see createArguments
  */
-class VideoShowFragment : Fragment() {
+class VideoShowFragment : BaseShowFragment() {
     private var baseView: View? = null
     private var videoShowFrameLayout: FrameLayout? = null
     private var progressBar: ProgressBar? = null
 
     companion object {
+        private val IS_SINGLE_FRAGMENT_KEY = "is_single"
+        private val PLV_URL_KEY = "plvurl"
+
         /**
          * @param isSingleFragment if true, background color become transparent in this fragment.
          */
         fun createArguments(plvUrl: PLVUrl, isSingleFragment: Boolean): Bundle {
             return Bundle().apply {
-                setPLVUrl(plvUrl)
-                setIsSingleFragment(isSingleFragment)
+                putParcelable(PLV_URL_KEY, plvUrl)
+                putBoolean(IS_SINGLE_FRAGMENT_KEY, isSingleFragment)
             }
         }
     }
@@ -43,11 +49,12 @@ class VideoShowFragment : Fragment() {
         baseView = inflater.inflate(R.layout.plv_core_videoshow_fragment, container, false)
         videoShowFrameLayout = baseView!!.findViewById(R.id.videoshowframe) as FrameLayout
         progressBar = baseView!!.findViewById(R.id.show_progress) as ProgressBar
-        if (arguments.isSingleFragment()) {
+        if (arguments.getBoolean(IS_SINGLE_FRAGMENT_KEY)) {
             videoShowFrameLayout!!.setBackgroundResource(R.color.plv_core_transparent)
             // do not hide progressbar! progressbar of activity will be displayed under videoView.
         }
-        playVideo(arguments.getPLVUrl())
+        playVideo(arguments.getParcelable(PLV_URL_KEY))
+        EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(arguments.getParcelable(PLV_URL_KEY)), false))
         return baseView
     }
 
@@ -94,6 +101,11 @@ class VideoShowFragment : Fragment() {
             videoView.stopPlayback()
             false
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().post(BaseShowFragmentEvent(this, false))
     }
 
     private fun removeProgressBar() {
