@@ -25,19 +25,21 @@ class PLVUrlServiceTest {
     private val mContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     private fun getServiceWithSuccessListener(operation: (Array<PLVUrl>) -> Unit): PLVUrlService {
-        return PLVUrlService(mContext, object : PLVUrlService.PLVUrlListener {
+        return PLVUrlService(mContext).apply {
+            plvUrlListener = object : PLVUrlService.PLVUrlListener {
 
-            override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
-                operation(plvUrls)
-            }
+                override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
+                    operation(plvUrls)
+                }
 
-            override fun onGetPLVUrlFailed(text: String) {
-                throw IllegalStateException("plv url failed!: $text")
-            }
+                override fun onGetPLVUrlFailed(text: String) {
+                    throw IllegalStateException("plv url failed!: $text")
+                }
 
-            override fun onURLAccepted() {
+                override fun onURLAccepted() {
+                }
             }
-        })
+        }
     }
 
     init {
@@ -131,6 +133,8 @@ class PLVUrlServiceTest {
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_MOBILE_URL)
 
+        assertNull(PLVUrlService(mContext).getPLVUrl(TestUrls.FLICKR_NORMAL_URL))
+
         countDownLatch.await(10, TimeUnit.SECONDS)
     }
 
@@ -160,6 +164,8 @@ class PLVUrlServiceTest {
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.NICO_SHORTEN_URL)
 
+        assertNull(PLVUrlService(mContext).getPLVUrl(TestUrls.NICO_NORMAL_URL))
+
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
 
@@ -177,6 +183,8 @@ class PLVUrlServiceTest {
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.PBS_TWITTER_URL)
+
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.PBS_TWITTER_URL)!!.size, 1)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -196,6 +204,8 @@ class PLVUrlServiceTest {
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TWIPPLE_URL)
 
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.TWIPPLE_URL)!!.size, 1)
+
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
 
@@ -213,6 +223,8 @@ class PLVUrlServiceTest {
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.IMGLY_URL)
+
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.IMGLY_URL)!!.size, 1)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -243,6 +255,8 @@ class PLVUrlServiceTest {
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.INSTAGRAM_SHORTEN_URL)
 
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.INSTAGRAM_NORMAL_URL)!!.size, 1)
+
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
 
@@ -260,6 +274,8 @@ class PLVUrlServiceTest {
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.GYAZO_URL)
+
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.GYAZO_URL)!!.size, 1)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -279,6 +295,8 @@ class PLVUrlServiceTest {
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.IMGUR_URL)
 
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.IMGUR_URL)!!.size, 1)
+
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
 
@@ -297,6 +315,8 @@ class PLVUrlServiceTest {
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.VINE_URL)
+
+        assertNull(PLVUrlService(mContext).getPLVUrl(TestUrls.VINE_URL))
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }
@@ -343,6 +363,8 @@ class PLVUrlServiceTest {
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TUMBLR_SHORTEN_URL)
 
+        assertNull(PLVUrlService(mContext).getPLVUrl(TestUrls.TUMBLR_NORMAL_URL))
+
         countDownLatch.await(8, TimeUnit.SECONDS)
     }
 
@@ -382,6 +404,8 @@ class PLVUrlServiceTest {
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.OTHER_INVALID_TYPE_URL)
+
+        assertEquals(PLVUrlService(mContext).getPLVUrl(TestUrls.OTHER_URL)!!.size, 1)
 
         countDownLatch.await(5, TimeUnit.SECONDS)
     }

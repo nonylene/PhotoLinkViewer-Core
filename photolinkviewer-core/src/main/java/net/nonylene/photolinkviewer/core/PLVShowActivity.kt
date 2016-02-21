@@ -53,7 +53,10 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
         fragmentTransaction.add(R.id.root_layout, optionFragment)
         fragmentTransaction.commit()
 
-        PLVUrlService(this, this).requestGetPLVUrl(url)
+        PLVUrlService(this).apply {
+            plvUrlListener = this@PLVShowActivity
+        }.requestGetPLVUrl(url)
+
     }
 
     override fun onResume() {

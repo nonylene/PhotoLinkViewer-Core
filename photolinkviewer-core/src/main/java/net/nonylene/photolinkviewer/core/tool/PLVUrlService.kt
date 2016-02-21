@@ -23,7 +23,9 @@ import java.io.IOException
 
 import java.util.regex.Pattern
 
-class PLVUrlService(private val context: Context, private val plvUrlListener: PLVUrlService.PLVUrlListener) {
+class PLVUrlService(private val context: Context) {
+
+    var plvUrlListener: PLVUrlListener? = null
 
     interface PLVUrlListener {
         fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>)
@@ -32,8 +34,23 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         fun onURLAccepted()
     }
 
+    // request plv url async
     fun requestGetPLVUrl(url: String) {
-        val site = when {
+        if (plvUrlListener == null) {
+            throw IllegalStateException("listener is not set")
+        } else {
+            getSite(url).requestPLVUrl()
+        }
+
+    }
+
+    // request plv url not async
+    fun getPLVUrl(url: String): Array<PLVUrl>? {
+        return getSite(url).getPLVUrl()
+    }
+
+    private fun getSite(url: String): Site {
+        return when {
             url.contains("flickr.com") || url.contains("flic.kr")
                                              -> FlickrSite(url, context, plvUrlListener)
             url.contains("nico.ms") || url.contains("seiga.nicovideo.jp")
@@ -50,10 +67,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                                              -> TumblrSite(url, context, plvUrlListener)
             else                             -> OtherSite(url, context, plvUrlListener)
         }
-        site.getPLVUrl()
     }
 
-    private abstract inner class Site(protected var url: String, protected var context: Context, protected val listener: PLVUrlListener) {
+    private abstract inner class Site(protected var url: String, protected var context: Context, protected val listener: PLVUrlListener?) {
 
         protected fun wifiChecker(sharedPreferences: SharedPreferences): Boolean {
             //check wifi connecting and wifi setting enabled or not
@@ -74,12 +90,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 onParseFailed()
                 return null
             }
-            listener.onURLAccepted()
+            listener?.onURLAccepted()
             return matcher.group(1)
         }
 
         protected fun onParseFailed() {
-            listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_url_purse_toast))
+            listener?.onGetPLVUrlFailed(context.getString(R.string.plv_core_url_purse_toast))
         }
 
         protected fun getFileTypeFromUrl(url: String): String? {
@@ -88,12 +104,22 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             }
         }
 
-        abstract fun getPLVUrl()
+        // async
+        abstract fun requestPLVUrl()
+
+        // not async
+        abstract fun getPLVUrl(): Array<PLVUrl>?
     }
 
-    private inner class TwitterSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+    private inner class TwitterSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
 
-        override fun getPLVUrl() {
+        override fun requestPLVUrl() {
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
+            }
+        }
+
+        override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.")?.let { id ->
                 val plvUrl = PLVUrl(url, "twitter", id)
 
@@ -107,15 +133,15 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     "small"    -> plvUrl.thumbUrl
                     else       -> null
                 }
-
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                return arrayOf(plvUrl)
             }
+            return null
         }
     }
 
-    private inner class TwippleSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+    private inner class TwippleSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
 
-        override fun getPLVUrl() {
+        override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://p\\.twipple\\.jp/(\\w+)")?.let { id ->
                 val plvUrl = PLVUrl(url, "twipple", id)
 
@@ -128,14 +154,20 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     else       -> null
                 }
 
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                return arrayOf(plvUrl)
+            }
+            return null
+        }
+
+        override fun requestPLVUrl() {
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
             }
         }
     }
 
-    private inner class ImglySite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
-
-        override fun getPLVUrl() {
+    private inner class ImglySite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://img\\.ly/(\\w+)")?.let { id ->
                 val plvUrl = PLVUrl(url, "imgly", id)
 
@@ -147,42 +179,56 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     "medium" -> "http://img.ly/show/medium/" + id
                     else     -> null
                 }
+                return arrayOf(plvUrl)
+            }
+            return null
+        }
 
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+        override fun requestPLVUrl() {
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
             }
         }
     }
 
-    private inner class InstagramSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
-
-        override fun getPLVUrl() {
+    private inner class InstagramSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
                 val plvUrl = PLVUrl(url, "instagram", id)
 
-                if (PhotoLinkViewer.instagramToken != null) {
+                plvUrl.biggestUrl = "https://instagram.com/p/${id}/media/?size=l"
+                plvUrl.displayUrl = when (super.getQuality("instagram")) {
+                    "large"  -> plvUrl.biggestUrl
+                    "medium" -> "https://instagram.com/p/${id}/media/?size=m"
+                    else     -> null
+                }
+                plvUrl.thumbUrl = "https://instagram.com/p/${id}/media/?size=m"
+                return arrayOf(plvUrl)
+            }
+            return null
+        }
+
+        override fun requestPLVUrl() {
+            if (PhotoLinkViewer.instagramToken != null) {
+                super.getId(url, "^https?://.*instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
+                    val plvUrl = PLVUrl(url, "instagram", id)
+
                     val apiUrl = "https://api.instagram.com/v1/media/shortcode/${id}?access_token=${PhotoLinkViewer.instagramToken}"
 
                     VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, apiUrl,
                             Response.Listener { response ->
                                 try {
-                                    listener.onGetPLVUrlFinished(arrayOf(parseInstagram(response, plvUrl)))
+                                    listener?.onGetPLVUrlFinished(arrayOf(parseInstagram(response, plvUrl)))
                                 } catch (e: JSONException) {
-                                    listener.onGetPLVUrlFailed("instagram JSON Parse Error!")
+                                    listener?.onGetPLVUrlFailed("instagram JSON Parse Error!")
                                     e.printStackTrace()
                                 }
                             })
                     )
-
-                } else {
-                    plvUrl.biggestUrl = "https://instagram.com/p/${id}/media/?size=l"
-                    plvUrl.displayUrl = when (super.getQuality("instagram")) {
-                        "large"  -> plvUrl.biggestUrl
-                        "medium" -> "https://instagram.com/p/${id}/media/?size=m"
-                        else     -> null
-                    }
-                    plvUrl.thumbUrl = "https://instagram.com/p/${id}/media/?size=m"
-
-                    listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                }
+            } else {
+                getPLVUrl()?.let {
+                    listener?.onGetPLVUrlFinished(it)
                 }
             }
         }
@@ -217,22 +263,27 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         }
     }
 
-    private inner class GyazoSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
-
-        override fun getPLVUrl() {
+    private inner class GyazoSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*gyazo\\.com/(\\w+)")?.let { id ->
                 val plvUrl = PLVUrl(url, "gyazo", id)
 
                 plvUrl.displayUrl = "https://gyazo.com/${id}/raw"
 
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                return arrayOf(plvUrl)
+            }
+            return null
+        }
+
+        override fun requestPLVUrl() {
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
             }
         }
     }
 
-    private inner class ImgurSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
-
-        override fun getPLVUrl() {
+    private inner class ImgurSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*imgur\\.com/([\\w^\\.]+)")?.let { id ->
                 val plvUrl = PLVUrl(url, "imgur", id)
 
@@ -240,14 +291,20 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 plvUrl.displayUrl = file_url
                 plvUrl.type = "jpg"
 
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                return arrayOf(plvUrl)
+            }
+            return null
+        }
+
+        override fun requestPLVUrl() {
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
             }
         }
     }
 
-    private inner class OtherSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
-
-        override fun getPLVUrl() {
+    private inner class OtherSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
             val lastPath = Uri.parse(url).lastPathSegment
             if (lastPath != null) {
                 val lastDotPosition = lastPath.lastIndexOf(".")
@@ -262,16 +319,26 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 }
                 plvUrl.displayUrl = url
 
-                listener.onGetPLVUrlFinished(arrayOf(plvUrl))
+                return arrayOf(plvUrl)
             } else {
                 onParseFailed()
+                return null
+            }
+        }
+
+        override fun requestPLVUrl() {
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
             }
         }
     }
 
-    private inner class FlickrSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+    private inner class FlickrSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
+            return null
+        }
 
-        override fun getPLVUrl() {
+        override fun requestPLVUrl() {
             when {
                 url.contains("flickr")  -> super.getId(url, "^https?://[wm]w*\\.flickr\\.com/?#?/photos/[\\w@]+/(\\d+)")
                 url.contains("flic.kr") -> super.getId(url, "^https?://flic\\.kr/p/(\\w+)")?.let { Base58.decode(it) }
@@ -285,9 +352,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, request,
                         Response.Listener { response ->
                             try {
-                                listener.onGetPLVUrlFinished(arrayOf(parseFlickr(response, plvUrl)))
+                                listener?.onGetPLVUrlFinished(arrayOf(parseFlickr(response, plvUrl)))
                             } catch (e: JSONException) {
-                                listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
+                                listener?.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
                                 e.printStackTrace()
                             }
                         })
@@ -328,9 +395,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         }
     }
 
-    private inner class NicoSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+    private inner class NicoSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
+            return null
+        }
 
-        override fun getPLVUrl() {
+        override fun requestPLVUrl() {
             when {
                 url.contains("nico.ms") -> super.getId(url, "^https?://nico\\.ms/im(\\d+)")
                 else                    -> super.getId(url, "^https?://seiga.nicovideo.jp/seiga/im(\\d+)")
@@ -340,14 +410,14 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 RedirectUrlController(object : Callback {
                     override fun onResponse(response: com.squareup.okhttp.Response) {
                         Handler(Looper.getMainLooper()).post {
-                            listener.onGetPLVUrlFinished(arrayOf(parseNico(response.request().urlString(), id, plvUrl)))
+                            listener?.onGetPLVUrlFinished(arrayOf(parseNico(response.request().urlString(), id, plvUrl)))
                         }
                     }
 
                     override fun onFailure(request: Request, e: IOException) {
                         e.printStackTrace()
                         Handler(Looper.getMainLooper()).post {
-                            listener.onGetPLVUrlFailed("connection error!")
+                            listener?.onGetPLVUrlFailed("connection error!")
                         }
                     }
                 }).getRedirect("http://seiga.nicovideo.jp/image/source/" + id)
@@ -384,9 +454,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         }
     }
 
-    private inner class VineSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+    private inner class VineSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
+            return null
+        }
 
-        override fun getPLVUrl() {
+        override fun requestPLVUrl() {
             super.getId(url, "^https?://vine\\.co/v/(\\w+)")?.let { id ->
                 val plvUrl = PLVUrl(url, "vine", id)
 
@@ -398,9 +471,9 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                 VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, request,
                         Response.Listener { response ->
                             try {
-                                listener.onGetPLVUrlFinished(arrayOf(parseVine(response, plvUrl)))
+                                listener?.onGetPLVUrlFinished(arrayOf(parseVine(response, plvUrl)))
                             } catch (e: JSONException) {
-                                listener.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
+                                listener?.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
                                 e.printStackTrace()
                             }
                         })
@@ -417,9 +490,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
         }
     }
 
-    private inner class TumblrSite(url: String, context: Context, listener: PLVUrlListener) : Site(url, context, listener) {
+    private inner class TumblrSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
+        override fun getPLVUrl(): Array<PLVUrl>? {
+            return null
+        }
 
-        override fun getPLVUrl() {
+        override fun requestPLVUrl() {
             if (!url.contains("tmblr.co")) {
                 requestAPI(url)
             } else {
@@ -433,13 +509,13 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
                     override fun onFailure(request: Request, e: IOException) {
                         e.printStackTrace()
                         Handler(Looper.getMainLooper()).post {
-                            listener.onGetPLVUrlFailed("connection error!")
+                            listener?.onGetPLVUrlFailed("connection error!")
                         }
                     }
                 }).getRedirect(url)
             }
 
-            listener.onURLAccepted()
+            listener?.onURLAccepted()
         }
 
 
@@ -459,12 +535,12 @@ class PLVUrlService(private val context: Context, private val plvUrlListener: PL
             VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, request,
                     Response.Listener { response ->
                         try {
-                            listener.onGetPLVUrlFinished(parseTumblr(response, id))
+                            listener?.onGetPLVUrlFinished(parseTumblr(response, id))
                         } catch (e: JSONException) {
-                            listener.onGetPLVUrlFailed("tumblr json parse error!")
+                            listener?.onGetPLVUrlFailed("tumblr json parse error!")
                             e.printStackTrace()
                         } catch (e: IllegalStateException) {
-                            listener.onGetPLVUrlFailed(e.message!!)
+                            listener?.onGetPLVUrlFailed(e.message!!)
                         }
                     })
             );
