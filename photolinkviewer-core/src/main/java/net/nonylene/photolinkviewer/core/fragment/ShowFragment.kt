@@ -71,11 +71,6 @@ class ShowFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        EventBus.getDefault().register(this)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         applicationContext = activity.applicationContext
@@ -119,6 +114,16 @@ class ShowFragment : Fragment() {
         }
 
         AsyncExecute(arguments.getParcelable(PLV_URL_KEY)).Start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
     }
 
     internal inner class simpleOnGestureListener : GestureDetector.SimpleOnGestureListener() {
@@ -385,7 +390,6 @@ class ShowFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
         super.onDestroy()
         EventBus.getDefault().post(ShowFragmentEvent(false))
     }
