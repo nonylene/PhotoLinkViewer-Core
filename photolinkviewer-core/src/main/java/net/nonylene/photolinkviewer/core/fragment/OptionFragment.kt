@@ -263,6 +263,7 @@ class OptionFragment : Fragment() {
     @Suppress("unused")
     @Subscribe(sticky = true)
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
+        EventBus.getDefault().removeStickyEvent(downloadButtonEvent)
         if (downloadButtonEvent.addToStack) downloadPLVUrlStack = downloadButtonEvent.plvUrls
         setDlButton(downloadButtonEvent.plvUrls)
     }
