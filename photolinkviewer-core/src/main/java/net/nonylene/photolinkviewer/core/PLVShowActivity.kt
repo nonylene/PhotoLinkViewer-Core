@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.ScrollView
 import android.widget.Toast
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
+import net.nonylene.photolinkviewer.core.fragment.BaseShowFragment
 import net.nonylene.photolinkviewer.core.fragment.OptionFragment
 import net.nonylene.photolinkviewer.core.fragment.ShowFragment
 import net.nonylene.photolinkviewer.core.fragment.VideoShowFragment
@@ -79,7 +80,7 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
                 arguments = ShowFragment.createArguments(event.plvUrl, isSingle)
             }
         }
-        onFragmentRequired(fragment)
+        onFragmentRequired(fragment, BaseShowFragment.SHOW_FRAGMENT_TAG)
     }
 
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
@@ -117,13 +118,13 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
         EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, true))
     }
 
-    private fun onFragmentRequired(fragment: Fragment) {
+    private fun onFragmentRequired(fragment: Fragment, tag: String?) {
         try {
             // go to show fragment
             val fragmentTransaction = supportFragmentManager.beginTransaction()
             // back to this screen when back pressed
             if (!isSingle) fragmentTransaction.addToBackStack(null)
-            fragmentTransaction.replace(R.id.show_frag_replace, fragment)
+            fragmentTransaction.replace(R.id.show_frag_replace, fragment, tag)
             fragmentTransaction.commit()
 
         } catch (e: IllegalStateException) {

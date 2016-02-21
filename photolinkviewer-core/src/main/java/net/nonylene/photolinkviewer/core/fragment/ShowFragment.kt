@@ -38,13 +38,13 @@ import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.async.AsyncHttpBitmap
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
-import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class ShowFragment : Fragment() {
+class ShowFragment : BaseShowFragment() {
 
     private val imageView: ImageView by bindView(R.id.imgview)
     private val showFrameLayout: FrameLayout by bindView(R.id.showframe)
@@ -113,6 +113,7 @@ class ShowFragment : Fragment() {
             progressBar.visibility = View.GONE
         }
 
+        EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(arguments.getParcelable(PLV_URL_KEY)), false))
         AsyncExecute(arguments.getParcelable(PLV_URL_KEY)).Start()
     }
 
@@ -295,7 +296,7 @@ class ShowFragment : Fragment() {
                 return
             }
 
-            EventBus.getDefault().post(DownloadButtonEvent(listOf(plvUrl), false))
+            EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(plvUrl), false))
 
             if ("gif" == result.type) {
                 addWebView(plvUrl)
@@ -348,7 +349,7 @@ class ShowFragment : Fragment() {
             matrix.postTranslate(initX, initY)
             imageView.imageMatrix = matrix
 
-            EventBus.getDefault().post(ShowFragmentEvent(true))
+            EventBus.getDefault().post(BaseShowFragmentEvent(this@ShowFragment, true))
 
             // avoid crash after fragment closed
             if (result.isResized) {
@@ -391,7 +392,7 @@ class ShowFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        EventBus.getDefault().post(ShowFragmentEvent(false))
+        EventBus.getDefault().post(BaseShowFragmentEvent(this, false))
     }
 
     private fun addWebView(plvUrl: PLVUrl) {

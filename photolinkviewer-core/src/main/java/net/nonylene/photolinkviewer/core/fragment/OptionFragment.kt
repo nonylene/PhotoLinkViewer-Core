@@ -36,7 +36,7 @@ import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
-import net.nonylene.photolinkviewer.core.event.ShowFragmentEvent
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.tool.*
 import org.greenrobot.eventbus.EventBus
@@ -138,7 +138,6 @@ class OptionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        EventBus.getDefault().register(this)
 
         baseButton.setOnClickListener { baseButton ->
             if (isOpen) {
@@ -203,6 +202,16 @@ class OptionFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        EventBus.getDefault().register(this)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        EventBus.getDefault().unregister(this)
+        super.onPause()
     }
 
     class TwitterDialogFragment : DialogFragment() {
@@ -271,8 +280,10 @@ class OptionFragment : Fragment() {
     // eventBus catch event
     @Suppress("unused")
     @Subscribe
-    fun onEvent(showFragmentEvent: ShowFragmentEvent) {
-        if (showFragmentEvent.isToBeShown) {
+    fun onEvent(baseShowFragmentEvent: BaseShowFragmentEvent) {
+        if (fragmentManager.findFragmentByTag(BaseShowFragment.SHOW_FRAGMENT_TAG) != baseShowFragmentEvent.fragment) return
+
+        if (baseShowFragmentEvent.isToBeShown) {
             rotateRightButton.showWithAnimation()
             rotateLeftButton.showWithAnimation()
         } else {
@@ -454,10 +465,5 @@ class OptionFragment : Fragment() {
                 RETWEET_CODE -> twitter.retweetStatus(id_long)
             }
         }
-    }
-
-    override fun onDestroy() {
-        EventBus.getDefault().unregister(this)
-        super.onDestroy()
     }
 }
