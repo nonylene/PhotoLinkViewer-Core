@@ -83,7 +83,7 @@ def repo = new File(rootDir, "repository")
 def snapshotRepo = new File(rootDir, "repository/snapshots")
 
 group = 'net.nonylene'
-version = '0.0.3-SNAPSHOT'
+version = '0.0.4'
 
 apply plugin: 'maven'
 
