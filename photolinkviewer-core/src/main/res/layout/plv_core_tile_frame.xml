@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content" >
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
 
     <net.nonylene.photolinkviewer.core.view.SquareImageView
         android:layout_width="match_parent"
@@ -14,7 +17,10 @@
     <ImageView
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:padding="1dp"
         android:layout_gravity="bottom|end"
+        android:src="@drawable/plv_core_ic_movie_black"
         android:visibility="gone"
-        android:src="@drawable/plv_core_video_icon"/>
+        tools:visibility="visible"
+        />
 </FrameLayout>
