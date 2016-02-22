@@ -319,6 +319,7 @@ class PLVUrlService(private val context: Context) {
                 }
                 plvUrl.displayUrl = url
 
+                listener?.onURLAccepted()
                 return arrayOf(plvUrl)
             } else {
                 onParseFailed()
