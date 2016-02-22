@@ -315,18 +315,13 @@ class PLVUrlService(private val context: Context) {
                     plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition))
                     plvUrl.type = type
                     listener?.onURLAccepted()
-                } else {
-                    // parse failed, but make plvUrl
-                    plvUrl = PLVUrl(url, "other", lastPath)
-                    onParseFailed()
-                }
-                plvUrl.displayUrl = url
+                    plvUrl.displayUrl = url
 
-                return arrayOf(plvUrl)
-            } else {
-                onParseFailed()
-                return null
+                    return arrayOf(plvUrl)
+                }
             }
+            onParseFailed()
+            return null
         }
 
         override fun requestPLVUrl() {
