@@ -314,12 +314,14 @@ class PLVUrlService(private val context: Context) {
                 if (arrayOf("png", "jpg", "jpeg", "gif").contains(type)) {
                     plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition))
                     plvUrl.type = type
+                    listener?.onURLAccepted()
                 } else {
+                    // parse failed, but make plvUrl
                     plvUrl = PLVUrl(url, "other", lastPath)
+                    onParseFailed()
                 }
                 plvUrl.displayUrl = url
 
-                listener?.onURLAccepted()
                 return arrayOf(plvUrl)
             } else {
                 onParseFailed()
