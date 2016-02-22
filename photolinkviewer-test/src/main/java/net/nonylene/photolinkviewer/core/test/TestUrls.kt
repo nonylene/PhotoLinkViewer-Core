@@ -17,7 +17,5 @@ object TestUrls {
     val TUMBLR_NORMAL_URL = "http://nonylene.tumblr.com/post/132793441942/kyoto-botanical-garden"
     val TUMBLR_SHORTEN_URL = "http://tmblr.co/ZZ5RFn1xh6nwM"
     val OTHER_URL = "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
-    val OTHER_WITH_NOISE_URL = "https://www.google.co.jp/images/branding/googlelogo/2x/googlelogo_color_.272x92dp.png?jfldasjfkdaslfjasfa...#jfkldajflka/j"
-    val OTHER_INVALID_TYPE_URL = "https://www.google.co.jp/favicon.ico"
 }
 
