@@ -39,6 +39,8 @@ class PLVUrl : Parcelable {
         dest.writeString(siteName)
         dest.writeString(fileName)
         dest.writeString(type)
+        dest.writeInt(height)
+        dest.writeInt(width)
         dest.writeByte((if (isVideo) 1 else 0).toByte())
     }
 
@@ -50,12 +52,14 @@ class PLVUrl : Parcelable {
         this.siteName = source.readString()
         this.fileName = source.readString()
         this.type = source.readString()
+        this.height = source.readInt()
+        this.width = source.readInt()
         this.isVideo = source.readByte().toInt() != 0
     }
 
     companion object {
 
-        @JvmStatic
+        @JvmField
         @Suppress("unused")
         val CREATOR: Parcelable.Creator<PLVUrl> = object : Parcelable.Creator<PLVUrl> {
             override fun createFromParcel(source: Parcel): PLVUrl {

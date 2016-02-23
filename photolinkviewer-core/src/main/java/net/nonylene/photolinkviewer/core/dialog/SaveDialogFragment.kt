@@ -110,7 +110,7 @@ class SaveDialogFragment : DialogFragment() {
         }
 
         companion object {
-            @JvmStatic
+            @JvmField
             @Suppress("unused")
             val CREATOR: Parcelable.Creator<Info> = object : Parcelable.Creator<Info> {
                 override fun createFromParcel(source: Parcel): Info {
