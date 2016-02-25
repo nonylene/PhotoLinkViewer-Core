@@ -17,7 +17,6 @@ import net.nonylene.photolinkviewer.core.tool.PLVUrlService
 import net.nonylene.photolinkviewer.core.tool.ProgressBarListener
 import net.nonylene.photolinkviewer.core.view.TilePhotoView
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 
 /**
  * show photo Activity.
@@ -28,6 +27,9 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
     private var isSingle: Boolean = true
     private var scrollView: ScrollView? = null
     private var tileView: TilePhotoView? = null
+
+    private var isVisibleFront: Boolean = false
+    private var fragmentPairAfterOnPause: Pair<Fragment, String?>? = null
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,29 +63,16 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
 
     override fun onResume() {
         super.onResume()
-        EventBus.getDefault().register(this)
+        isVisibleFront = true
+        fragmentPairAfterOnPause?.let {
+            showFragment(it.first, it.second)
+            fragmentPairAfterOnPause = null
+        }
     }
 
     override fun onPause() {
-        EventBus.getDefault().unregister(this)
+        isVisibleFront = false
         super.onPause()
-    }
-
-    // suppress illegal state exception, commit after onResume
-    @Suppress("unused")
-    @Subscribe(sticky = true)
-    fun onEvent(event: FragmentShowingEvent) {
-        EventBus.getDefault().removeStickyEvent(event)
-        val fragment = if (event.isVideo) {
-            VideoShowFragment().apply {
-                arguments = VideoShowFragment.createArguments(event.plvUrl, isSingle)
-            }
-        } else {
-            ShowFragment().apply {
-                arguments = ShowFragment.createArguments(event.plvUrl, isSingle)
-            }
-        }
-        onFragmentRequired(fragment, BaseShowFragment.SHOW_FRAGMENT_TAG)
     }
 
     override fun onGetPLVUrlFinished(plvUrls: Array<PLVUrl>) {
@@ -114,14 +103,22 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
-        EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, false))
+        val fragment = ShowFragment().apply {
+            arguments = ShowFragment.createArguments(plvUrl, isSingle)
+        }
+        val tag = BaseShowFragment.SHOW_FRAGMENT_TAG
+        if (isVisibleFront) showFragment(fragment, tag) else fragmentPairAfterOnPause = fragment to tag
     }
 
     override fun onVideoShowFragmentRequired(plvUrl: PLVUrl) {
-        EventBus.getDefault().postSticky(FragmentShowingEvent(plvUrl, true))
+        val fragment = VideoShowFragment().apply {
+            arguments = VideoShowFragment.createArguments(plvUrl, isSingle)
+        }
+        val tag = BaseShowFragment.SHOW_FRAGMENT_TAG
+        if (isVisibleFront) showFragment(fragment, tag) else fragmentPairAfterOnPause = fragment to tag
     }
 
-    private fun onFragmentRequired(fragment: Fragment, tag: String?) {
+    private fun showFragment(fragment: Fragment, tag: String?) {
         try {
             // go to show fragment
             val fragmentTransaction = supportFragmentManager.beginTransaction()
@@ -129,11 +126,8 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
             if (!isSingle) fragmentTransaction.addToBackStack(null)
             fragmentTransaction.replace(R.id.show_frag_replace, fragment, tag)
             fragmentTransaction.commit()
-
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
     }
-
-    inner class FragmentShowingEvent(val plvUrl: PLVUrl, val isVideo: Boolean)
 }
