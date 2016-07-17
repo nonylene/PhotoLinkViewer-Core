@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '23.0.3'
 
     defaultConfig {
         minSdkVersion 15
@@ -83,7 +83,7 @@ def repo = new File(rootDir, "repository")
 def snapshotRepo = new File(rootDir, "repository/snapshots")
 
 group = 'net.nonylene'
-version = '0.0.6-SNAPSHOT'
+version = '0.0.6'
 
 apply plugin: 'maven'
 
