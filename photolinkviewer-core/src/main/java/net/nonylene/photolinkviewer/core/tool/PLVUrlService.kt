@@ -209,57 +209,9 @@ class PLVUrlService(private val context: Context) {
         }
 
         override fun requestPLVUrl() {
-            if (PhotoLinkViewer.instagramToken != null) {
-                super.getId(url, "^https?://.*instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
-                    val plvUrl = PLVUrl(url, "instagram", id)
-
-                    val apiUrl = "https://api.instagram.com/v1/media/shortcode/${id}?access_token=${PhotoLinkViewer.instagramToken}"
-
-                    VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, apiUrl,
-                            Response.Listener { response ->
-                                try {
-                                    listener?.onGetPLVUrlFinished(arrayOf(parseInstagram(response, plvUrl)))
-                                } catch (e: JSONException) {
-                                    listener?.onGetPLVUrlFailed("instagram JSON Parse Error!")
-                                    e.printStackTrace()
-                                }
-                            })
-                    )
-                }
-            } else {
-                getPLVUrl()?.let {
-                    listener?.onGetPLVUrlFinished(it)
-                }
+            getPLVUrl()?.let {
+                listener?.onGetPLVUrlFinished(it)
             }
-        }
-
-        @Throws(JSONException::class)
-        private fun parseInstagram(json: JSONObject, plvUrl: PLVUrl): PLVUrl {
-            //for flickr
-            val data = JSONObject(json.getString("data"))
-            val fileUrls: JSONObject
-
-            if ("video" == data.getString("type")) {
-                plvUrl.isVideo = true
-                fileUrls = data.getJSONObject("videos")
-            } else {
-                fileUrls = data.getJSONObject("images")
-            }
-
-            val displayUrl = when (super.getQuality("instagram")) {
-                "large"  -> fileUrls.getJSONObject("standard_resolution")
-                "medium" -> fileUrls.getJSONObject("low_resolution")
-                else     -> null
-            }!!.getString("url")
-
-            plvUrl.type = getFileTypeFromUrl(displayUrl)
-            plvUrl.displayUrl = displayUrl
-
-            val imageUrls = data.getJSONObject("images")
-            plvUrl.thumbUrl = imageUrls.getJSONObject("low_resolution").getString("url")
-            plvUrl.biggestUrl = imageUrls.getJSONObject("standard_resolution").getString("url")
-
-            return plvUrl
         }
     }
 

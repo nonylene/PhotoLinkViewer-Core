@@ -16,8 +16,6 @@ object PhotoLinkViewer {
     private var preferenceActivityClass: Class<out Activity>? = null
 
     val twitterTokenMap = LinkedHashMap<String, TwitterToken>()
-    // to use instagram video preview, set token.
-    var instagramToken: String? = null
     // to use cache in okhttp, set cache.
     var cache : Cache? = null
 
