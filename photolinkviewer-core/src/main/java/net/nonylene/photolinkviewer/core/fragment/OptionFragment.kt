@@ -424,7 +424,9 @@ class OptionFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SAVE_DIALOG_CODE) {
-            saveOrRequestPermission(data!!.getStringExtra(SaveDialogFragment.DIR_KEY), data.getParcelableArrayListExtra(SaveDialogFragment.INFO_KEY))
+            data?.let {
+                saveOrRequestPermission(it.getStringExtra(SaveDialogFragment.DIR_KEY), it.getParcelableArrayListExtra(SaveDialogFragment.INFO_KEY))
+            }
         } else {
             val applicationContext = activity.applicationContext
             // request code > like or retweet
