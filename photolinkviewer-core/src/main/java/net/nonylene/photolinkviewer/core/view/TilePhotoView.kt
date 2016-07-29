@@ -7,10 +7,9 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import net.nonylene.photolinkviewer.core.R
 
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
 import java.util.*
 
@@ -22,12 +21,10 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     private val inflater : LayoutInflater
 
     var tilePhotoViewListener: TilePhotoViewListener? = null
-    private val picasso : Picasso
 
     init {
         inflater = LayoutInflater.from(context)
         orientation = LinearLayout.VERTICAL
-        picasso = OkHttpManager.getPicasso(context)
     }
 
     // add empty view
@@ -90,7 +87,7 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                         tilePhotoViewListener?.onShowFragmentRequired(plv)
                     }
                 }
-                picasso.load(plv.thumbUrl).into(imageView)
+                Glide.with(context).load(plv.thumbUrl).into(imageView)
             }
         }
 

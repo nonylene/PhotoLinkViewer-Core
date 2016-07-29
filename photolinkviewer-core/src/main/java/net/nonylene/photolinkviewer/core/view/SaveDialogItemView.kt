@@ -10,8 +10,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import butterknife.bindView
+import com.bumptech.glide.Glide
 import net.nonylene.photolinkviewer.core.R
-import net.nonylene.photolinkviewer.core.tool.OkHttpManager
 
 class SaveDialogItemView(context: Context?, attrs: AttributeSet?) : LinearLayout(context, attrs), Checkable {
     private var mChecked: Boolean = true
@@ -71,6 +71,6 @@ class SaveDialogItemView(context: Context?, attrs: AttributeSet?) : LinearLayout
     }
 
     fun setThumbnailUrl(url: String) {
-        OkHttpManager.getPicasso(context).load(url).into(thumbImageView)
+        Glide.with(context).load(url).into(thumbImageView)
     }
 }
