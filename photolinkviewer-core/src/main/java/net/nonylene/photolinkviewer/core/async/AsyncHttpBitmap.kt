@@ -43,7 +43,7 @@ class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val 
                 if (it.markSupported()) it else BufferedInputStream(it)
             }
 
-            inputStream.mark(65536);
+            inputStream.mark(65536)
 
             // read binary and get type
             val yaBinary = ByteArray(4)
