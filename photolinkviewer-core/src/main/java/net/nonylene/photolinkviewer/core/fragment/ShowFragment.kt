@@ -11,13 +11,10 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.app.DialogFragment
 import android.content.res.Configuration
-import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
 import android.support.v7.app.AlertDialog
-import android.text.TextUtils
 import android.view.GestureDetector
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
@@ -25,12 +22,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.ScaleAnimation
-import android.webkit.WebView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import butterknife.bindView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
 import net.nonylene.photolinkviewer.core.PLVMaxSizePreferenceActivity
 import net.nonylene.photolinkviewer.core.R
 
@@ -51,7 +51,7 @@ class ShowFragment : BaseShowFragment() {
     private val progressBar: ProgressBar by bindView(R.id.showprogress)
 
     private val preferences: SharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
-    private var firstzoom = 1f
+    private var firstScale = 1f
     private var quickScale: MyQuickScale? = null
     private var applicationContext : Context? = null
 
@@ -220,7 +220,7 @@ class ShowFragment : BaseShowFragment() {
             val new_zoom = Math.pow((touchY / initialY).toDouble(), (zoomSpeed * 2).toDouble()).toFloat()
             // photo's zoom scale (is relative to old zoom value.)
             val scale = new_zoom / old_zoom
-            if (new_zoom > firstzoom / basezoom * 0.8) {
+            if (new_zoom > firstScale / basezoom * 0.8) {
                 old_zoom = new_zoom
                 matrix.postScale(scale, scale, initialX, initialY)
                 imageView.imageMatrix = matrix
@@ -259,7 +259,7 @@ class ShowFragment : BaseShowFragment() {
             val new_zoom = Math.pow(detector.scaleFactor.toDouble(), zoomSpeed.toDouble()).toFloat()
             // photo's zoom scale (is relative to old zoom value.)
             val scale = new_zoom / old_zoom
-            if (new_zoom > firstzoom / basezoom * 0.8) {
+            if (new_zoom > firstScale / basezoom * 0.8) {
                 old_zoom = new_zoom
                 matrix.postScale(scale, scale, touchX, touchY)
                 imageView.imageMatrix = matrix
@@ -298,61 +298,23 @@ class ShowFragment : BaseShowFragment() {
 
             EventBus.getDefault().postSticky(DownloadButtonEvent(listOf(plvUrl), false))
 
-            if ("gif" == result.type) {
-                addWebView(plvUrl)
-                return
-            } else {
-                removeProgressBar()
-            }
-
             val display = activity.windowManager.defaultDisplay
-            val size = Point()
-            display.getSize(size)
-            val dispWidth = size.x
-            val dispHeight = size.y
+            val displaySize = Point()
+            display.getSize(displaySize)
 
-            //get bitmap size
-            val origWidth = bitmap.width.toFloat()
-            val origHeight = bitmap.height.toFloat()
-            //set image
-            imageView.setImageBitmap(bitmap)
-            //get matrix from imageview
-            val matrix = Matrix()
-            matrix.set(imageView.matrix)
-            //get display size
-            val wid = dispWidth / origWidth
-            val hei = dispHeight / origHeight
-            val zoom = Math.min(wid, hei)
-            val initX: Float
-            val initY: Float
-            if (preferences.isAdjustZoom() || zoom < 1) {
-                //zoom
-                matrix.setScale(zoom, zoom)
-                if (wid < hei) {
-                    //adjust width
-                    initX = 0f
-                    initY = (dispHeight - origHeight * wid) / 2
-                } else {
-                    //adjust height
-                    initX = (dispWidth - origWidth * hei) / 2
-                    initY = 0f
-                }
-                if (zoom < 1) {
-                    firstzoom = zoom
-                }
-            } else {
-                //move
-                initX = (dispWidth - origWidth) / 2
-                initY = (dispHeight - origHeight) / 2
+            // get picture scale
+            val widthScale = displaySize.x / bitmap.width.toFloat()
+            val heightScale = displaySize.y / bitmap.height.toFloat()
+            val minScale = Math.min(widthScale, heightScale)
+
+            if (preferences.isAdjustZoom() || minScale < 1) {
+                imageView.scaleType = ImageView.ScaleType.FIT_CENTER
             }
 
-            matrix.postTranslate(initX, initY)
-            imageView.imageMatrix = matrix
+            firstScale = Math.min(minScale, 1f)
 
-            EventBus.getDefault().post(BaseShowFragmentEvent(this@ShowFragment, true))
-
-            // avoid crash after fragment closed
             if (result.isResized) {
+                // avoid crash after fragment closed
                 activity.let { activity ->
                     EventBus.getDefault().post(
                             SnackbarEvent(getString(R.string.plv_core_resize_message) + result.originalWidth + "x" + result.originalHeight,
@@ -361,6 +323,30 @@ class ShowFragment : BaseShowFragment() {
                             }))
                 }
             }
+
+            if ("gif" == result.type) {
+                Glide.with(this@ShowFragment)
+                        .load(plvUrl.displayUrl)
+                        .dontAnimate()
+                        .into(object : GlideDrawableImageViewTarget(imageView) {
+                            override fun onResourceReady(resource: GlideDrawable, animation: GlideAnimation<in GlideDrawable>) {
+                                super.onResourceReady(resource, animation)
+                                afterImageSet()
+                            }
+                        })
+                return
+            } else {
+                // set image
+                imageView.setImageBitmap(bitmap)
+                afterImageSet()
+            }
+        }
+
+        fun afterImageSet() {
+            removeProgressBar()
+            // change scale to MATRIX
+            imageView.scaleType = ImageView.ScaleType.MATRIX
+            EventBus.getDefault().post(BaseShowFragmentEvent(this@ShowFragment, true))
         }
 
         override fun onLoaderReset(loader: Loader<AsyncHttpBitmap.Result>) {
@@ -393,51 +379,6 @@ class ShowFragment : BaseShowFragment() {
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().post(BaseShowFragmentEvent(this, false))
-    }
-
-    private fun addWebView(plvUrl: PLVUrl) {
-        val videoWidth = plvUrl.width
-        val videoHeight = plvUrl.height
-
-        val display = activity.windowManager.defaultDisplay
-        val size = Point()
-        display.getSize(size)
-        val dispWidth = size.x
-        val dispHeight = size.y
-
-        // gif view by web view
-        val webView = WebView(activity).apply {
-            settings.useWideViewPort = true
-            settings.loadWithOverviewMode = true
-        }
-
-        val layoutParams: FrameLayout.LayoutParams
-        val escaped = TextUtils.htmlEncode(plvUrl.displayUrl)
-        val html: String
-        if ((videoHeight > dispHeight * 0.9 && videoWidth * dispHeight / dispHeight < dispWidth) || dispWidth * videoHeight / videoWidth > dispHeight) {
-            // if height of video > disp_height * 0.9, check whether calculated width > disp_width . if this is true,
-            // give priority to width. and, if check whether calculated height > disp_height, give priority to height.
-            val width = (dispWidth * 0.9).toInt()
-            val height = (dispHeight * 0.9).toInt()
-            layoutParams = FrameLayout.LayoutParams(width, height)
-            html = "<html><body><img style='display: block; margin: 0 auto' height='100%'src='$escaped'></body></html>"
-        } else {
-            val width = (dispWidth * 0.9).toInt()
-            layoutParams = FrameLayout.LayoutParams(width, width * videoHeight / videoWidth)
-            html = "<html><body><img style='display: block; margin: 0 auto' width='100%'src='$escaped'></body></html>"
-        }
-        layoutParams.gravity = Gravity.CENTER
-
-        webView.apply {
-            setLayoutParams(layoutParams)
-            // html to centering
-            loadData(html, "text/html", "utf-8")
-            setBackgroundColor(0)
-            settings.builtInZoomControls = true
-        }
-
-        removeProgressBar()
-        showFrameLayout.addView(webView)
     }
 
     private fun removeProgressBar() {

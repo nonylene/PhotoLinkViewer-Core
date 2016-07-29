@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:scaleType="matrix" />
+        android:scaleType="centerInside" />
 
     <RelativeLayout
         android:id="@+id/web_relative"
