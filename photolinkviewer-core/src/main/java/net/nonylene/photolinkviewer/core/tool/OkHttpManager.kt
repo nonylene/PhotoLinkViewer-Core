@@ -7,7 +7,7 @@ import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 
-internal object OkHttpManager {
+object OkHttpManager {
     val okHttpClient by lazy {
         OkHttpClient().apply {
             PhotoLinkViewer.cache?.let { cache ->
@@ -17,7 +17,7 @@ internal object OkHttpManager {
                     val originalResponse = chain.proceed(chain.request());
                     originalResponse.newBuilder()
                             .header("Cache-Control", "public, max-age=180")
-                            .build();
+                            .build()
                 })
             }
         }
