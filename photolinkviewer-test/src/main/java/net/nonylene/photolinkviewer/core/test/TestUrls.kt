@@ -12,6 +12,7 @@ object TestUrls {
     val INSTAGRAM_NORMAL_URL = "https://www.instagram.com/p/90kD_WzfqP/"
     val INSTAGRAM_SHORTEN_URL = "http://instagr.am/p/90kD_WzfqP/"
     val GYAZO_URL = "https://gyazo.com/953acc58e3a4fbac2723c190f83c1a90"
+    val GYAZO_GIF_URL = "https://gyazo.com/ac9a32642bc55c5be1ecd93b64d53271"
     val IMGUR_URL = "http://imgur.com/rfuJf9e"
     val VINE_URL = "https://vine.co/v/elzuDTFiYDT"
     val TUMBLR_NORMAL_URL = "http://nonylene.tumblr.com/post/132793441942/kyoto-botanical-garden"
