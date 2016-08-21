@@ -13,6 +13,10 @@ This software is under GPL v2 licence, see LICENCE.md.
 
 ## install
 
+### deprecated
+
+This repository is used as submodule now. Repository on Github Pages will not be released.
+
 ### add repository
 
 example:
