@@ -283,6 +283,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".PLVPreferenceActivity"/>
         </activity>
+
+        <activity
+            android:name=".PLVOptionButtonPreferenceActivity"
+            android:parentActivityName=".PLVPreferenceActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".PLVPreferenceActivity"/>
+        </activity>
     </application>
 
 </manifest>
