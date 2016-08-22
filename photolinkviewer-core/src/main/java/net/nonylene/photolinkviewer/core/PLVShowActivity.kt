@@ -99,7 +99,7 @@ class PLVShowActivity : AppCompatActivity(), PLVUrlService.PLVUrlListener, Progr
     }
 
     override fun hideProgressBar() {
-        findViewById(R.id.show_progress).visibility = View.GONE
+        findViewById(R.id.show_progress)?.visibility = View.GONE
     }
 
     override fun onShowFragmentRequired(plvUrl: PLVUrl) {
