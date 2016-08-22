@@ -47,6 +47,6 @@ object PhotoLinkViewer {
         if (preferenceActivityClass != null) return preferenceActivityClass!!
         else throw IllegalStateException("You must set preference Activity class (called PhotoLinkViewer.with()?).")
     }
-    class TwitterKeys(val consumerKey: String, val consumerSecret: String)
-    class TwitterToken(val accessToken: String, val accessTokenSecret: String)
+    data class TwitterKeys(val consumerKey: String, val consumerSecret: String)
+    data class TwitterToken(val accessToken: String, val accessTokenSecret: String)
 }
