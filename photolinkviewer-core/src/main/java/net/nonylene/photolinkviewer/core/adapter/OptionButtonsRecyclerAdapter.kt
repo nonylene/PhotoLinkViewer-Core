@@ -1,15 +1,15 @@
 package net.nonylene.photolinkviewer.core.adapter
 
-import android.content.res.ColorStateList
-import android.support.design.widget.FloatingActionButton
+import android.databinding.DataBindingUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import butterknife.bindView
 import net.nonylene.photolinkviewer.core.R
+import net.nonylene.photolinkviewer.core.databinding.PlvCoreOptionButtonItemBinding
 
 import net.nonylene.photolinkviewer.core.model.OptionButton
+import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel
 
 class OptionButtonsRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : RecyclerView.Adapter<OptionButtonsRecyclerAdapter.ViewHolder>() {
 
@@ -30,16 +30,16 @@ class OptionButtonsRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : Re
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val actionButton: FloatingActionButton by bindView(R.id.option_button)
+        val binding: PlvCoreOptionButtonItemBinding
 
+        init {
+            binding = DataBindingUtil.bind(itemView)
+        }
+
+        // https://youtrack.jetbrains.com/issue/KT-12402#u=1463619483291
+        @Suppress("MISSING_DEPENDENCY_CLASS")
         fun bind(button: OptionButton, listener: ((OptionButton) -> Unit)?) {
-            with(actionButton) {
-                backgroundTintList = ColorStateList.valueOf(button.color)
-                setImageResource(button.icon)
-                setOnClickListener {
-                    listener?.invoke(button)
-                }
-            }
+            binding.setModel(OptionButtonViewModel(button, listener))
         }
     }
 }
