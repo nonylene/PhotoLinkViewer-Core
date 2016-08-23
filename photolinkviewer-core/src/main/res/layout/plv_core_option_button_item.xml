@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.FloatingActionButton
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/option_button"
-    style="@style/FloatingActionButton"
-    tools:src="@drawable/plv_core_retweet_white"
-    />
+    >
+
+    <data>
+        <variable
+            name="model"
+            type="net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel"
+            />
+    </data>
+
+    <LinearLayout
+        style="@style/FABParentLinearLayout"
+        >
+
+        <TextView
+            android:text="@{model.button.text}"
+            style="@style/FABSideTextView"
+            tools:text="Retweet"
+            />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/option_button"
+            style="@style/FloatingActionButton"
+            android:src="@{model.button.icon}"
+            android:onClick="@{model::onClick}"
+            app:backgroundTintColor="@{model.button.color}"
+            tools:src="@drawable/plv_core_retweet_white"
+            />
+    </LinearLayout>
+
+</layout>
