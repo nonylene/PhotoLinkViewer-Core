@@ -27,8 +27,11 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this).apply {
             reverseLayout = true
         }
-        val helper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
-                ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val helper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
+            }
+
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                 val button = adapter.buttonList.removeAt(viewHolder.adapterPosition)
                 adapter.buttonList.add(target.adapterPosition, button)
@@ -39,6 +42,22 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 adapter.buttonList.removeAt(viewHolder.adapterPosition)
                 adapter.notifyDataSetChanged()
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                when(actionState) {
+                    ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.ACTION_STATE_SWIPE -> {
+                        (viewHolder as? OptionButtonsRecyclerAdapter.ViewHolder)?.let {
+                            it.binding.itemBaseView.alpha = 0.5f
+                        }
+                    }
+                }
+            }
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                (viewHolder as OptionButtonsRecyclerAdapter.ViewHolder).binding.itemBaseView.alpha = 1.0f
             }
         })
         helper.attachToRecyclerView(binding.recyclerView)
