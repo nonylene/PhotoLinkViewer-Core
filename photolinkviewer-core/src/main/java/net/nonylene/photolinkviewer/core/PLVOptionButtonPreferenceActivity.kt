@@ -9,14 +9,14 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import net.nonylene.photolinkviewer.core.adapter.OptionButtonsRecyclerAdapter
 import net.nonylene.photolinkviewer.core.databinding.PlvCoreActivityOptionPreferenceBinding
+import net.nonylene.photolinkviewer.core.dialog.AddOptionButtonDialogFragment
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.tool.getOptionButtons
 import net.nonylene.photolinkviewer.core.tool.putOptionButtons
 import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel
 
 
-class PLVOptionButtonPreferenceActivity : AppCompatActivity() {
-
+class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDialogFragment.Listener {
     val adapter = OptionButtonsRecyclerAdapter(null)
 
     @Suppress("MISSING_DEPENDENCY_CLASS")
@@ -52,7 +52,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity() {
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
-                when(actionState) {
+                when (actionState) {
                     ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.ACTION_STATE_SWIPE -> {
                         (viewHolder as? OptionButtonsRecyclerAdapter.ViewHolder)?.let {
                             it.binding.itemBaseView.alpha = 0.5f
@@ -71,10 +71,25 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity() {
         adapter.buttonList.addAll(PreferenceManager.getDefaultSharedPreferences(this).getOptionButtons())
         adapter.notifyDataSetChanged()
 
+        // addbutton -> click to open view
         binding.addButtonLayout?.setModel(OptionButtonViewModel(OptionButton.ADD_BUTTON, null))
+        binding.addButtonLayout.itemBaseView.isClickable = false
+        binding.addButtonLayout.optionButton.setOnClickListener {
+            onAddButtonClicked()
+        }
     }
 
     fun saveOptionsButtons(buttons: List<OptionButton>) {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putOptionButtons(buttons)
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putOptionButtons(buttons).apply()
+    }
+
+    fun onAddButtonClicked() {
+        AddOptionButtonDialogFragment().show(supportFragmentManager, "add")
+    }
+
+    override fun onAddingButtonSelected(button: OptionButton) {
+        adapter.buttonList.add(button)
+        adapter.notifyDataSetChanged()
+        saveOptionsButtons(adapter.buttonList)
     }
 }
