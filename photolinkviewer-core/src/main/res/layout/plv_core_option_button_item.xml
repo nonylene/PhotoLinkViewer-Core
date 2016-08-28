@@ -15,6 +15,7 @@
     <LinearLayout
         style="@style/FABParentLinearLayout"
         android:id="@+id/item_base_view"
+        android:onClick="@{model::onBaseViewClick}"
         >
 
         <TextView

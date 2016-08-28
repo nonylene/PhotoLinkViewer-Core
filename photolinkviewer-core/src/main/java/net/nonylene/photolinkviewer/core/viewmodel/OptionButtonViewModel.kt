@@ -14,7 +14,7 @@ class OptionButtonViewModel {
     val button = ObservableField<OptionButton>()
     var listener: ((OptionButton) -> Unit)? = null
 
-    fun onClick(view: View) {
+    fun onBaseViewClick(view: View) {
         listener?.invoke(button.get())
     }
 }
