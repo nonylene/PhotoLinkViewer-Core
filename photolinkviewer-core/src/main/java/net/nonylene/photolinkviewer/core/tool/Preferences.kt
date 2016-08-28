@@ -1,6 +1,9 @@
 package net.nonylene.photolinkviewer.core.tool
 
 import android.content.SharedPreferences
+import net.nonylene.photolinkviewer.core.model.OptionButton
+import net.nonylene.photolinkviewer.core.model.getOptionButtonFromId
+import org.json.JSONArray
 
 private val WIFI_SWITCH_KEY = "plv_core_is_wifi_enabled"
 private val ZOOM_SPEED_KEY = "plv_core_zoom_speed"
@@ -13,6 +16,7 @@ private val IS_LEAVE_NOTIFY_KEY = "plv_core_is_leave_notify"
 private val IS_DOUBLE_ZOOM_KEY = "plv_core_is_double_zoom_disabled"
 private val IMAGE_VIEW_MAX_KEY = "plv_core_imageview_max_size"
 private val IS_INITIALIZE_47_KEY = "plv_core_is_initialize_47"
+private val OPTION_BUTTONS_KEY = "option_buttons"
 
 fun SharedPreferences.getQuality(siteName: String, isWifi: Boolean, defaultValue: String = "large"): String {
     return getString("plv_core_${siteName}_quality_" + if (isWifi) "wifi" else "3g", defaultValue)
@@ -116,4 +120,31 @@ fun SharedPreferences.isInitialized47(defaultValue: Boolean = false): Boolean{
 
 fun SharedPreferences.Editor.putIsInitialized47(value: Boolean): SharedPreferences.Editor {
     return putBoolean(IS_INITIALIZE_47_KEY, value)
+}
+
+// bottom button is first, top button is last
+fun SharedPreferences.getOptionButtons(): List<OptionButton> {
+    val jsonString = getString(OPTION_BUTTONS_KEY, null)
+    if (jsonString == null) {
+        return listOf(
+                OptionButton.TWEET_LIKE,
+                OptionButton.TWEET_RETWEET,
+                OptionButton.DOWNLOAD,
+                OptionButton.PREFERENCE,
+                OptionButton.OPEN_OTHER_APP
+                )
+    } else {
+        val jsonArray = JSONArray(jsonString)
+        return (0 until jsonArray.length()).map {
+            jsonArray.getInt(it)
+        }.map {
+            getOptionButtonFromId(it)
+        }
+    }
+}
+
+fun SharedPreferences.Editor.putOptionButtons(buttons: List<OptionButton>): SharedPreferences.Editor {
+    val saveJson = JSONArray()
+    buttons.forEach { saveJson.put(it.id) }
+    return putString(OPTION_BUTTONS_KEY, saveJson.toString())
 }
