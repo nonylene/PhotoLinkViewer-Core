@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.nonylene.photolinkviewer.core.R
-import net.nonylene.photolinkviewer.core.databinding.PlvCoreOptionButtonItemBinding
+import net.nonylene.photolinkviewer.core.databinding.PlvCoreOptionButtonPreferenceItemBinding
 
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel
@@ -20,7 +20,7 @@ class OptionButtonsRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : Re
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder? {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.plv_core_option_button_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.plv_core_option_button_preference_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -30,7 +30,7 @@ class OptionButtonsRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : Re
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val binding: PlvCoreOptionButtonItemBinding
+        val binding: PlvCoreOptionButtonPreferenceItemBinding
 
         init {
             binding = DataBindingUtil.bind(itemView)

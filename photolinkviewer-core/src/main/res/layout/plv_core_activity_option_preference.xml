@@ -26,7 +26,7 @@
 
         <include
             android:id="@+id/add_button_layout"
-            layout="@layout/plv_core_option_button_item"
+            layout="@layout/plv_core_option_button_preference_item"
             />
 
     </LinearLayout>
