@@ -10,13 +10,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import net.nonylene.photolinkviewer.core.R
-import net.nonylene.photolinkviewer.core.adapter.OptionButtonsRecyclerAdapter
+import net.nonylene.photolinkviewer.core.adapter.OptionButtonsPreferenceRecyclerAdapter
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.tool.getOptionButtons
 
 class AddOptionButtonDialogFragment : DialogFragment() {
 
-    val adapter = OptionButtonsRecyclerAdapter {
+    val adapter = OptionButtonsPreferenceRecyclerAdapter {
         (activity as? Listener)?.onAddingButtonSelected(it)
         dismiss()
     }

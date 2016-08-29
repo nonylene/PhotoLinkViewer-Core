@@ -4,7 +4,7 @@ import android.databinding.ObservableField
 import android.view.View
 import net.nonylene.photolinkviewer.core.model.OptionButton
 
-class OptionButtonViewModel {
+class OptionButtonPreferenceViewModel {
 
     constructor(button: OptionButton, listener: ((OptionButton) -> Unit)?) {
         this.button.set(button)

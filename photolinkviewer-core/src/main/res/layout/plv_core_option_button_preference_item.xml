@@ -8,7 +8,7 @@
     <data>
         <variable
             name="model"
-            type="net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel"
+            type="net.nonylene.photolinkviewer.core.viewmodel.OptionButtonPreferenceViewModel"
             />
     </data>
 

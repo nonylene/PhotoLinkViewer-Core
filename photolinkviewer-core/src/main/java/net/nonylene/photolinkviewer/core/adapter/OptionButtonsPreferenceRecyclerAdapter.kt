@@ -9,9 +9,9 @@ import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.databinding.PlvCoreOptionButtonPreferenceItemBinding
 
 import net.nonylene.photolinkviewer.core.model.OptionButton
-import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel
+import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonPreferenceViewModel
 
-class OptionButtonsRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : RecyclerView.Adapter<OptionButtonsRecyclerAdapter.ViewHolder>() {
+class OptionButtonsPreferenceRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : RecyclerView.Adapter<OptionButtonsPreferenceRecyclerAdapter.ViewHolder>() {
 
     val buttonList = arrayListOf<OptionButton>()
 
@@ -39,7 +39,7 @@ class OptionButtonsRecyclerAdapter(val listener: ((OptionButton) -> Unit)?) : Re
         // https://youtrack.jetbrains.com/issue/KT-12402#u=1463619483291
         @Suppress("MISSING_DEPENDENCY_CLASS")
         fun bind(button: OptionButton, listener: ((OptionButton) -> Unit)?) {
-            binding.setModel(OptionButtonViewModel(button, listener))
+            binding.setModel(OptionButtonPreferenceViewModel(button, listener))
         }
     }
 }

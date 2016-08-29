@@ -7,17 +7,17 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import net.nonylene.photolinkviewer.core.adapter.OptionButtonsRecyclerAdapter
+import net.nonylene.photolinkviewer.core.adapter.OptionButtonsPreferenceRecyclerAdapter
 import net.nonylene.photolinkviewer.core.databinding.PlvCoreActivityOptionPreferenceBinding
 import net.nonylene.photolinkviewer.core.dialog.AddOptionButtonDialogFragment
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.tool.getOptionButtons
 import net.nonylene.photolinkviewer.core.tool.putOptionButtons
-import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonViewModel
+import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonPreferenceViewModel
 
 
 class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDialogFragment.Listener {
-    val adapter = OptionButtonsRecyclerAdapter(null)
+    val adapter = OptionButtonsPreferenceRecyclerAdapter(null)
 
     @Suppress("MISSING_DEPENDENCY_CLASS")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +54,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
                 super.onSelectedChanged(viewHolder, actionState)
                 when (actionState) {
                     ItemTouchHelper.ACTION_STATE_DRAG, ItemTouchHelper.ACTION_STATE_SWIPE -> {
-                        (viewHolder as? OptionButtonsRecyclerAdapter.ViewHolder)?.let {
+                        (viewHolder as? OptionButtonsPreferenceRecyclerAdapter.ViewHolder)?.let {
                             it.binding.itemBaseView.alpha = 0.5f
                         }
                     }
@@ -63,7 +63,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
-                (viewHolder as OptionButtonsRecyclerAdapter.ViewHolder).binding.itemBaseView.alpha = 1.0f
+                (viewHolder as OptionButtonsPreferenceRecyclerAdapter.ViewHolder).binding.itemBaseView.alpha = 1.0f
             }
         })
         helper.attachToRecyclerView(binding.recyclerView)
@@ -72,7 +72,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
         adapter.notifyDataSetChanged()
 
         // addbutton -> click to open view
-        binding.addButtonLayout?.setModel(OptionButtonViewModel(OptionButton.ADD_BUTTON, null))
+        binding.addButtonLayout?.setModel(OptionButtonPreferenceViewModel(OptionButton.ADD_BUTTON, null))
         binding.addButtonLayout.itemBaseView.isClickable = false
         binding.addButtonLayout.optionButton.setOnClickListener {
             onAddButtonClicked()
