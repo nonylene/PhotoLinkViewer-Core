@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.nonylene.photolinkviewer.core.PLVMaxSizePreferenceActivity
+import net.nonylene.photolinkviewer.core.PLVOptionButtonPreferenceActivity
 import net.nonylene.photolinkviewer.core.PLVQualityPreferenceActivity
 import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.tool.Initialize
@@ -33,6 +34,12 @@ class PLVPreferenceFragment: PreferenceSummaryFragment() {
         val qualityPreference = findPreference("quality_preference")
         qualityPreference.setOnPreferenceClickListener {
             startActivity(Intent(activity, PLVQualityPreferenceActivity::class.java))
+            false
+        }
+
+        val buttonPreference = findPreference("option_button_preference")
+        buttonPreference.setOnPreferenceClickListener {
+            startActivity(Intent(activity, PLVOptionButtonPreferenceActivity::class.java))
             false
         }
 
