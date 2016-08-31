@@ -16,7 +16,6 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
-import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
 import android.support.v4.app.DialogFragment
@@ -71,6 +70,17 @@ class OptionFragment : Fragment() {
     private var downloadPLVUrlStack: List<PLVUrl>? = null
 
     private var isOpen = false
+    set(value) {
+        field = value
+        if (value) {
+            ViewCompat.setRotation(baseButton, 0f)
+            ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
+        } else {
+            ViewCompat.setRotation(baseButton, 180f)
+            ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
+        }
+        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(plvUrlsForSave != null)
+    }
 
     // by default, animation does not run if not isLaidOut().
     private fun FloatingActionButton.showWithAnimation() {
@@ -148,18 +158,10 @@ class OptionFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context).apply {
             reverseLayout = true
         }
-        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(false)
+        // adapter -> empty list
 
-        baseButton.setOnClickListener { baseButton ->
-            if (isOpen) {
-                ViewCompat.setRotation(baseButton, 180f)
-                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
-                adapter.adapterModelList = emptyList()
-            } else {
-                ViewCompat.setRotation(baseButton, 0f)
-                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
-                adapter.adapterModelList = getFilteredOptionButtonsFromPreference(plvUrlsForSave != null)
-            }
+        baseButton.setOnClickListener {
+            // see setter
             isOpen = !isOpen
         }
 
@@ -468,9 +470,12 @@ class OptionFragment : Fragment() {
         }
     }
 
+    /**
+     * this method see [isOpen]
+     */
     private fun getFilteredOptionButtonsFromPreference(includeDownload: Boolean): List<OptionButton> {
         return PreferenceManager.getDefaultSharedPreferences(context).getOptionButtons().filter {
-            when (it) {
+            isOpen && when (it) {
                 OptionButton.DOWNLOAD -> includeDownload
                 OptionButton.TWEET_LIKE, OptionButton.TWEET_RETWEET ->
                     arguments.getBoolean(TWITTER_ENABLED_KEY)
