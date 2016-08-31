@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="model"
+            type="net.nonylene.photolinkviewer.core.viewmodel.OptionButtonFragmentViewModel"
+            />
+    </data>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/option_button"
+        style="@style/FloatingActionButton"
+        android:onClick="@{model::onBaseViewClick}"
+        android:src="@{model.button.icon}"
+        app:backgroundTintColor="@{model.button.color}"
+        tools:src="@drawable/plv_core_retweet_white"
+        />
+
+</layout>

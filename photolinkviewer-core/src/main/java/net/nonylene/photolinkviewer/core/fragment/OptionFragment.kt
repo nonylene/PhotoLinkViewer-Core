@@ -25,6 +25,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewCompat
 import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,37 +34,35 @@ import android.widget.*
 import butterknife.bindView
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
+import net.nonylene.photolinkviewer.core.adapter.OptionFragmentRecyclerAdapter
 
 import net.nonylene.photolinkviewer.core.dialog.SaveDialogFragment
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
 import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
+import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.tool.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
-import java.util.*
 
 /**
  * @see OptionFragment.createArguments
  */
 class OptionFragment : Fragment() {
 
-    private val baseView: CoordinatorLayout by bindView(R.id.option_base_view)
+    private val baseView: FrameLayout by bindView(R.id.option_base_view)
     private val baseButton: FloatingActionButton by bindView(R.id.basebutton)
-    private val settingButton: FloatingActionButton by bindView(R.id.setbutton)
-    private val webButton: FloatingActionButton by bindView(R.id.webbutton)
-    private val downLoadButton: FloatingActionButton by bindView(R.id.dlbutton)
     private val rotateLeftButton: FloatingActionButton by bindView(R.id.rotate_leftbutton)
     private val rotateRightButton: FloatingActionButton by bindView(R.id.rotate_rightbutton)
-    private val retweetButton: FloatingActionButton by bindView(R.id.retweet_button)
-    private val likeButton: FloatingActionButton by bindView(R.id.like_button)
 
     private var lastSaveInfos: List<SaveDialogFragment.Info>? = null
     private var lastSaveDir: String? = null
+
+    private var plvUrlsForSave: List<PLVUrl>? = null
 
     private val preferences by lazy { PreferenceManager.getDefaultSharedPreferences(activity) }
     private var applicationContext: Context? = null
@@ -70,7 +70,6 @@ class OptionFragment : Fragment() {
 
     private var downloadPLVUrlStack: List<PLVUrl>? = null
 
-    private var isDownloadEnabled = false
     private var isOpen = false
 
     // by default, animation does not run if not isLaidOut().
@@ -89,6 +88,10 @@ class OptionFragment : Fragment() {
                         visibility = View.VISIBLE
                     }
                 })
+    }
+
+    private val adapter = OptionFragmentRecyclerAdapter { button ->
+        onOptionButtonClick(button)
     }
 
     companion object {
@@ -139,40 +142,25 @@ class OptionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val recyclerView = view.findViewById(R.id.recycler_view) as RecyclerView
+        adapter.setHasStableIds(true)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(context).apply {
+            reverseLayout = true
+        }
+        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(false)
+
         baseButton.setOnClickListener { baseButton ->
             if (isOpen) {
                 ViewCompat.setRotation(baseButton, 180f)
                 ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
-                settingButton.hide()
-                webButton.hide()
-                if (arguments.getBoolean(TWITTER_ENABLED_KEY)) {
-                    retweetButton.hide()
-                    likeButton.hide()
-                }
-                if (isDownloadEnabled) downLoadButton.hide()
+                adapter.adapterModelList = emptyList()
             } else {
                 ViewCompat.setRotation(baseButton, 0f)
                 ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
-                settingButton.showWithAnimation()
-                webButton.showWithAnimation()
-                if (arguments.getBoolean(TWITTER_ENABLED_KEY)) {
-                    retweetButton.showWithAnimation()
-                    likeButton.showWithAnimation()
-                }
-                if (isDownloadEnabled) downLoadButton.showWithAnimation()
+                adapter.adapterModelList = getFilteredOptionButtonsFromPreference(plvUrlsForSave != null)
             }
             isOpen = !isOpen
-        }
-
-        settingButton.setOnClickListener {
-            startActivity(Intent(activity, PhotoLinkViewer.getPreferenceActivityClass()))
-        }
-
-        webButton.setOnClickListener {
-            // get uri from bundle
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getString(URL_KEY)))
-            // open intent chooser
-            startActivity(Intent.createChooser(intent, getString(R.string.plv_core_intent_title)))
         }
 
         rotateRightButton.setOnClickListener {
@@ -182,24 +170,51 @@ class OptionFragment : Fragment() {
         rotateLeftButton.setOnClickListener {
             EventBus.getDefault().post(RotateEvent(false))
         }
+    }
 
-        val bundle = arguments
-
-        if (bundle.getBoolean(TWITTER_ENABLED_KEY)) {
-            retweetButton.setOnClickListener {
+    fun onOptionButtonClick(optionButton: OptionButton) {
+        when (optionButton) {
+            OptionButton.PREFERENCE -> {
+                startActivity(Intent(activity, PhotoLinkViewer.getPreferenceActivityClass()))
+            }
+            OptionButton.OPEN_OTHER_APP -> {
+                // get uri from bundle
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(arguments.getString(URL_KEY)))
+                // open intent chooser
+                startActivity(Intent.createChooser(intent, getString(R.string.plv_core_intent_title)))
+            }
+            OptionButton.TWEET_LIKE -> {
                 TwitterDialogFragment().apply {
-                    arguments = bundle
+                    arguments = this@OptionFragment.arguments
+                    setTargetFragment(this@OptionFragment, LIKE_CODE)
+                    show(this@OptionFragment.fragmentManager, "like")
+                }
+            }
+            OptionButton.TWEET_RETWEET -> {
+                TwitterDialogFragment().apply {
+                    arguments = this@OptionFragment.arguments
                     setTargetFragment(this@OptionFragment, RETWEET_CODE)
                     show(this@OptionFragment.fragmentManager, "retweet")
                 }
             }
-
-            likeButton.setOnClickListener {
-                TwitterDialogFragment().apply {
-                    arguments = bundle
-                    setTargetFragment(this@OptionFragment, LIKE_CODE)
-                    show(this@OptionFragment.fragmentManager, "like")
+            OptionButton.DOWNLOAD -> {
+                plvUrlsForSave?.let { plvUrls ->
+                    // download direct
+                    val infoPair = getSaveFragmentInfos(plvUrls)
+                    if (preferences.isSkipDialog()) {
+                        saveOrRequestPermission(infoPair.first, infoPair.second)
+                    } else {
+                        // open dialog
+                        SaveDialogFragment().apply {
+                            arguments = SaveDialogFragment.createArguments(infoPair.first, infoPair.second.toCollection(arrayListOf()))
+                            setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
+                            show(this@OptionFragment.fragmentManager, "Save")
+                        }
+                    }
                 }
+            }
+            else -> {
+                // nothing
             }
         }
     }
@@ -273,6 +288,7 @@ class OptionFragment : Fragment() {
     @Subscribe(sticky = true)
     fun onEvent(downloadButtonEvent: DownloadButtonEvent) {
         EventBus.getDefault().removeStickyEvent(downloadButtonEvent)
+        // save to stack for base view download event
         if (downloadButtonEvent.addToStack) downloadPLVUrlStack = downloadButtonEvent.plvUrls
         setDlButton(downloadButtonEvent.plvUrls)
     }
@@ -288,9 +304,9 @@ class OptionFragment : Fragment() {
             rotateLeftButton.showWithAnimation()
         } else {
             if (downloadPLVUrlStack != null) {
+                // restore plvurl stack for base view download event
                 setDlButton(downloadPLVUrlStack!!)
             } else {
-                isDownloadEnabled = false
                 removeDLButton()
             }
             rotateRightButton.hide()
@@ -310,29 +326,12 @@ class OptionFragment : Fragment() {
     }
 
     private fun setDlButton(plvUrls: List<PLVUrl>) {
-        // dl button visibility and click
-        downLoadButton.setOnClickListener {
-            // download direct
-            val infoPair = getSaveFragmentInfos(plvUrls)
-            if (preferences.isSkipDialog()) {
-                saveOrRequestPermission(infoPair.first, infoPair.second)
-            } else {
-                // open dialog
-                SaveDialogFragment().apply {
-                    arguments = SaveDialogFragment.createArguments(infoPair.first, infoPair.second.toCollection(ArrayList()))
-                    setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
-                    show(this@OptionFragment.fragmentManager, "Save")
-                }
-            }
-        }
-        if (isOpen && !isDownloadEnabled) downLoadButton.showWithAnimation()
-        isDownloadEnabled = true
+        plvUrlsForSave = plvUrls
+        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(true)
     }
 
     private fun removeDLButton() {
-        // dl button visibility and click
-        downLoadButton.setOnClickListener(null)
-        if (isOpen) downLoadButton.hide()
+        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(false)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -465,6 +464,17 @@ class OptionFragment : Fragment() {
             when (requestCode) {
                 LIKE_CODE -> twitter.createFavorite(id_long)
                 RETWEET_CODE -> twitter.retweetStatus(id_long)
+            }
+        }
+    }
+
+    private fun getFilteredOptionButtonsFromPreference(includeDownload: Boolean): List<OptionButton> {
+        return PreferenceManager.getDefaultSharedPreferences(context).getOptionButtons().filter {
+            when (it) {
+                OptionButton.DOWNLOAD -> includeDownload
+                OptionButton.TWEET_LIKE, OptionButton.TWEET_RETWEET ->
+                    arguments.getBoolean(TWITTER_ENABLED_KEY)
+                else -> true
             }
         }
     }
