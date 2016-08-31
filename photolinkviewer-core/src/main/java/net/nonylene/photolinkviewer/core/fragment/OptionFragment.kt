@@ -53,7 +53,7 @@ import java.io.File
  */
 class OptionFragment : Fragment() {
 
-    private val baseView: FrameLayout by bindView(R.id.option_base_view)
+    private val baseView: View by bindView(R.id.option_base_view)
     private val baseButton: FloatingActionButton by bindView(R.id.basebutton)
     private val rotateLeftButton: FloatingActionButton by bindView(R.id.rotate_leftbutton)
     private val rotateRightButton: FloatingActionButton by bindView(R.id.rotate_rightbutton)
