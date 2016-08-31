@@ -15,8 +15,8 @@ class ForSnackbarBehavior(context: Context, attrs: AttributeSet) : CoordinatorLa
     }
 
     override fun onDependentViewChanged(parent: CoordinatorLayout?, child: View?, dependency: View): Boolean {
-        val translationY = Math.min(0f, dependency.translationY - dependency.height);
-        child?.translationY = translationY;
-        return true;
+        val translationY = Math.min(0f, dependency.translationY - dependency.height)
+        child?.translationY = translationY
+        return true
     }
 }
