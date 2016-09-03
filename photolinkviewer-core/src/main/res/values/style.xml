@@ -26,11 +26,21 @@
         <item name="android:textColor">@color/primary_color</item>
     </style>
 
-    <style name="FloatingActionButton">
+    <style name="FloatingActionButtonBase">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/plv_core_button_frame_margin</item>
         <item name="pressedTranslationZ">0dp</item>
+    </style>
+
+    <style name="FloatingActionButton" parent="FloatingActionButtonBase">
+        <item name="android:layout_margin">@dimen/plv_core_button_frame_margin</item>
+    </style>
+
+    <style name="FloatingActionButtonBottom" parent="FloatingActionButtonBase">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">@dimen/plv_core_button_frame_margin</item>
+        <item name="android:layout_marginRight">@dimen/plv_core_button_frame_margin</item>
+        <item name="android:layout_marginLeft">@dimen/plv_core_button_frame_margin</item>
     </style>
 
     <style name="FABParentLinearLayout">

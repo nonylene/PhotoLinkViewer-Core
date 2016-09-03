@@ -159,7 +159,7 @@ class OptionFragment : Fragment() {
         adapter.setHasStableIds(true)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context).apply {
-            reverseLayout = true
+            stackFromEnd = true
         }
         with(recyclerView.itemAnimator) {
             addDuration = 200
@@ -245,8 +245,9 @@ class OptionFragment : Fragment() {
     }
 
     override fun onResume() {
-        EventBus.getDefault().register(this)
         super.onResume()
+        EventBus.getDefault().register(this)
+        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(true)
     }
 
     override fun onPause() {
