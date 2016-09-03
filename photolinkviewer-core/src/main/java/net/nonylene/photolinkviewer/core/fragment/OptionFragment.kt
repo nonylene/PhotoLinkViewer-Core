@@ -247,7 +247,7 @@ class OptionFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         EventBus.getDefault().register(this)
-        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(true)
+        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(plvUrlsForSave != null)
     }
 
     override fun onPause() {
