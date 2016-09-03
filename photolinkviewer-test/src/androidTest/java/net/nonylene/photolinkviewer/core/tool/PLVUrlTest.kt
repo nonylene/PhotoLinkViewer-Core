@@ -15,7 +15,7 @@ import kotlin.test.assertNull
 class PLVUrlTest {
 
     private fun createMockPLVUrl(): PLVUrl {
-        val plvUrl = PLVUrl("url", "sitename", "filename")
+        val plvUrl = PLVUrl("url", "sitename", "filename", "quality")
         plvUrl.thumbUrl = "thumburl"
         plvUrl.displayUrl = "displayurl"
         plvUrl.biggestUrl = "biggesturl"
