@@ -79,5 +79,6 @@
     <string name="plv_core_image_resized_dialog_neutral">Go setting</string>
     <string name="plv_core_permission_denied">Permission request denied.</string>
     <string name="plv_core_copied">Copied: %s !</string>
+    <string name="plv_core_activity_option_button_text">Long tap and drag to change buttons order, and swipe and dismiss to remove button.</string>
 
 </resources>

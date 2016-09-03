@@ -76,5 +76,6 @@
     <string name="plv_core_setting_option_button_title">ボタン設定</string>
     <string name="plv_core_setting_option_button_summary">タップして開く</string>
     <string name="plv_core_copied">コピーしました: %s</string>
+    <string name="plv_core_activity_option_button_text">長押しでボタンの並び替え、スワイプでボタンの消去ができます</string>
 
 </resources>
