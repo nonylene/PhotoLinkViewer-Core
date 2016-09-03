@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import net.nonylene.photolinkviewer.core.adapter.OptionButtonsPreferenceRecyclerAdapter
-import net.nonylene.photolinkviewer.core.databinding.PlvCoreActivityOptionPreferenceBinding
+import net.nonylene.photolinkviewer.core.databinding.PlvCoreActivityOptionButtonPreferenceBinding
 import net.nonylene.photolinkviewer.core.dialog.AddOptionButtonDialogFragment
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.tool.getOptionButtons
@@ -22,7 +22,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
     @Suppress("MISSING_DEPENDENCY_CLASS")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding: PlvCoreActivityOptionPreferenceBinding
+        val binding: PlvCoreActivityOptionButtonPreferenceBinding
                 = DataBindingUtil.setContentView(this, R.layout.plv_core_activity_option_button_preference)
 
         adapter.setHasStableIds(true)
