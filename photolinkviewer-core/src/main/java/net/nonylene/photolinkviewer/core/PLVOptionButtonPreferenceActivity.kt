@@ -28,7 +28,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
         adapter.setHasStableIds(true)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this).apply {
-            reverseLayout = true
+            stackFromEnd = true
         }
 
         val helper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
@@ -73,7 +73,11 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
 
         // addbutton -> click to open view
         binding.addButtonLayout?.setModel(OptionButtonPreferenceViewModel(OptionButton.ADD_BUTTON, null))
-        binding.addButtonLayout.itemBaseView.isClickable = false
+        with(binding.addButtonLayout.itemBaseView) {
+            // todo: api 15
+            setBackgroundDrawable(null)
+            setOnClickListener(null)
+        }
         binding.addButtonLayout.optionButton.setOnClickListener {
             onAddButtonClicked()
         }
@@ -88,7 +92,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
     }
 
     override fun onAddingButtonSelected(button: OptionButton) {
-        adapter.buttonList.add(button)
+        adapter.buttonList.add(0, button)
         adapter.notifyDataSetChanged()
         saveOptionsButtons(adapter.buttonList)
     }
