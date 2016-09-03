@@ -11,6 +11,12 @@
             android:title="@string/plv_core_setting_quality_title"
             />
 
+        <Preference
+            android:key="option_button_preference"
+            android:summary="@string/plv_core_setting_option_button_summary"
+            android:title="@string/plv_core_setting_option_button_title"
+            />
+
         <EditTextPreference
             android:defaultValue="1.4"
             android:dialogTitle="@string/plv_core_settings_zoom_dtitle"

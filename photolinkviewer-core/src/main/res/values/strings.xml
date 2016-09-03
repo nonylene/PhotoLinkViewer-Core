@@ -29,6 +29,8 @@
     <string name="plv_core_twitter_retweet_toast">retweeted!</string>
     <string name="plv_core_setting_quality_summary">Tap to open</string>
     <string name="plv_core_setting_quality_title">Quality settings</string>
+    <string name="plv_core_setting_option_button_summary">Tap to open</string>
+    <string name="plv_core_setting_option_button_title">Buttons</string>
     <string name="plv_core_quality_setting_dialogtitle">Please choose quality</string>
     <string name="plv_core_flickr_quality_title" translatable="false">flickr</string>
     <string name="plv_core_twipple_quality_title" translatable="false">twipple</string>
