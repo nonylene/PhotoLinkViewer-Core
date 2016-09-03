@@ -6,6 +6,8 @@ import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.Dialog
 import android.app.DownloadManager
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -219,7 +221,20 @@ class OptionFragment : Fragment() {
                     }
                 }
             }
-            else -> {
+            OptionButton.COPY_URL -> {
+                val url = arguments.getString(URL_KEY)
+                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                clipboard.primaryClip = ClipData.newPlainText("Copy url", arguments.getString(URL_KEY))
+                Toast.makeText(applicationContext!!, applicationContext!!.getString(R.string.plv_core_copied).format(url), Toast.LENGTH_LONG).show()
+            }
+            OptionButton.SHARE -> {
+                val url = arguments.getString(URL_KEY)
+                val intent = Intent(Intent.ACTION_SEND)
+                        .setType("text/plain")
+                        .putExtra(Intent.EXTRA_TEXT, url)
+                startActivity(Intent.createChooser(intent, "Share url"))
+            }
+            OptionButton.ADD_BUTTON -> {
                 // nothing
             }
         }

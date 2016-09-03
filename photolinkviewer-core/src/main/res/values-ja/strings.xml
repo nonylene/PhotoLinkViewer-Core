@@ -75,5 +75,6 @@
     <string name="plv_core_permission_denied">権限が拒否されました</string>
     <string name="plv_core_setting_option_button_title">ボタン設定</string>
     <string name="plv_core_setting_option_button_summary">タップして開く</string>
+    <string name="plv_core_copied">コピーしました: %s</string>
 
 </resources>

@@ -30,7 +30,7 @@
     <string name="plv_core_setting_quality_summary">Tap to open</string>
     <string name="plv_core_setting_quality_title">Quality settings</string>
     <string name="plv_core_setting_option_button_summary">Tap to open</string>
-    <string name="plv_core_setting_option_button_title">Buttons</string>
+    <string name="plv_core_setting_option_button_title">Button settings</string>
     <string name="plv_core_quality_setting_dialogtitle">Please choose quality</string>
     <string name="plv_core_flickr_quality_title" translatable="false">flickr</string>
     <string name="plv_core_twipple_quality_title" translatable="false">twipple</string>
@@ -78,5 +78,6 @@
     <string name="plv_core_image_resized_dialog_text">Each device has different max size limit of ImageView (2048px or 4096px usually. This app set limit as 2048px by default.)\nImage will be resized when loading image is bigger than this limit (You can get original size image by downloading).\n\nYou can set this parameter in settings.</string>
     <string name="plv_core_image_resized_dialog_neutral">Go setting</string>
     <string name="plv_core_permission_denied">Permission request denied.</string>
+    <string name="plv_core_copied">Copied: %s !</string>
 
 </resources>
