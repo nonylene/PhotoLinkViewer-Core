@@ -9,7 +9,8 @@
     <string name="plv_core_settings_zoom_title">Zoom scale for distance of fingers</string>
     <string name="plv_core_intent_title">Select App</string>
     <string name="plv_core_save_dialog_positive">Save</string>
-    <string name="plv_core_save_dialog_title">Save photo to…</string>
+    <string name="plv_core_save_dialog_title">Save photo (%s) to…</string>
+    <string name="plv_core_save_dialog_title_null">Save photo to…</string>
     <string name="plv_core_download_photo_title">"Saving file to "</string>
     <string name="plv_core_setting_dir_dialogtitle">Default value is PLViewer/</string>
     <string name="plv_core_setting_dir_title">Change download directory</string>

@@ -209,13 +209,13 @@ class OptionFragment : Fragment() {
             OptionButton.DOWNLOAD -> {
                 plvUrlsForSave?.let { plvUrls ->
                     // download direct
-                    val infoPair = getSaveFragmentInfos(plvUrls)
+                    val info = getSaveFragmentInfos(plvUrls)
                     if (preferences.isSkipDialog()) {
-                        saveOrRequestPermission(infoPair.first, infoPair.second)
+                        saveOrRequestPermission(info.dirName, info.infoList)
                     } else {
                         // open dialog
                         SaveDialogFragment().apply {
-                            arguments = SaveDialogFragment.createArguments(infoPair.first, infoPair.second.toCollection(arrayListOf()))
+                            arguments = SaveDialogFragment.createArguments(info.dirName, info.quality, info.infoList.toCollection(arrayListOf()))
                             setTargetFragment(this@OptionFragment, SAVE_DIALOG_CODE)
                             show(this@OptionFragment.fragmentManager, "Save")
                         }
@@ -411,7 +411,7 @@ class OptionFragment : Fragment() {
     /**
      * @param plvUrls same sites
      */
-    private fun getSaveFragmentInfos(plvUrls: List<PLVUrl>): Pair<String, List<SaveDialogFragment.Info>> {
+    private fun getSaveFragmentInfos(plvUrls: List<PLVUrl>): SaveFragmentInfo {
         val plvUrl = plvUrls[0]
         // set download directory
         val directory = preferences.getDownloadDir()
@@ -438,7 +438,7 @@ class OptionFragment : Fragment() {
 
         val original = preferences.isOriginalEnabled(isWifi)
 
-        return Pair(dir.toString(), plvUrls.map {
+        return SaveFragmentInfo(dir.toString(), plvUrl.quality, plvUrls.map {
             var fileName = if (doMakeDir) it.fileName else "${it.siteName}-${it.fileName}"
             it.type?.let { fileName += "." + it }
             SaveDialogFragment.Info(fileName, if (original) it.biggestUrl!! else it.displayUrl!!, it.thumbUrl!!)
@@ -506,4 +506,6 @@ class OptionFragment : Fragment() {
             }
         }
     }
+
+    data class SaveFragmentInfo(val dirName: String, val quality: String?, val infoList: List<SaveDialogFragment.Info>)
 }

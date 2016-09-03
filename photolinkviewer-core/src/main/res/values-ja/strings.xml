@@ -5,7 +5,8 @@
     <string name="plv_core_settings_zoom_title">指の距離に対する拡大率</string>
     <string name="plv_core_intent_title">アプリを選択</string>
     <string name="plv_core_save_dialog_positive">保存</string>
-    <string name="plv_core_save_dialog_title">メディアの保存先</string>
+    <string name="plv_core_save_dialog_title">メディア (%s) の保存先</string>
+    <string name="plv_core_save_dialog_title_null">メディアの保存先</string>
     <string name="plv_core_download_photo_title">"メディアを保存しました: "</string>
     <string name="plv_core_setting_dir_dialogtitle">デフォルト: PLViewer/</string>
     <string name="plv_core_setting_dir_title">ダウンロード場所の変更</string>

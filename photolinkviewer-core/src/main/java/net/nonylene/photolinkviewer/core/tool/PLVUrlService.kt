@@ -121,12 +121,14 @@ class PLVUrlService(private val context: Context) {
 
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.")?.let { id ->
-                val plvUrl = PLVUrl(url, "twitter", id)
+                val quality = super.getQuality("twitter")
+
+                val plvUrl = PLVUrl(url, "twitter", id, quality)
 
                 plvUrl.type = getFileTypeFromUrl(url)
                 plvUrl.biggestUrl = url + ":orig"
                 plvUrl.thumbUrl = url + ":small"
-                plvUrl.displayUrl = when (super.getQuality("twitter")) {
+                plvUrl.displayUrl = when (quality) {
                     "original" -> plvUrl.biggestUrl
                     "large"    -> url + ":large"
                     "medium"   -> url
@@ -143,11 +145,13 @@ class PLVUrlService(private val context: Context) {
 
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://p\\.twipple\\.jp/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "twipple", id)
+                val quality = super.getQuality("twipple")
+
+                val plvUrl = PLVUrl(url, "twipple", id, quality)
 
                 plvUrl.biggestUrl = "http://p.twipple.jp/show/orig/" + id
                 plvUrl.thumbUrl = "http://p.twipple.jp/show/large/" + id
-                plvUrl.displayUrl = when (super.getQuality("twipple")) {
+                plvUrl.displayUrl = when (quality) {
                     "original" -> plvUrl.biggestUrl
                     "large"    -> plvUrl.thumbUrl
                     "thumb"    -> "http://p.twipple.jp/show/thumb/" + id
@@ -169,11 +173,12 @@ class PLVUrlService(private val context: Context) {
     private inner class ImglySite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://img\\.ly/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "imgly", id)
+                val quality = super.getQuality("imgly")
+                val plvUrl = PLVUrl(url, "imgly", id, quality)
 
                 plvUrl.biggestUrl = "http://img.ly/show/full/" + id
                 plvUrl.thumbUrl = "http://img.ly/show/medium/" + id
-                plvUrl.displayUrl = when (super.getQuality("imgly")) {
+                plvUrl.displayUrl = when (quality) {
                     "full"   -> plvUrl.biggestUrl
                     "large"  -> plvUrl.thumbUrl
                     "medium" -> "http://img.ly/show/medium/" + id
@@ -194,10 +199,11 @@ class PLVUrlService(private val context: Context) {
     private inner class InstagramSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "instagram", id)
+                val quality = super.getQuality("instagram")
+                val plvUrl = PLVUrl(url, "instagram", id, quality)
 
                 plvUrl.biggestUrl = "https://instagram.com/p/${id}/media/?size=l"
-                plvUrl.displayUrl = when (super.getQuality("instagram")) {
+                plvUrl.displayUrl = when (quality) {
                     "large"  -> plvUrl.biggestUrl
                     "medium" -> "https://instagram.com/p/${id}/media/?size=m"
                     else     -> null
@@ -218,7 +224,7 @@ class PLVUrlService(private val context: Context) {
     private inner class GyazoSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*gyazo\\.com/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "gyazo", id)
+                val plvUrl = PLVUrl(url, "gyazo", id, null)
 
                 plvUrl.displayUrl = "https://gyazo.com/${id}/raw"
 
@@ -237,7 +243,7 @@ class PLVUrlService(private val context: Context) {
     private inner class ImgurSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*imgur\\.com/([\\w^\\.]+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "imgur", id)
+                val plvUrl = PLVUrl(url, "imgur", id, null)
 
                 val file_url = "http://i.imgur.com/${id}.jpg"
                 plvUrl.displayUrl = file_url
@@ -264,7 +270,7 @@ class PLVUrlService(private val context: Context) {
 
                 val plvUrl: PLVUrl
                 if (arrayOf("png", "jpg", "jpeg", "gif").contains(type)) {
-                    plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition))
+                    plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition), null)
                     plvUrl.type = type
                     listener?.onURLAccepted()
                     plvUrl.displayUrl = url
@@ -294,7 +300,7 @@ class PLVUrlService(private val context: Context) {
                 url.contains("flic.kr") -> super.getId(url, "^https?://flic\\.kr/p/(\\w+)")?.let { Base58.decode(it) }
                 else                    -> null
             }?.let { id ->
-                val plvUrl = PLVUrl(url, "flickr", id)
+                val plvUrl = PLVUrl(url, "flickr", id, super.getQuality("flickr"))
 
                 val api_key = PhotoLinkViewer.getFlickrKey()
                 val request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&nojsoncallback=1&api_key=${api_key}&photo_id=${id}"
@@ -308,7 +314,7 @@ class PLVUrlService(private val context: Context) {
                                 e.printStackTrace()
                             }
                         })
-                );
+                )
             }
         }
 
@@ -355,7 +361,7 @@ class PLVUrlService(private val context: Context) {
                 url.contains("nico.ms") -> super.getId(url, "^https?://nico\\.ms/im(\\d+)")
                 else                    -> super.getId(url, "^https?://seiga.nicovideo.jp/seiga/im(\\d+)")
             }?.let { id ->
-                val plvUrl = PLVUrl(url, "nico", id)
+                val plvUrl = PLVUrl(url, "nico", id, super.getQuality("nicoseiga"))
 
                 RedirectUrlController(object : Callback {
                     override fun onResponse(response: com.squareup.okhttp.Response) {
@@ -411,7 +417,7 @@ class PLVUrlService(private val context: Context) {
 
         override fun requestPLVUrl() {
             super.getId(url, "^https?://vine\\.co/v/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "vine", id)
+                val plvUrl = PLVUrl(url, "vine", id, null)
 
                 plvUrl.isVideo = true
                 plvUrl.type = "mp4"
@@ -427,7 +433,7 @@ class PLVUrlService(private val context: Context) {
                                 e.printStackTrace()
                             }
                         })
-                );
+                )
             }
         }
 
@@ -493,7 +499,7 @@ class PLVUrlService(private val context: Context) {
                             listener?.onGetPLVUrlFailed(e.message!!)
                         }
                     })
-            );
+            )
         }
 
         @Throws(JSONException::class, IllegalStateException::class)
@@ -507,7 +513,7 @@ class PLVUrlService(private val context: Context) {
             val photos = post.getJSONArray("photos")
 
             return (0..photos.length() - 1).map { i ->
-                val plvUrl = PLVUrl(url, "tumblr", "${id}_${i}")
+                val plvUrl = PLVUrl(url, "tumblr", "${id}_${i}", quality)
 
                 val photo = photos.getJSONObject(i)
                 plvUrl.biggestUrl = photo.getJSONObject("original_size").getString("url")

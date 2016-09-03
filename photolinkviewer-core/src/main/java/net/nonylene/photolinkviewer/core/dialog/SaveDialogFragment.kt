@@ -22,10 +22,12 @@ class SaveDialogFragment : DialogFragment() {
     companion object {
         val DIR_KEY = "dir"
         val INFO_KEY = "info"
+        val QUALITY_KEY = "quality"
 
-        fun createArguments(dirName: String, infoList: ArrayList<Info>): Bundle {
+        fun createArguments(dirName: String, quality: String?, infoList: ArrayList<Info>): Bundle {
             return Bundle().apply {
                 putString(DIR_KEY, dirName)
+                putString(QUALITY_KEY, quality)
                 putParcelableArrayList(INFO_KEY, infoList)
             }
         }
@@ -54,7 +56,8 @@ class SaveDialogFragment : DialogFragment() {
         }
 
         return AlertDialog.Builder(activity).setView(view)
-                .setTitle(getString(R.string.plv_core_save_dialog_title))
+                .setTitle(arguments.getString(QUALITY_KEY)?.let { getString(R.string.plv_core_save_dialog_title).format(it) }
+                        ?: getString(R.string.plv_core_save_dialog_title_null))
                 .setPositiveButton(getString(R.string.plv_core_save_dialog_positive), { dialogInterface, i ->
                     // get filename
                     val newInfoList = (0..linearLayout.childCount - 1).map {
@@ -78,7 +81,7 @@ class SaveDialogFragment : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
     class Info : Parcelable {
