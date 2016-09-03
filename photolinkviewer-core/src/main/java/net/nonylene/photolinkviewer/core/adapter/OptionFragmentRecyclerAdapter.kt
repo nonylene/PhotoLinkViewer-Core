@@ -10,10 +10,11 @@ import net.nonylene.photolinkviewer.core.databinding.PlvCoreOptionButtonFragment
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.viewmodel.OptionButtonFragmentViewModel
 
+// 0 -> space / other -> normal
 class OptionFragmentRecyclerAdapter(val listener: (OptionButton) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val VIEW_TYPE_BUTTON = 1
-    private val VIEW_TYPE_SPACE = 2
+    private val VIEW_TYPE_SPACE = 1
+    private val VIEW_TYPE_BUTTON = 2
 
     var adapterModelList = listOf<OptionButton>()
     set(value) {
@@ -23,7 +24,7 @@ class OptionFragmentRecyclerAdapter(val listener: (OptionButton) -> Unit) : Recy
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(holder) {
-            is ButtonViewHolder -> holder.bind(adapterModelList[position], listener)
+            is ButtonViewHolder -> holder.bind(adapterModelList[position - 1], listener)
             else -> {
                 // nothing
             }
@@ -32,27 +33,26 @@ class OptionFragmentRecyclerAdapter(val listener: (OptionButton) -> Unit) : Recy
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         when(viewType) {
-            VIEW_TYPE_BUTTON -> {
-                return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.plv_core_option_button_fragment_item, parent, false))
+            VIEW_TYPE_SPACE -> {
+                return SpaceViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.plv_core_option_button_common_space_item, parent, false))
             }
             else -> {
-                return SpaceViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.plv_core_option_button_common_space_item, parent, false))
+                return ButtonViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.plv_core_option_button_fragment_item, parent, false))
             }
         }
     }
 
     override fun getItemId(position: Int): Long  {
         when(getItemViewType(position)) {
-            VIEW_TYPE_BUTTON -> return adapterModelList[position].hashCode().toLong() shl 32
-            else -> return 0.toLong()
+            VIEW_TYPE_SPACE -> return 0
+            else -> return adapterModelList[position - 1].hashCode().toLong() shl 32
         }
     }
 
     override fun getItemCount(): Int = adapterModelList.size + 1
 
     override fun getItemViewType(position: Int): Int {
-        if (adapterModelList.size > position) return VIEW_TYPE_BUTTON
-        else return VIEW_TYPE_SPACE
+        return if (position == 0) VIEW_TYPE_SPACE else VIEW_TYPE_BUTTON
     }
 
     class ButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

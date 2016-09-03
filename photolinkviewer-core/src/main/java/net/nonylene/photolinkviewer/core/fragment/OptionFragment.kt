@@ -73,17 +73,17 @@ class OptionFragment : Fragment() {
     private var downloadPLVUrlStack: List<PLVUrl>? = null
 
     private var isOpen = false
-    set(value) {
-        field = value
-        if (value) {
-            ViewCompat.setRotation(baseButton, 0f)
-            ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
-        } else {
-            ViewCompat.setRotation(baseButton, 180f)
-            ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
+        set(value) {
+            field = value
+            if (value) {
+                ViewCompat.setRotation(baseButton, 0f)
+                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
+            } else {
+                ViewCompat.setRotation(baseButton, 180f)
+                ViewCompat.animate(baseButton).rotationBy(180f).duration = 150
+            }
+            adapter.adapterModelList = getFilteredOptionButtonsFromPreference(plvUrlsForSave != null)
         }
-        adapter.adapterModelList = getFilteredOptionButtonsFromPreference(plvUrlsForSave != null)
-    }
 
     // by default, animation does not run if not isLaidOut().
     private fun FloatingActionButton.showWithAnimation() {
@@ -159,7 +159,7 @@ class OptionFragment : Fragment() {
         adapter.setHasStableIds(true)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context).apply {
-            stackFromEnd = true
+            reverseLayout = true
         }
         with(recyclerView.itemAnimator) {
             addDuration = 200
