@@ -23,7 +23,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding: PlvCoreActivityOptionPreferenceBinding
-                = DataBindingUtil.setContentView(this, R.layout.plv_core_activity_option_preference)
+                = DataBindingUtil.setContentView(this, R.layout.plv_core_activity_option_button_preference)
 
         adapter.setHasStableIds(true)
         binding.recyclerView.adapter = adapter
