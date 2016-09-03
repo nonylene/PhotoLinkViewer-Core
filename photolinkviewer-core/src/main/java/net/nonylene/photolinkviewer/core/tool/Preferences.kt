@@ -127,11 +127,11 @@ fun SharedPreferences.getOptionButtons(): List<OptionButton> {
     val jsonString = getString(OPTION_BUTTONS_KEY, null)
     if (jsonString == null) {
         return listOf(
-                OptionButton.OPEN_OTHER_APP,
-                OptionButton.PREFERENCE,
-                OptionButton.DOWNLOAD,
+                OptionButton.TWEET_LIKE,
                 OptionButton.TWEET_RETWEET,
-                OptionButton.TWEET_LIKE
+                OptionButton.DOWNLOAD,
+                OptionButton.PREFERENCE,
+                OptionButton.OPEN_OTHER_APP
                 )
     } else {
         val jsonArray = JSONArray(jsonString)
