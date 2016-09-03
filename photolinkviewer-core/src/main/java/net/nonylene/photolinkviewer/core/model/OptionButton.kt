@@ -18,6 +18,7 @@ enum class OptionButton(val id: Int, @DrawableRes val icon: Int, @ColorInt val c
     OPEN_OTHER_APP(4, R.drawable.plv_core_ic_open_in_browser_white, BLUE_COLOR, "Open browser"),
     COPY_URL(5, R.drawable.plv_core_content_copy_black_24dp, BLUE_COLOR, "Copy URL"),
     SHARE(6, R.drawable.plv_core_share_black_24dp, BLUE_COLOR, "Share URL"),
+    QUALITY(7, R.drawable.plv_core_ic_photo_size_select_small_black_24dp, BLUE_COLOR, "Quality"),
 }
 
 fun getOptionButtonFromId(id: Int): OptionButton {

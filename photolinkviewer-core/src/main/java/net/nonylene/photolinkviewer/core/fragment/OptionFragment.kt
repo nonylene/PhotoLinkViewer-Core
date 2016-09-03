@@ -33,6 +33,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import butterknife.bindView
+import net.nonylene.photolinkviewer.core.PLVQualityPreferenceActivity
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.adapter.OptionFragmentRecyclerAdapter
@@ -233,6 +234,9 @@ class OptionFragment : Fragment() {
                         .setType("text/plain")
                         .putExtra(Intent.EXTRA_TEXT, url)
                 startActivity(Intent.createChooser(intent, "Share url"))
+            }
+            OptionButton.QUALITY -> {
+                startActivity(Intent(activity, PLVQualityPreferenceActivity::class.java))
             }
             OptionButton.ADD_BUTTON -> {
                 // nothing
