@@ -158,6 +158,10 @@ class OptionFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context).apply {
             reverseLayout = true
         }
+        with(recyclerView.itemAnimator) {
+            addDuration = 200
+            removeDuration = 200
+        }
         // adapter -> empty list
 
         baseButton.setOnClickListener {
