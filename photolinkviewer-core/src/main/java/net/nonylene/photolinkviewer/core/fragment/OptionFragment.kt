@@ -8,12 +8,12 @@ import android.app.Dialog
 import android.app.DownloadManager
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
+import android.net.Uri
+import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
@@ -31,17 +31,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.TextView
+import android.widget.Toast
 import butterknife.bindView
 import net.nonylene.photolinkviewer.core.PLVQualityPreferenceActivity
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.adapter.OptionFragmentRecyclerAdapter
-
 import net.nonylene.photolinkviewer.core.dialog.SaveDialogFragment
+import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.DownloadButtonEvent
 import net.nonylene.photolinkviewer.core.event.RotateEvent
-import net.nonylene.photolinkviewer.core.event.BaseShowFragmentEvent
 import net.nonylene.photolinkviewer.core.event.SnackbarEvent
 import net.nonylene.photolinkviewer.core.model.OptionButton
 import net.nonylene.photolinkviewer.core.tool.*
@@ -434,7 +436,7 @@ class OptionFragment : Fragment() {
         if (preferences.isWifiEnabled()) {
             // get wifi status
             val manager = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            isWifi = manager.activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI
+            isWifi = manager.activeNetworkInfo?.type == ConnectivityManager.TYPE_WIFI
         }
 
         val original = preferences.isOriginalEnabled(isWifi)
