@@ -8,11 +8,11 @@ import net.nonylene.photolinkviewer.core.PLVPreferenceActivity
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.test.BuildConfig
 import net.nonylene.photolinkviewer.core.test.TestUrls
-import org.junit.*
-
+import org.junit.AfterClass
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.*
-
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
@@ -328,15 +328,15 @@ class PLVUrlServiceTest {
         getServiceWithSuccessListener({
             assertEquals(it.size, 5)
             it[0].apply {
-                assertEquals(biggestUrl, "https://66.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280.jpg")
-                assertEquals(thumbUrl, "https://66.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250.jpg")
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280\\.jpg").matches(biggestUrl!!))
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250\\.jpg").matches(thumbUrl!!))
                 assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
             }
             it[4].apply {
-                assertEquals(biggestUrl, "https://67.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280.jpg")
-                assertEquals(thumbUrl, "https://66.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250.jpg")
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280\\.jpg").matches(biggestUrl!!))
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250\\.jpg").matches(thumbUrl!!))
                 assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
@@ -347,15 +347,15 @@ class PLVUrlServiceTest {
         getServiceWithSuccessListener({
             assertEquals(it.size, 5)
             it[0].apply {
-                assertEquals(biggestUrl, "https://66.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280.jpg")
-                assertEquals(thumbUrl, "https://66.media.tumblr.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250.jpg")
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_1280\\.jpg").matches(biggestUrl!!))
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/ae6cc3e23d6ea2a6d59e0f261866e556/tumblr_nxhxd2u2TV1tevt9yo1_250\\.jpg").matches(thumbUrl!!))
                 assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
             }
             it[4].apply {
-                assertEquals(biggestUrl, "https://67.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280.jpg")
-                assertEquals(thumbUrl, "https://66.media.tumblr.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250.jpg")
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280\\.jpg").matches(biggestUrl!!))
+                assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_250\\.jpg").matches(thumbUrl!!))
                 assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
