@@ -4,14 +4,12 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.support.v4.content.AsyncTaskLoader
-import com.squareup.okhttp.Request
 import net.nonylene.photolinkviewer.core.tool.OkHttpManager
-
 import net.nonylene.photolinkviewer.core.tool.PLVUrl
+import okhttp3.Request
 import java.io.BufferedInputStream
-
 import java.io.IOException
-import java.util.Arrays
+import java.util.*
 
 class AsyncHttpBitmap(context: Context, private val plvUrl: PLVUrl, private val max_size: Int) : AsyncTaskLoader<AsyncHttpBitmap.Result>(context) {
 

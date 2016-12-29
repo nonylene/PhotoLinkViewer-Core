@@ -1,5 +1,6 @@
 package net.nonylene.photolinkviewer.core.tool
 
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -8,19 +9,15 @@ import android.os.Handler
 import android.os.Looper
 import android.preference.PreferenceManager
 import android.widget.Toast
-
 import com.android.volley.Response
-import com.squareup.okhttp.Callback
-import com.squareup.okhttp.Request
 import net.nonylene.photolinkviewer.core.PhotoLinkViewer
 import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.controller.RedirectUrlController
-
-
+import okhttp3.Call
+import okhttp3.Callback
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-
 import java.util.regex.Pattern
 
 class PLVUrlService(private val context: Context) {
@@ -364,13 +361,13 @@ class PLVUrlService(private val context: Context) {
                 val plvUrl = PLVUrl(url, "nico", id, super.getQuality("nicoseiga"))
 
                 RedirectUrlController(object : Callback {
-                    override fun onResponse(response: com.squareup.okhttp.Response) {
+                    override fun onResponse(call: Call, response: okhttp3.Response) {
                         Handler(Looper.getMainLooper()).post {
-                            listener?.onGetPLVUrlFinished(arrayOf(parseNico(response.request().urlString(), id, plvUrl)))
+                            listener?.onGetPLVUrlFinished(arrayOf(parseNico(response.request().url().toString(), id, plvUrl)))
                         }
                     }
 
-                    override fun onFailure(request: Request, e: IOException) {
+                    override fun onFailure(call: Call, e: IOException) {
                         e.printStackTrace()
                         Handler(Looper.getMainLooper()).post {
                             listener?.onGetPLVUrlFailed("connection error!")
@@ -456,13 +453,13 @@ class PLVUrlService(private val context: Context) {
                 requestAPI(url)
             } else {
                 RedirectUrlController(object : Callback {
-                    override fun onResponse(response: com.squareup.okhttp.Response) {
+                    override fun onResponse(call: Call, response: okhttp3.Response) {
                         Handler(Looper.getMainLooper()).post {
-                            requestAPI(response.request().urlString())
+                            requestAPI(response.request().url().toString())
                         }
                     }
 
-                    override fun onFailure(request: Request, e: IOException) {
+                    override fun onFailure(call: Call, e: IOException) {
                         e.printStackTrace()
                         Handler(Looper.getMainLooper()).post {
                             listener?.onGetPLVUrlFailed("connection error!")

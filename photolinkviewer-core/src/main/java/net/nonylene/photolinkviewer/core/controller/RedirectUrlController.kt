@@ -1,9 +1,10 @@
 package net.nonylene.photolinkviewer.core.controller
 
-import com.squareup.okhttp.Request
 import net.nonylene.photolinkviewer.core.tool.OkHttpManager
+import okhttp3.Callback
+import okhttp3.Request
 
-internal class RedirectUrlController(private val callback: com.squareup.okhttp.Callback) {
+internal class RedirectUrlController(private val callback: Callback) {
     fun getRedirect(url : String) {
         OkHttpManager.okHttpClient.newCall(Request.Builder().url(url).get().build()).enqueue(callback)
     }

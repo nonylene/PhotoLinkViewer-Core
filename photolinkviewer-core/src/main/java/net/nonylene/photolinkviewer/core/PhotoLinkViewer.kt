@@ -1,7 +1,7 @@
 package net.nonylene.photolinkviewer.core
 
 import android.app.Activity
-import com.squareup.okhttp.Cache
+import okhttp3.Cache
 import java.util.*
 
 /**

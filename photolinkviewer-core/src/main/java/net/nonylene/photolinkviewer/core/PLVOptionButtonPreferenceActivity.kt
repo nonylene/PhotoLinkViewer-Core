@@ -71,7 +71,7 @@ class PLVOptionButtonPreferenceActivity : AppCompatActivity(), AddOptionButtonDi
         adapter.buttonList.addAll(PreferenceManager.getDefaultSharedPreferences(this).getOptionButtons())
         adapter.notifyDataSetChanged()
 
-        // addbutton -> click to open view
+        // add button -> click to open view
         binding.addButtonLayout?.setModel(OptionButtonPreferenceViewModel(OptionButton.ADD_BUTTON, null))
         with(binding.addButtonLayout.itemBaseView) {
             // todo: api 15

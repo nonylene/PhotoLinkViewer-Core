@@ -14,7 +14,7 @@ class OptionButtonFragmentViewModel {
     val button = ObservableField<OptionButton>()
     var listener: ((OptionButton) -> Unit)? = null
 
-    fun onBaseViewClick(view: View) {
+    fun onBaseViewClick(@Suppress("UNUSED_PARAMETER") view: View) {
         listener?.invoke(button.get())
     }
 }
