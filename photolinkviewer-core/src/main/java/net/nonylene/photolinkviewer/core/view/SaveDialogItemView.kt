@@ -71,6 +71,6 @@ class SaveDialogItemView(context: Context?, attrs: AttributeSet?) : LinearLayout
     }
 
     fun setThumbnailUrl(url: String) {
-        Glide.with(context).load(url).into(thumbImageView)
+        Glide.with(context.applicationContext).load(url).into(thumbImageView)
     }
 }

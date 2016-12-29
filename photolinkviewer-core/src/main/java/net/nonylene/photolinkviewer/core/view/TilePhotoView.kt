@@ -87,7 +87,7 @@ class TilePhotoView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                         tilePhotoViewListener?.onShowFragmentRequired(plv)
                     }
                 }
-                Glide.with(context).load(plv.thumbUrl).into(imageView)
+                Glide.with(context.applicationContext).load(plv.thumbUrl).into(imageView)
             }
         }
 
