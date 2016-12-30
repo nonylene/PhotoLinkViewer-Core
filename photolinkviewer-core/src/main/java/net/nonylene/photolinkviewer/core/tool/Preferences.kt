@@ -137,9 +137,7 @@ fun SharedPreferences.getOptionButtons(): List<OptionButton> {
         val jsonArray = JSONArray(jsonString)
         return (0 until jsonArray.length()).map {
             jsonArray.getInt(it)
-        }.map {
-            getOptionButtonFromId(it)
-        }
+        }.map(::getOptionButtonFromId)
     }
 }
 
