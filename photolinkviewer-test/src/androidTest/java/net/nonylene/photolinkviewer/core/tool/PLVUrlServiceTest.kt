@@ -1,6 +1,7 @@
 package net.nonylene.photolinkviewer.core.tool
 
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
@@ -140,6 +141,9 @@ class PLVUrlServiceTest {
 
     @Test
     fun requestNicoUrlTest() {
+        // TLS
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) return
+
         val countDownLatch = CountDownLatch(2)
 
         getServiceWithSuccessListener({
