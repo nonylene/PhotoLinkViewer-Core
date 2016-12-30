@@ -7,7 +7,7 @@ until [ $n -ge 3 ]
 do
     c=0
     case $CIRCLE_NODE_INDEX in 0) export ANDROID_VERSION=24 ;; 1) export ANDROID_VERSION=22 ;; 2) export ANDROID_VERSION=19 ;; 3) ANDROID_VERSION=17 ;; esac
-    nohup bash -c "$ANDROID_HOME/tools/emulator -avd test$ANDROID_VERSION -noskin -no-boot-anim -noaudio -no-window -port $port &"
+    nohup bash -c "$ANDROID_HOME/tools/emulator -avd test$ANDROID_VERSION -no-window -port $port &"
     circle-android wait-for-boot
     sleep 30
     n=$[$n+1]
