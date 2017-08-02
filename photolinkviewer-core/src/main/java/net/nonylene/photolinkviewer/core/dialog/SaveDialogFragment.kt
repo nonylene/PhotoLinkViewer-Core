@@ -85,17 +85,7 @@ class SaveDialogFragment : DialogFragment() {
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
 
-    class Info : Parcelable {
-
-        val fileName: String
-        val downloadUrl: String
-        val thumbnailUrl: String
-
-        constructor(fileName: String, downloadUrl: String, thumbnailUrl: String) {
-            this.fileName = fileName
-            this.downloadUrl = downloadUrl
-            this.thumbnailUrl = thumbnailUrl
-        }
+    class Info(val fileName: String, val downloadUrl: String, val thumbnailUrl: String) : Parcelable {
 
         override fun describeContents(): Int {
             return 0
@@ -107,23 +97,19 @@ class SaveDialogFragment : DialogFragment() {
             dest.writeString(thumbnailUrl)
         }
 
-        constructor(source: Parcel) {
-            this.fileName = source.readString()
-            this.downloadUrl = source.readString()
-            this.thumbnailUrl = source.readString()
-        }
+        constructor(source: Parcel) : this(
+                source.readString(),
+                source.readString(),
+                source.readString()
+        )
 
-        companion object {
-            @JvmField
-            @Suppress("unused")
-            val CREATOR: Parcelable.Creator<Info> = object : Parcelable.Creator<Info> {
-                override fun createFromParcel(source: Parcel): Info {
-                    return Info(source)
-                }
+        companion object CREATOR: Parcelable.Creator<Info> {
+            override fun createFromParcel(source: Parcel): Info {
+                return Info(source)
+            }
 
-                override fun newArray(size: Int): Array<Info?> {
-                    return arrayOfNulls(size)
-                }
+            override fun newArray(size: Int): Array<Info?> {
+                return arrayOfNulls(size)
             }
         }
     }
