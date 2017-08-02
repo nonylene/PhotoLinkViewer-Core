@@ -11,7 +11,8 @@ import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.TextView
 import net.nonylene.photolinkviewer.core.R
 import net.nonylene.photolinkviewer.core.view.SaveDialogItemView
 import java.util.*
@@ -37,7 +38,8 @@ class SaveDialogFragment : DialogFragment() {
         val infoList = arguments.getParcelableArrayList<Info>(INFO_KEY)
         // set custom view
         val view = View.inflate(activity, R.layout.plv_core_save_path, null)
-        (view.findViewById(R.id.path_text_view) as TextView).text = arguments.getString(DIR_KEY)
+        val dirname = arguments.getString(DIR_KEY)
+        (view.findViewById(R.id.path_text_view) as TextView).text = dirname
         val linearLayout = view.findViewById(R.id.path_linear_layout) as LinearLayout
 
         for (info in infoList) {
@@ -58,7 +60,7 @@ class SaveDialogFragment : DialogFragment() {
         return AlertDialog.Builder(activity).setView(view)
                 .setTitle(arguments.getString(QUALITY_KEY)?.let { getString(R.string.plv_core_save_dialog_title).format(it) }
                         ?: getString(R.string.plv_core_save_dialog_title_null))
-                .setPositiveButton(getString(R.string.plv_core_save_dialog_positive), { dialogInterface, i ->
+                .setPositiveButton(getString(R.string.plv_core_save_dialog_positive), { _, _ ->
                     // get filename
                     val newInfoList = (0..linearLayout.childCount - 1).map {
                         linearLayout.getChildAt(it) as SaveDialogItemView to infoList[it]
@@ -68,10 +70,9 @@ class SaveDialogFragment : DialogFragment() {
                         Info(it.first.getFileName(), it.second.downloadUrl, it.second.thumbnailUrl)
                     }.toCollection(ArrayList())
 
-                    val textView = dialog.findViewById(R.id.path_text_view) as TextView
                     targetFragment.onActivityResult(targetRequestCode, Activity.RESULT_OK,
                             Intent().putParcelableArrayListExtra(INFO_KEY, newInfoList)
-                                    .putExtra(DIR_KEY, textView.text)
+                                    .putExtra(DIR_KEY, dirname)
                     )
                 }
                 )
