@@ -36,9 +36,3 @@ test:
   post:
     - cp -r photolinkviewer-test/build/outputs/androidTest-results $CIRCLE_TEST_REPORTS:
         parallel: true
-
-deployment:
-  publish:
-    branch: master
-    commands:
-      - ./gh-push.sh
