@@ -53,7 +53,7 @@
             android:title="@string/plv_core_setting_dir_title"/>
 
         <ListPreference
-            android:defaultValue="mkdir"
+            android:defaultValue="mkdir-username"
             android:dialogTitle="@string/plv_core_setting_mkdir_dialogtitle"
             android:entries="@array/plv_core_filename"
             android:entryValues="@array/plv_core_filename_value"

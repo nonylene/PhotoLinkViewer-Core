@@ -24,7 +24,7 @@ object Initialize {
         val isVideoPlay = pref.getBoolean("video_play", true)
         val isAdjustZoom = pref.getBoolean("adjust_zoom", false)
         val downloadDir = pref.getString("download_dir", "PLViewer/")
-        val downloadDirType = pref.getString("download_file", "mkdir")
+        val downloadDirType = pref.getString("download_file", "mkdir-username")
         val isSkipDialog = pref.getBoolean("skip_dialog", false)
         val isLeaveNotify = pref.getBoolean("leave_notify", true)
         val isDoubleZoomDisabled= pref.getBoolean("double_zoom", false)

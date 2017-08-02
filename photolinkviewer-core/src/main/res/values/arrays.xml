@@ -2,8 +2,10 @@
 <resources>
 
     <array name="plv_core_filename">
-        <item>\'sitename\'/\'id\'.png (make directory)</item>
-        <item>\'sitename\'-\'id\'.png (not make directory)</item>
+        <item>{sitename}/{id}.png</item>
+        <item>{sitename}/{username}/{id}.png</item>
+        <item>{sitename}-{id}.png</item>
+        <item>{sitename}-{username}-{id}.png</item>
     </array>
     <string-array name="plv_core_quality">
         <item>original</item>
@@ -12,7 +14,9 @@
     </string-array>
     <array name="plv_core_filename_value">
         <item>mkdir</item>
+        <item>mkdir-username</item>
         <item>nodir</item>
+        <item>nodir-username</item>
     </array>
     <array name="plv_core_flickr_quality">
         <item>original</item>

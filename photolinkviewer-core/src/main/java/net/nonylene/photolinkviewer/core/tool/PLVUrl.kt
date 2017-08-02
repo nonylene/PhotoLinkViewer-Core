@@ -21,12 +21,15 @@ class PLVUrl : Parcelable {
     var width: Int = 0
     var isVideo = false
     val quality: String?
+    // used to create subdirectory
+    val username: String?
 
-    constructor(url: String, siteName: String, fileName :String, quality: String?) {
+    constructor(url: String, siteName: String, fileName :String, quality: String?, username: String?) {
         this.url = url
         this.siteName = siteName
         this.fileName = fileName
         this.quality = quality
+        this.username = username
     }
 
     override fun describeContents(): Int {
@@ -42,6 +45,7 @@ class PLVUrl : Parcelable {
         dest.writeString(fileName)
         dest.writeString(type)
         dest.writeString(quality)
+        dest.writeString(username)
         dest.writeInt(height)
         dest.writeInt(width)
         dest.writeByte((if (isVideo) 1 else 0).toByte())
@@ -56,6 +60,7 @@ class PLVUrl : Parcelable {
         this.fileName = source.readString()
         this.type = source.readString()
         this.quality = source.readString()
+        this.username = source.readString()
         this.height = source.readInt()
         this.width = source.readInt()
         this.isVideo = source.readByte().toInt() != 0

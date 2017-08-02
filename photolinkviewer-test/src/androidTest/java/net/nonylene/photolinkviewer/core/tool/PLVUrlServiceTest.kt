@@ -108,6 +108,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "22247064413")
                 assertEquals(siteName, "flickr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_SHORTEN_URL)
@@ -119,6 +120,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "22247064413")
                 assertEquals(siteName, "flickr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_NORMAL_URL)
@@ -130,6 +132,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "22247064413")
                 assertEquals(siteName, "flickr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.FLICKR_MOBILE_URL)
@@ -153,6 +156,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "5323294")
                 assertEquals(siteName, "nico")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.NICO_NORMAL_URL)
@@ -164,6 +168,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "5323294")
                 assertEquals(siteName, "nico")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.NICO_SHORTEN_URL)
@@ -184,6 +189,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "CTSJJGvVEAAjr7J")
                 assertEquals(siteName, "twitter")
                 assertEquals(type, "jpg")
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.PBS_TWITTER_URL)
@@ -204,6 +210,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "XLyY4")
                 assertEquals(siteName, "twipple")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TWIPPLE_URL)
@@ -224,6 +231,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "CSbm")
                 assertEquals(siteName, "imgly")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.IMGLY_URL)
@@ -244,6 +252,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "90kD_WzfqP")
                 assertEquals(siteName, "instagram")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.INSTAGRAM_NORMAL_URL)
@@ -255,6 +264,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "90kD_WzfqP")
                 assertEquals(siteName, "instagram")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.INSTAGRAM_SHORTEN_URL)
@@ -275,6 +285,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "953acc58e3a4fbac2723c190f83c1a90")
                 assertEquals(siteName, "gyazo")
                 assertNull(type)
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.GYAZO_URL)
@@ -295,6 +306,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "rfuJf9e")
                 assertEquals(siteName, "imgur")
                 assertEquals(type, "jpg")
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.IMGUR_URL)
@@ -316,6 +328,7 @@ class PLVUrlServiceTest {
                 assertEquals(siteName, "vine")
                 assertTrue(isVideo)
                 assertEquals(type, "mp4")
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.VINE_URL)
@@ -337,6 +350,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             it[4].apply {
                 assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280\\.jpg").matches(biggestUrl!!))
@@ -344,6 +358,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TUMBLR_NORMAL_URL)
@@ -356,6 +371,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "132793441942_0")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             it[4].apply {
                 assertTrue(Regex("https://\\d+\\.media\\.tumblr\\.com/96be3485fbf827c5472930a1a9c3fd69/tumblr_nxhxd2u2TV1tevt9yo5_1280\\.jpg").matches(biggestUrl!!))
@@ -363,6 +379,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "132793441942_4")
                 assertEquals(siteName, "tumblr")
                 assertEquals(type, "jpg")
+                assertEquals(username, "nonylene")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.TUMBLR_SHORTEN_URL)
@@ -383,6 +400,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "googlelogo_color_272x92dp")
                 assertEquals(siteName, "other")
                 assertEquals(type, "png")
+                assertNull(username)
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.OTHER_URL)

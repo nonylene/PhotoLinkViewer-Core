@@ -2,8 +2,6 @@ package net.nonylene.photolinkviewer.core.tool
 
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -68,17 +66,9 @@ class PLVUrlService(private val context: Context) {
 
     private abstract inner class Site(protected var url: String, protected var context: Context, protected val listener: PLVUrlListener?) {
 
-        protected fun wifiChecker(sharedPreferences: SharedPreferences): Boolean {
-            //check wifi connecting and wifi setting enabled or not
-            // note: if no default network is available, activeNetWorInfo returns null
-            return sharedPreferences.isWifiEnabled() &&
-                    (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo?.type ==
-                            ConnectivityManager.TYPE_WIFI
-        }
-
         protected fun getQuality(siteName: String): String {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
-            return sharedPreferences.getQuality(siteName, wifiChecker(sharedPreferences))
+            return sharedPreferences.getQuality(siteName, useWifiPreference(context))
         }
 
         protected fun getId(url: String, regex: String): String? {
@@ -93,12 +83,6 @@ class PLVUrlService(private val context: Context) {
 
         protected fun onParseFailed() {
             listener?.onGetPLVUrlFailed(context.getString(R.string.plv_core_url_purse_toast))
-        }
-
-        protected fun getFileTypeFromUrl(url: String): String? {
-            return Uri.parse(url).lastPathSegment?.let {
-                it.substring(it.lastIndexOf(".") + 1)
-            }
         }
 
         // async
@@ -120,18 +104,12 @@ class PLVUrlService(private val context: Context) {
             super.getId(url, "^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.")?.let { id ->
                 val quality = super.getQuality("twitter")
 
-                val plvUrl = PLVUrl(url, "twitter", id, quality)
+                val plvUrl = PLVUrl(url, "twitter", id, quality, null)
 
                 plvUrl.type = getFileTypeFromUrl(url)
-                plvUrl.biggestUrl = url + ":orig"
-                plvUrl.thumbUrl = url + ":small"
-                plvUrl.displayUrl = when (quality) {
-                    "original" -> plvUrl.biggestUrl
-                    "large"    -> url + ":large"
-                    "medium"   -> url
-                    "small"    -> plvUrl.thumbUrl
-                    else       -> null
-                }
+                plvUrl.biggestUrl = twitterBiggestUrl(url)
+                plvUrl.thumbUrl = twitterSmallUrl(url)
+                plvUrl.displayUrl = twitterDisplayUrl(url, quality)
                 return arrayOf(plvUrl)
             }
             return null
@@ -144,7 +122,7 @@ class PLVUrlService(private val context: Context) {
             super.getId(url, "^https?://p\\.twipple\\.jp/(\\w+)")?.let { id ->
                 val quality = super.getQuality("twipple")
 
-                val plvUrl = PLVUrl(url, "twipple", id, quality)
+                val plvUrl = PLVUrl(url, "twipple", id, quality, null)
 
                 plvUrl.biggestUrl = "http://p.twipple.jp/show/orig/" + id
                 plvUrl.thumbUrl = "http://p.twipple.jp/show/large/" + id
@@ -171,7 +149,7 @@ class PLVUrlService(private val context: Context) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://img\\.ly/(\\w+)")?.let { id ->
                 val quality = super.getQuality("imgly")
-                val plvUrl = PLVUrl(url, "imgly", id, quality)
+                val plvUrl = PLVUrl(url, "imgly", id, quality, null)
 
                 plvUrl.biggestUrl = "http://img.ly/show/full/" + id
                 plvUrl.thumbUrl = "http://img.ly/show/medium/" + id
@@ -197,7 +175,7 @@ class PLVUrlService(private val context: Context) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*instagr\\.?am[\\.com]*/p/([^/\\?=]+)")?.let { id ->
                 val quality = super.getQuality("instagram")
-                val plvUrl = PLVUrl(url, "instagram", id, quality)
+                val plvUrl = PLVUrl(url, "instagram", id, quality, null)
 
                 plvUrl.biggestUrl = "https://instagram.com/p/${id}/media/?size=l"
                 plvUrl.displayUrl = when (quality) {
@@ -221,7 +199,7 @@ class PLVUrlService(private val context: Context) {
     private inner class GyazoSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*gyazo\\.com/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "gyazo", id, null)
+                val plvUrl = PLVUrl(url, "gyazo", id, null, null)
 
                 plvUrl.displayUrl = "https://gyazo.com/${id}/raw"
 
@@ -240,7 +218,7 @@ class PLVUrlService(private val context: Context) {
     private inner class ImgurSite(url: String, context: Context, listener: PLVUrlListener?) : Site(url, context, listener) {
         override fun getPLVUrl(): Array<PLVUrl>? {
             super.getId(url, "^https?://.*imgur\\.com/([\\w^\\.]+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "imgur", id, null)
+                val plvUrl = PLVUrl(url, "imgur", id, null, null)
 
                 val file_url = "http://i.imgur.com/${id}.jpg"
                 plvUrl.displayUrl = file_url
@@ -267,7 +245,7 @@ class PLVUrlService(private val context: Context) {
 
                 val plvUrl: PLVUrl
                 if (arrayOf("png", "jpg", "jpeg", "gif").contains(type)) {
-                    plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition), null)
+                    plvUrl = PLVUrl(url, "other", lastPath.substring(0, lastDotPosition), null, null)
                     plvUrl.type = type
                     listener?.onURLAccepted()
                     plvUrl.displayUrl = url
@@ -297,15 +275,13 @@ class PLVUrlService(private val context: Context) {
                 url.contains("flic.kr") -> super.getId(url, "^https?://flic\\.kr/p/(\\w+)")?.let { Base58.decode(it) }
                 else                    -> null
             }?.let { id ->
-                val plvUrl = PLVUrl(url, "flickr", id, super.getQuality("flickr"))
-
                 val api_key = PhotoLinkViewer.getFlickrKey()
                 val request = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&format=json&nojsoncallback=1&api_key=${api_key}&photo_id=${id}"
 
                 VolleyManager.getRequestQueue(context).add(MyJsonObjectRequest(context, request,
                         Response.Listener { response ->
                             try {
-                                listener?.onGetPLVUrlFinished(arrayOf(parseFlickr(response, plvUrl)))
+                                listener?.onGetPLVUrlFinished(arrayOf(parseFlickr(response)))
                             } catch (e: JSONException) {
                                 listener?.onGetPLVUrlFailed(context.getString(R.string.plv_core_show_flickrjson_toast))
                                 e.printStackTrace()
@@ -316,13 +292,16 @@ class PLVUrlService(private val context: Context) {
         }
 
         @Throws(JSONException::class)
-        private fun parseFlickr(json: JSONObject, plvUrl: PLVUrl): PLVUrl {
+        private fun parseFlickr(json: JSONObject): PLVUrl {
             //for flickr
             val photo = JSONObject(json.getString("photo"))
+            val username = photo.getJSONObject("owner").getString("username")
             val farm = photo.getString("farm")
             val server = photo.getString("server")
             val id = photo.getString("id")
             val secret = photo.getString("secret")
+
+            val plvUrl = PLVUrl(url, "flickr", id, super.getQuality("flickr"), username)
 
             val original_secrets = photo.getString("originalsecret")
             val original_formats = photo.getString("originalformat")
@@ -358,7 +337,7 @@ class PLVUrlService(private val context: Context) {
                 url.contains("nico.ms") -> super.getId(url, "^https?://nico\\.ms/im(\\d+)")
                 else                    -> super.getId(url, "^https?://seiga.nicovideo.jp/seiga/im(\\d+)")
             }?.let { id ->
-                val plvUrl = PLVUrl(url, "nico", id, super.getQuality("nicoseiga"))
+                val plvUrl = PLVUrl(url, "nico", id, super.getQuality("nicoseiga"), null)
 
                 RedirectUrlController(object : Callback {
                     override fun onResponse(call: Call, response: okhttp3.Response) {
@@ -382,7 +361,7 @@ class PLVUrlService(private val context: Context) {
 
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-            val original = sharedPreferences.isOriginalEnabled(wifiChecker(sharedPreferences))
+            val original = sharedPreferences.isOriginalEnabled(useWifiPreference(context))
 
             val quality = super.getQuality("nicoseiga")
 
@@ -414,7 +393,7 @@ class PLVUrlService(private val context: Context) {
 
         override fun requestPLVUrl() {
             super.getId(url, "^https?://vine\\.co/v/(\\w+)")?.let { id ->
-                val plvUrl = PLVUrl(url, "vine", id, null)
+                val plvUrl = PLVUrl(url, "vine", id, null, null)
 
                 plvUrl.isVideo = true
                 plvUrl.type = "mp4"
@@ -501,7 +480,9 @@ class PLVUrlService(private val context: Context) {
 
         @Throws(JSONException::class, IllegalStateException::class)
         private fun parseTumblr(json: JSONObject, id: String): Array<PLVUrl> {
-            val post = json.getJSONObject("response").getJSONArray("posts").getJSONObject(0)
+            val response = json.getJSONObject("response")
+            val name = response.getJSONObject("blog").getString("name")
+            val post = response.getJSONArray("posts").getJSONObject(0)
             post.getString("type").let {
                 if (!"photo".equals(it)) throw IllegalStateException("Type of this post is ${it}, not photo!")
             }
@@ -510,7 +491,7 @@ class PLVUrlService(private val context: Context) {
             val photos = post.getJSONArray("photos")
 
             return (0..photos.length() - 1).map { i ->
-                val plvUrl = PLVUrl(url, "tumblr", "${id}_${i}", quality)
+                val plvUrl = PLVUrl(url, "tumblr", "${id}_${i}", quality, name)
 
                 val photo = photos.getJSONObject(i)
                 plvUrl.biggestUrl = photo.getJSONObject("original_size").getString("url")

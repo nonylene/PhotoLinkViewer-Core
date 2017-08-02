@@ -74,8 +74,16 @@ fun SharedPreferences.Editor.putDownloadDir(value: String): SharedPreferences.Ed
     return putString(DOWNLOAD_DIR_KEY, value)
 }
 
-fun SharedPreferences.getDownloadDirType(defaultValue: String = "mkdir"): String{
-    return getString(DOWNLOAD_DIR_TYPE_KEY, defaultValue)
+enum class DownloadDirType { MKDIR, MKDIR_USERNAME, NODIR, NODIR_USERNAME}
+
+fun SharedPreferences.getDownloadDirType(defaultValue: String = "mkdir-username"): DownloadDirType {
+    return when (getString(DOWNLOAD_DIR_TYPE_KEY, defaultValue)) {
+        "mkdir" -> DownloadDirType.MKDIR
+        "mkdir-username" -> DownloadDirType.MKDIR_USERNAME
+        "nodir" -> DownloadDirType.NODIR
+        "nodir-username" -> DownloadDirType.NODIR_USERNAME
+        else -> DownloadDirType.MKDIR_USERNAME
+    }
 }
 
 fun SharedPreferences.Editor.putDownloadDirType(value: String): SharedPreferences.Editor {

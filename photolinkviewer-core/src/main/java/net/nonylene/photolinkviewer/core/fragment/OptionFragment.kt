@@ -53,6 +53,7 @@ import twitter4j.*
 import twitter4j.auth.AccessToken
 import java.io.File
 
+@Suppress("RemoveCurlyBracesFromTemplate")
 /**
  * @see OptionFragment.createArguments
  */
@@ -406,8 +407,10 @@ class OptionFragment : Fragment() {
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             }
             downloadManager.enqueue(request)
-            stringBuilder.append("\n${path.toString()},")
+            stringBuilder.append("\n${path},")
         }
+        // remove last ','
+        stringBuilder.deleteCharAt(stringBuilder.length - 1)
         Toast.makeText(applicationContext!!, stringBuilder.toString(), Toast.LENGTH_LONG).show()
     }
 
@@ -417,17 +420,14 @@ class OptionFragment : Fragment() {
     private fun getSaveFragmentInfos(plvUrls: List<PLVUrl>): SaveFragmentInfo {
         val plvUrl = plvUrls[0]
         // set download directory
-        val directory = preferences.getDownloadDir()
-        val root = Environment.getExternalStorageDirectory()
+        val baseDir = Environment.getExternalStorageDirectory().resolve(preferences.getDownloadDir())
 
-        val dir: File
-        val doMakeDir = preferences.getDownloadDirType() == "mkdir"
-        if (doMakeDir) {
-            // make directory
-            dir = File(root, directory + "/" + plvUrl.siteName)
-        } else {
-            // not make directory
-            dir = File(root, directory)
+        val dirType = preferences.getDownloadDirType()
+
+        val dir = when (dirType) {
+            DownloadDirType.MKDIR -> baseDir.resolve(plvUrl.siteName)
+            DownloadDirType.MKDIR_USERNAME -> baseDir.resolve(plvUrl.siteName).resolve(plvUrl.username ?: "unknown")
+            DownloadDirType.NODIR, DownloadDirType.NODIR_USERNAME -> baseDir
         }
         dir.mkdirs()
 
@@ -441,11 +441,17 @@ class OptionFragment : Fragment() {
 
         val original = preferences.isOriginalEnabled(isWifi)
 
-        return SaveFragmentInfo(dir.toString(), plvUrl.quality, plvUrls.map {
-            var fileName = if (doMakeDir) it.fileName else "${it.siteName}-${it.fileName}"
+        val infos = plvUrls.map {
+            var fileName = when (dirType) {
+                DownloadDirType.MKDIR, DownloadDirType.MKDIR_USERNAME -> it.fileName
+                DownloadDirType.NODIR -> "${it.siteName}-${it.fileName}"
+                DownloadDirType.NODIR_USERNAME -> "${it.siteName}-${it.username ?: "unknown"}-${it.fileName}"
+            }
             it.type?.let { fileName += "." + it }
             SaveDialogFragment.Info(fileName, if (original) it.biggestUrl!! else it.displayUrl!!, it.thumbUrl!!)
-        })
+        }
+
+        return SaveFragmentInfo(dir.toString(), plvUrl.quality, infos)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
