@@ -211,7 +211,7 @@ class OptionFragment : Fragment() {
             }
             OptionButton.DOWNLOAD -> {
                 plvUrlsForSave?.let { plvUrls ->
-                    // download direct
+                    // download directly
                     val info = getSaveFragmentInfos(plvUrls)
                     if (preferences.isSkipDialog()) {
                         saveOrRequestPermission(info.dirName, info.infoList)
@@ -451,7 +451,7 @@ class OptionFragment : Fragment() {
             SaveDialogFragment.Info(fileName, if (original) it.biggestUrl!! else it.displayUrl!!, it.thumbUrl!!)
         }
 
-        return SaveFragmentInfo(dir.toString(), plvUrl.quality, infos)
+        return SaveFragmentInfo(dir.toString(), if (original) "biggest" else plvUrl.quality, infos)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
