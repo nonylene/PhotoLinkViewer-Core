@@ -426,7 +426,13 @@ class OptionFragment : Fragment() {
 
         val dir = when (dirType) {
             DownloadDirType.MKDIR -> baseDir.resolve(plvUrl.siteName)
-            DownloadDirType.MKDIR_USERNAME -> baseDir.resolve(plvUrl.siteName).resolve(plvUrl.username ?: "unknown")
+            DownloadDirType.MKDIR_USERNAME -> {
+                if (plvUrl.username != null) {
+                    baseDir.resolve(plvUrl.siteName).resolve(plvUrl.username)
+                } else {
+                    baseDir.resolve(plvUrl.siteName)
+                }
+            }
             DownloadDirType.NODIR, DownloadDirType.NODIR_USERNAME -> baseDir
         }
         dir.mkdirs()
@@ -445,7 +451,13 @@ class OptionFragment : Fragment() {
             var fileName = when (dirType) {
                 DownloadDirType.MKDIR, DownloadDirType.MKDIR_USERNAME -> it.fileName
                 DownloadDirType.NODIR -> "${it.siteName}-${it.fileName}"
-                DownloadDirType.NODIR_USERNAME -> "${it.siteName}-${it.username ?: "unknown"}-${it.fileName}"
+                DownloadDirType.NODIR_USERNAME -> {
+                    if (plvUrl.username != null) {
+                        "${it.siteName}-${it.username}-${it.fileName}"
+                    } else {
+                        "${it.siteName}-${it.fileName}"
+                    }
+                }
             }
             it.type?.let { fileName += "." + it }
             SaveDialogFragment.Info(fileName, if (original) it.biggestUrl!! else it.displayUrl!!, it.thumbUrl!!)

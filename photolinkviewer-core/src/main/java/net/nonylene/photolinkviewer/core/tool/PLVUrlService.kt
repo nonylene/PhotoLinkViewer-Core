@@ -104,7 +104,7 @@ class PLVUrlService(private val context: Context) {
             super.getId(url, "^https?://pbs\\.twimg\\.com/media/([^\\.]+)\\.")?.let { id ->
                 val quality = super.getQuality("twitter")
 
-                val plvUrl = PLVUrl(url, "twitter", id, quality, null)
+                val plvUrl = PLVUrl(url, "twitter", id, quality, "unknown")
 
                 plvUrl.type = getFileTypeFromUrl(url)
                 plvUrl.biggestUrl = twitterBiggestUrl(url)

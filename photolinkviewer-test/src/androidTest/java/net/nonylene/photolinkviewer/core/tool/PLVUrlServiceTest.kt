@@ -189,7 +189,7 @@ class PLVUrlServiceTest {
                 assertEquals(fileName, "CTSJJGvVEAAjr7J")
                 assertEquals(siteName, "twitter")
                 assertEquals(type, "jpg")
-                assertNull(username)
+                assertEquals(username, "unknown")
             }
             countDownLatch.countDown()
         }).requestGetPLVUrl(TestUrls.PBS_TWITTER_URL)
