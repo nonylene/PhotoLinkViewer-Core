@@ -1,5 +1,8 @@
 package net.nonylene.photolinkviewer.core.fragment
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.app.DialogFragment
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -43,6 +46,22 @@ class PLVPreferenceFragment: PreferenceSummaryFragment() {
             false
         }
 
+        // on notes
+        findPreference("filename_note").setOnPreferenceClickListener{
+            NoteDialogFragment().apply {
+                show(this@PLVPreferenceFragment.fragmentManager, "batch")
+            }
+            false
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    class NoteDialogFragment : DialogFragment() {
+        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = AlertDialog.Builder(activity)
+                .setTitle(getString(R.string.plv_core_notes_filename_dialog_title))
+                .setMessage(getString(R.string.plv_core_notes_about_filename))
+                .setPositiveButton(getString(android.R.string.ok), null)
+                .create()
     }
 }

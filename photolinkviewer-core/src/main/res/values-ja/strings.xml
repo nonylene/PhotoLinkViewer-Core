@@ -74,5 +74,9 @@
     <string name="plv_core_setting_option_button_summary">タップして開く</string>
     <string name="plv_core_copied">\"%s\" をコピーしました</string>
     <string name="plv_core_activity_option_button_text">長押しでボタンの並び替え、スワイプでボタンの消去ができます</string>
+    <string name="plv_core_notes_filename_pref_summary">お読みください</string>
+    <string name="plv_core_notes_filename_pref_title">ファイル名について</string>
+    <string name="plv_core_notes_filename_dialog_title">ファイル名について</string>
+    <string name="plv_core_notes_about_filename">ユーザー名は Twitter, Tumblr, Flickr でのみ取得できます。</string>
 
 </resources>

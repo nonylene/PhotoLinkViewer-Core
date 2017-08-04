@@ -81,5 +81,9 @@
     <string name="plv_core_permission_denied">Permission request denied.</string>
     <string name="plv_core_copied">Copied: \"%s\" !</string>
     <string name="plv_core_activity_option_button_text">Long tap and drag to change buttons order, and swipe and dismiss to remove button.</string>
+    <string name="plv_core_notes_filename_pref_title">Notes</string>
+    <string name="plv_core_notes_filename_dialog_title">Notes about username in filename</string>
+    <string name="plv_core_notes_about_filename">Username is available in these sites:\nTwitter, Tumblr, Flickr.</string>
+    <string name="plv_core_notes_filename_pref_summary">About filename</string>
 
 </resources>

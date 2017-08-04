@@ -60,6 +60,11 @@
             android:key="plv_core_download_dir_type"
             android:title="@string/plv_core_setting_mkdir_title"/>
 
+        <Preference
+            android:key="filename_note"
+            android:summary="@string/plv_core_notes_filename_pref_summary"
+            android:title="@string/plv_core_notes_filename_pref_title"/>
+
         <CheckBoxPreference
             android:defaultValue="false"
             android:key='plv_core_is_skip_dialog'
