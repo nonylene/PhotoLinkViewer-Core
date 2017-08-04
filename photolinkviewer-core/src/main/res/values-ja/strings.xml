@@ -12,10 +12,6 @@
     <string name="plv_core_setting_dir_title">ダウンロード場所の変更</string>
     <string name="plv_core_setting_mkdir_dialogtitle">選択してください</string>
     <string name="plv_core_setting_mkdir_title">ファイル名の変更</string>
-    <array name="plv_core_filename">
-        <item>\'sitename\'/\'id\'.png (ディレクトリ作成)</item>
-        <item>\'sitename\'-\'id\'.png (ディレクトリ作成しない)</item>
-    </array>
     <string-array name="plv_core_quality">
         <item>オリジナル</item>
         <item>大</item>
