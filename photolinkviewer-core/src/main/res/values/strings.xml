@@ -12,47 +12,47 @@
     <string name="plv_core_save_dialog_title">Save photo (%s) to…</string>
     <string name="plv_core_save_dialog_title_null">Save photo to…</string>
     <string name="plv_core_download_photo_title">"Saving file to "</string>
-    <string name="plv_core_setting_dir_dialogtitle">Default value is PLViewer/</string>
+    <string name="plv_core_setting_dir_dialogtitle">Default value is "PLViewer/"</string>
     <string name="plv_core_setting_dir_title">Change download directory</string>
     <string name="plv_core_setting_mkdir_dialogtitle">Select filename</string>
     <string name="plv_core_setting_mkdir_title">Change filename</string>
     <string name="plv_core_url_purse_toast">URL purse error</string>
-    <string name="plv_core_show_bitamap_error">error!</string>
-    <string name="plv_core_show_flickrjson_toast">flickr JSON Parse Error!</string>
-    <string name="plv_core_twitter_error_toast">twitter error</string>
-    <string name="plv_core_like_button_description" translatable="false">like</string>
-    <string name="plv_core_retweet_button_description" translatable="false">retweet</string>
+    <string name="plv_core_show_bitamap_error">Error!</string>
+    <string name="plv_core_show_flickrjson_toast">Flickr JSON Parse Error!</string>
+    <string name="plv_core_twitter_error_toast">Twitter error</string>
+    <string name="plv_core_like_button_description" translatable="false">Like</string>
+    <string name="plv_core_retweet_button_description" translatable="false">Retweet</string>
     <string name="plv_core_like_dialog_title">Like</string>
     <string name="plv_core_like_dialog_message">Like this tweet?</string>
     <string name="plv_core_retweet_dialog_title">Retweet</string>
     <string name="plv_core_retweet_dialog_message">Retweet this tweet?</string>
-    <string name="plv_core_twitter_like_toast">liked!</string>
-    <string name="plv_core_twitter_retweet_toast">retweeted!</string>
+    <string name="plv_core_twitter_like_toast">Liked!</string>
+    <string name="plv_core_twitter_retweet_toast">Retweeted!</string>
     <string name="plv_core_setting_quality_summary">Tap to open</string>
     <string name="plv_core_setting_quality_title">Quality settings</string>
     <string name="plv_core_setting_option_button_summary">Tap to open</string>
     <string name="plv_core_setting_option_button_title">Button settings</string>
-    <string name="plv_core_quality_setting_dialogtitle">Please choose quality</string>
-    <string name="plv_core_flickr_quality_title" translatable="false">flickr</string>
-    <string name="plv_core_twipple_quality_title" translatable="false">twipple</string>
+    <string name="plv_core_quality_setting_dialogtitle">Download quality</string>
+    <string name="plv_core_flickr_quality_title" translatable="false">Flickr</string>
+    <string name="plv_core_twipple_quality_title" translatable="false">Twipple</string>
     <string name="plv_core_imgly_quality_title" translatable="false">img.ly</string>
-    <string name="plv_core_instagram_quality_title" translatable="false">instagram</string>
-    <string name="plv_core_twitter_quality_title" translatable="false">twitter</string>
+    <string name="plv_core_instagram_quality_title" translatable="false">Instagram</string>
+    <string name="plv_core_twitter_quality_title" translatable="false">Twitter</string>
     <string name="plv_core_nicoseiga_quality_title">niconico seiga</string>
-    <string name="plv_core_tumblr_quality_title" translatable="false">tumblr</string>
+    <string name="plv_core_tumblr_quality_title" translatable="false">Tumblr</string>
     <string name="plv_core_quality_batch_title">Batch quality setting</string>
-    <string name="plv_core_quality_batch_summary">Set quality in a lump</string>
+    <string name="plv_core_quality_batch_summary">Set all quality</string>
     <string name="plv_core_quality_sites_categoryname">Setting by sitename</string>
     <string name="plv_core_quality_switch_title">Enable wifi setting</string>
-    <string name="plv_core_quality_switch_summary">Change quality when wifi connected</string>
+    <string name="plv_core_quality_switch_summary">Change quality by wifi</string>
     <string name="plv_core_original_switch_summary">Always download biggest size</string>
-    <string name="plv_core_original_switch_title">Save high quality</string>
+    <string name="plv_core_original_switch_title">Save highest quality</string>
     <string name="plv_core_nico_original_toast">Cannot view original photo for this id. Even if you choose original, this is compressed photo</string>
     <string name="plv_core_volley_error">Error!</string>
     <string name="plv_core_notes_about_quality">Full-size photos are unavailable in these sites:\n\ninstagram, some nicoseiga.</string>
-    <string name="plv_core_notes_dialog_title">notes about quality</string>
+    <string name="plv_core_notes_dialog_title">Notes about quality</string>
     <string name="plv_core_notes_pref_summary">About quality</string>
-    <string name="plv_core_notes_pref_title">notes</string>
+    <string name="plv_core_notes_pref_title">Notes</string>
     <string name="plv_core_setting_video_title">Auto play video</string>
     <string name="plv_core_setting_video_summary">Play video before you tap</string>
     <string name="plv_core_double_zoom_summary">Double tap zoom will be disabled if dragged after double tap.\n\nWarning: Some devices (e.g. Xperia, GALAXY) cannot perform double tap zoom even if you don\'t drag.</string>
